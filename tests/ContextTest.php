@@ -563,7 +563,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         
         $this->assertSame('file2.bar', $actual['file2']['name']);
         
-        // post value is inserted into each file
+        // post value is inserted
         $this->assertSame('mars', $actual['file1'][0]);
         $this->assertSame('bars', $actual['file2'][0]);
     }
