@@ -1,55 +1,126 @@
 <?php
-
-namespace aura\web;
-
 /**
  * 
- * Class for gathering details about the request environment.
- * 
- * To be safe, treat everything in the superglobals as tainted.
- * 
- * @author Paul M. Jones <pmjones@solarphp.com>
- * 
- * @author Clay Loveless <clay@killersoft.com>
+ * This file is part of the Aura project for PHP.
  * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
+namespace aura\web;
+
+/**
+ * 
+ * Collection point for information about the web environment.
+ * 
+ * @package aura.web
+ * 
+ * @todo Combine $_POST and $_FILES in getPost() by default, then add 
+ * getPostOnly() and getFilesOnly() ?  What about raw(), then, when files
+ * have been sent?  Call it getData() ?
+ * 
+ * @todo rename 'http' to 'header' or 'headers'?
+ * 
+ */
 class Context
 {
-    /** @var array */
+    /**
+     * 
+     * Imported $_GET values.
+     * 
+     * @var array
+     * 
+     */
     protected $get;
     
-    /** @var array */
+    /**
+     * 
+     * Imported $_POST values.
+     * 
+     * @var array
+     * 
+     */
     protected $post;
     
-    /** @var array */
+    /**
+     * 
+     * Imported $_SERVER values.
+     * 
+     * @var array
+     * 
+     */
     protected $server;
     
-    /** @var array */
+    /**
+     * 
+     * Imported $_COOKIE values.
+     * 
+     * @var array
+     * 
+     */
     protected $cookie;
     
-    /** @var array */
+    /**
+     * 
+     * Imported $_ENV values.
+     * 
+     * @var array
+     * 
+     */
     protected $env;
     
-    /** @var array */
+    /**
+     * 
+     * Imported $_FILES values.
+     * 
+     * @var array
+     * 
+     */
     protected $files;
     
-    /** @var array */
+    /**
+     * 
+     * Imported $_SERVER['HTTP_*'] values.
+     * 
+     * Header keys are normalized and lower-cased; keys and values are
+     * filtered for control characters.
+     * 
+     * @var array
+     * 
+     */
     protected $http;
     
-    /** @var array */
+    /**
+     * 
+     * The value of `php://input`.
+     * 
+     * @var array
+     * 
+     */
     protected $raw;
     
-    /** @var aura\http\Csrf */
+    /**
+     * 
+     * A cross-site request forgery object.
+     * 
+     * @var Csrf
+     * 
+     */
     protected $csrf;
-
-
-    public function __construct(array $get,    array $post,
-				                array $server, array $cookie,
-				                array $env,    array $files,
-				                Csrf  $csrf)
-    {
+    
+    /**
+     * 
+     * Constructor.
+     * 
+     */
+    public function __construct(
+        array $get,
+        array $post,
+		array $server,
+		array $cookie,
+		array $env,
+		array $files,
+        Csrf  $csrf
+    ) {
         $this->get    = $get;
         $this->post   = $post;
         $this->server = $server;
@@ -61,10 +132,21 @@ class Context
         $this->rebuildFiles($files, $this->files);
     }
     
+    /**
+     * 
+     * Magic get to make properties read-only.
+     * 
+     * @param string $key The property to read.
+     * 
+     * @return mixed The property value.
+     * 
+     */
     public function __get($key)
     {
-        $valid = array('get',   'post', 'server', 'cookie', 'env', 
-                       'files', 'http', 'argv',   'raw');
+        $valid = array(
+            'get', 'post', 'server', 'cookie', 'env', 'files', 'http',
+            'argv', 'raw'
+        );
         
         if (in_array($key, $valid)) {
             return ('raw' == $key) ? $this->raw() : $this->{$key};
@@ -75,7 +157,7 @@ class Context
 
     /** 
      * 
-     * Is this a GET request.
+     * Is this a GET request?
      * 
      * @return boolean
      * 
@@ -87,7 +169,7 @@ class Context
     
     /**
      *  
-     * Is this a POST request.
+     * Is this a POST request?
      * 
      * @return boolean
      * 
@@ -99,7 +181,7 @@ class Context
     
     /**
      *  
-     * Is this a PUT request.
+     * Is this a PUT request?
      * 
      * @return boolean
      * 
@@ -116,7 +198,7 @@ class Context
     
     /**
      *  
-     * Is this a DELETE request.
+     * Is this a DELETE request?
      * 
      * @return boolean
      * 
@@ -133,7 +215,7 @@ class Context
     
     /**
      *  
-     * Is this a HEAD request.
+     * Is this a HEAD request?
      * 
      * @return boolean
      * 
@@ -145,7 +227,7 @@ class Context
     
     /**
      *  
-     * Is this an OPTIONS request.
+     * Is this an OPTIONS request?
      * 
      * @return boolean
      * 
@@ -170,6 +252,7 @@ class Context
     /**
      * 
      * Is the current request a cross-site forgery?
+     * 
      * Note: if the key does not exist this method will return true.
      * 
      * @param string $key The name of the $_POST key containing the CSRF token.
@@ -191,7 +274,7 @@ class Context
     
     /**
      *  
-     * Is this a ssl request.
+     * Is this an SSL request?
      * 
      * @return boolean
      * 
@@ -204,7 +287,7 @@ class Context
     
     /**
      * 
-     * Retrieves an **unfiltered** value by key from the [[Request::$get | ]] property,
+     * Retrieves an **unfiltered** value by key from the `$get` property,
      * or an alternate default value if that key does not exist.
      * 
      * @param string $key The $get key to retrieve the value of.
@@ -222,7 +305,7 @@ class Context
     
     /**
      * 
-     * Retrieves an **unfiltered** value by key from the [[Request::$post | ]] property,
+     * Retrieves an **unfiltered** value by key from the `$post` property,
      * or an alternate default value if that key does not exist.
      * 
      * @param string $key The $post key to retrieve the value of.
@@ -240,14 +323,15 @@ class Context
     
     /**
      * 
-     * Retrieves an **unfiltered** value by key from the [[Request::$cookie | ]] property,
+     * Retrieves an **unfiltered** value by key from the `$cookie` property,
      * or an alternate default value if that key does not exist.
      * 
      * @param string $key The $cookie key to retrieve the value of.
      * 
      * @param string $alt The value to return if the key does not exist.
      * 
-     * @param bool   $signed Is the cookie value signed.
+     * @param bool The value of $cookie[$key], or the alternate default
+     * value.
      * 
      */
     public function cookie($key = null, $alt = null)
@@ -257,7 +341,7 @@ class Context
     
     /**
      * 
-     * Retrieves an **unfiltered** value by key from the [[Request::$env | ]] property,
+     * Retrieves an **unfiltered** value by key from the `$env` property,
      * or an alternate default value if that key does not exist.
      * 
      * @param string $key The $env key to retrieve the value of.
@@ -275,7 +359,7 @@ class Context
     
     /**
      * 
-     * Retrieves an **unfiltered** value by key from the [[Request::$server | ]] property,
+     * Retrieves an **unfiltered** value by key from the `$server` property,
      * or an alternate default value if that key does not exist.
      * 
      * @param string $key The $server key to retrieve the value of.
@@ -293,7 +377,7 @@ class Context
     
     /**
      * 
-     * Retrieves an **unfiltered** value by key from the [[Request::$files | ]] property,
+     * Retrieves an **unfiltered** value by key from the `$files` property,
      * or an alternate default value if that key does not exist.
      * 
      * @param string $key The $files key to retrieve the value of.
@@ -311,8 +395,8 @@ class Context
     
     /**
      * 
-     * Retrieves an **unfiltered** value by key from the [[Request::$post | ]] *and* 
-     * [[Request::$files | ]] properties, or an alternate default value if that key does 
+     * Retrieves an **unfiltered** value by key from the `$post` *and* 
+     * `$files` properties, or an alternate default value if that key does 
      * not exist in either location.  Files takes precedence over post.
      * 
      * @param string $key The $post and $files key to retrieve the value of.
@@ -382,6 +466,7 @@ class Context
     }
 
     /**
+     * 
      * Get the raw POST data. Useful for accessing PUT data.
      *
      * @return string 
@@ -399,7 +484,7 @@ class Context
     
     /**
      * 
-     * Retrieves an **unfiltered** value by key from the [[Request::$http | ]] property,
+     * Retrieves an **unfiltered** value by key from the `$http` property,
      * or an alternate default value if that key does not exist.
      * 
      * @param string $key The $http key to retrieve the value of.
@@ -421,15 +506,15 @@ class Context
     /**
      * 
      * Parse a http[accept*] header and sort by the quality factor. The highest
-     * being first in the returned array. The returned data in unfiltered.
-     * 
-     * @throws aura\web\Exception_Request
+     * being first in the returned array. The returned data is unfiltered.
      * 
      * @param string $header The name of the accept header to parse.
      * 
      * @param mixed $alt The value to return if the key does not exist.
      * 
      * @return array
+     * 
+     * @throws aura\web\Exception_Context
      * 
      */
     public function parseAccept($header, $alt = null)
@@ -466,7 +551,7 @@ class Context
     
     /**
      * 
-     * Setup the "fake" http variables.
+     * Setup the "fake" `$http` property.
      * 
      * @return void
      * 
@@ -549,9 +634,9 @@ class Context
     
     /**
      * 
-     * Common method to get a request value and return it.
+     * Common method to get a property value and return it.
      * 
-     * @param string $var The request variable to fetch from: get, post,
+     * @param string $var The property variable to fetch from: get, post,
      * etc.
      * 
      * @param string $key The array key, if any, to get the value of.
