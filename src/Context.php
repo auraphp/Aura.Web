@@ -87,16 +87,16 @@ class Context
      * @var array
      * 
      */
-    protected $http;
+    protected $header;
     
     /**
      * 
      * The value of `php://input`.
      * 
-     * @var array
+     * @var string
      * 
      */
-    protected $raw;
+    protected $raw_input = false;
     
     /**
      * 
@@ -119,7 +119,7 @@ class Context
 		array $cookie,
 		array $env,
 		array $files,
-        Csrf  $csrf
+        Csrf  $csrf = null
     ) {
         $this->get    = $get;
         $this->post   = $post;
@@ -128,7 +128,7 @@ class Context
         $this->env    = $env;
         $this->csrf   = $csrf;
         
-        $this->setupHttp();
+        $this->setupHeader();
         $this->rebuildFiles($files, $this->files);
     }
     
@@ -144,12 +144,11 @@ class Context
     public function __get($key)
     {
         $valid = array(
-            'get', 'post', 'server', 'cookie', 'env', 'files', 'http',
-            'argv', 'raw'
+            'get', 'post', 'server', 'cookie', 'env', 'files', 'header',
         );
         
         if (in_array($key, $valid)) {
-            return ('raw' == $key) ? $this->raw() : $this->{$key};
+            return $this->{$key};
         }
         
         throw new \UnexpectedValueException($key);
@@ -164,7 +163,7 @@ class Context
      */
     public function isGet()
     {
-        return 'GET' == $this->server('REQUEST_METHOD');
+        return 'GET' == $this->getServer('REQUEST_METHOD');
     }
     
     /**
@@ -176,7 +175,7 @@ class Context
      */
     public function isPost()
     {
-        return 'POST' == $this->server('REQUEST_METHOD');
+        return 'POST' == $this->getServer('REQUEST_METHOD');
     }
     
     /**
@@ -188,10 +187,10 @@ class Context
      */
     public function isPut()
     {
-        $is_put      = $this->server('REQUEST_METHOD') == 'PUT';
+        $is_put      = $this->getServer('REQUEST_METHOD') == 'PUT';
         
-        $is_override = $this->server('REQUEST_METHOD') == 'POST' &&
-                       $this->http('X-HTTP-Method-Override') == 'PUT';
+        $is_override = $this->getServer('REQUEST_METHOD') == 'POST' &&
+                       $this->getHeader('X-HTTP-Method-Override') == 'PUT';
         
         return ($is_put || $is_override);
     }
@@ -205,10 +204,10 @@ class Context
      */
     public function isDelete()
     {
-        $is_delete   = $this->server('REQUEST_METHOD') == 'DELETE';
+        $is_delete   = $this->getServer('REQUEST_METHOD') == 'DELETE';
         
-        $is_override = $this->server('REQUEST_METHOD') == 'POST' &&
-                       $this->http('X-HTTP-Method-Override') == 'DELETE';
+        $is_override = $this->getServer('REQUEST_METHOD') == 'POST' &&
+                       $this->getHeader('X-HTTP-Method-Override') == 'DELETE';
         
         return ($is_delete || $is_override);
     }
@@ -222,7 +221,7 @@ class Context
      */
     public function isHead()
     {
-        return 'HEAD' == $this->server('REQUEST_METHOD');
+        return 'HEAD' == $this->getServer('REQUEST_METHOD');
     }
     
     /**
@@ -234,7 +233,7 @@ class Context
      */
     public function isOptions()
     {
-        return 'OPTIONS' == $this->server('REQUEST_METHOD');
+        return 'OPTIONS' == $this->getServer('REQUEST_METHOD');
     }
     
     /**
@@ -246,7 +245,7 @@ class Context
      */
     public function isXhr()
     {
-        return 'xmlhttprequest' == strtolower($this->server('HTTP_X_REQUESTED_WITH'));
+        return 'xmlhttprequest' == strtolower($this->getServer('HTTP_X_REQUESTED_WITH'));
     }
     
     /**
@@ -255,6 +254,8 @@ class Context
      * 
      * Note: if the key does not exist this method will return true.
      * 
+     * @throws aura\web\Exception_Context If a CSRF library has not been provided.
+     * 
      * @param string $key The name of the $_POST key containing the CSRF token.
      * 
      * @return bool
@@ -262,7 +263,11 @@ class Context
      */
     public function isCsrf($key = '__csrf_token')
     {
-        $token = $this->post($key, 'invalid-token');
+        if (!$this->csrf) {
+            throw new Exception_Context('A CSRF library has not been provided');
+        }
+        
+        $token = $this->getValue('post', $key, 'invalid-token');
         
         try {
             // if the token is valid return false. This is not a csrf attack.
@@ -281,8 +286,8 @@ class Context
      */
     public function isSsl()
     {
-        return $this->server('HTTPS') == 'on'
-            || $this->server('SERVER_PORT') == 443;
+        return $this->getServer('HTTPS') == 'on'
+            || $this->getServer('SERVER_PORT') == 443;
     }
     
     /**
@@ -298,27 +303,9 @@ class Context
      * value.
      * 
      */
-    public function get($key = null, $alt = null)
+    public function getQuery($key = null, $alt = null)
     {
         return $this->getValue('get', $key, $alt);
-    }
-    
-    /**
-     * 
-     * Retrieves an **unfiltered** value by key from the `$post` property,
-     * or an alternate default value if that key does not exist.
-     * 
-     * @param string $key The $post key to retrieve the value of.
-     * 
-     * @param string $alt The value to return if the key does not exist.
-     * 
-     * @return mixed The value of $post[$key], or the alternate default
-     * value.
-     * 
-     */
-    public function post($key = null, $alt = null)
-    {
-        return $this->getValue('post', $key, $alt);
     }
     
     /**
@@ -334,7 +321,7 @@ class Context
      * value.
      * 
      */
-    public function cookie($key = null, $alt = null)
+    public function getCookie($key = null, $alt = null)
     {
         return $this->getValue('cookie', $key, $alt);
     }
@@ -352,7 +339,7 @@ class Context
      * value.
      * 
      */
-    public function env($key = null, $alt = null)
+    public function getEnv($key = null, $alt = null)
     {
         return $this->getValue('env', $key, $alt);
     }
@@ -370,49 +357,51 @@ class Context
      * value.
      * 
      */
-    public function server($key = null, $alt = null)
+    public function getServer($key = null, $alt = null)
     {
         return $this->getValue('server', $key, $alt);
     }
     
     /**
      * 
-     * Retrieves an **unfiltered** value by key from the `$files` property,
-     * or an alternate default value if that key does not exist.
+     * Retrieves an **unfiltered** value from a user input.
      * 
-     * @param string $key The $files key to retrieve the value of.
+     * A value by key from the `$post` *and* `$files` properties, or an 
+     * alternate default value if that key does not exist in either location.
+     * Files takes precedence over post.
      * 
-     * @param string $alt The value to return if the key does not exist.
-     * 
-     * @return mixed The value of $files[$key], or the alternate default
-     * value.
-     * 
-     */
-    public function files($key = null, $alt = null)
-    {
-        return $this->getValue('files', $key, $alt);
-    }
-    
-    /**
-     * 
-     * Retrieves an **unfiltered** value by key from the `$post` *and* 
-     * `$files` properties, or an alternate default value if that key does 
-     * not exist in either location.  Files takes precedence over post.
+     * If the key is null and the content type isn't `multipart/form-data` and 
+     * `$post` and `$files` are empty, the raw data from the request body 
+     * is returned. 
      * 
      * @param string $key The $post and $files key to retrieve the value of.
      * 
      * @param string $alt The value to return if the key does not exist in
      * either $post or $files.
      * 
-     * @return mixed The value of $post[$key] combined with $files[$key], or 
-     * the alternate default value.
+     * @return mixed The value of $post[$key] combined with $files[$key], or the
+     * raw request body, or the alternate default value.
      * 
      */
-    public function postAndFiles($key = null, $alt = null)
+    public function getInput($key = null, $alt = null)
     {
         $post  = $this->getValue('post',  $key, false);
         $files = $this->getValue('files', $key, false);
+        $ctype = array_shift(explode(';', $this->getServer('CONTENT_TYPE'), 2));
+        $ctype = trim($ctype);
         
+        // POST or PUT data. It could be anything, a parsable string, xml, json, etc
+        // So it is returned the way PHP received it.
+        if (null === $key && 'multipart/form-data' != $ctype &&
+            empty($post) && empty($files)) {
+            // in some cases php://input can only be read once
+            if (false === $this->raw_input) {
+                $this->raw_input = file_get_contents('php://input');
+            }
+            
+            return $this->raw_input;
+        }
+
         // no matches in post or files
         if (! $post && ! $files) {
             return $alt;
@@ -464,43 +453,23 @@ class Context
         // now what?
         return $alt;
     }
-
-    /**
-     * 
-     * Get the raw POST data. Useful for accessing PUT data.
-     *
-     * @return string 
-     * 
-     */
-    public function raw()
-    {
-        if (!$this->raw) {
-            // fetch and parse the raw input
-            $this->raw = file_get_contents('php://input');
-        }
-        
-        return $this->raw;
-    }
     
     /**
      * 
-     * Retrieves an **unfiltered** value by key from the `$http` property,
+     * Retrieves an **unfiltered** value by key from the `$header` property,
      * or an alternate default value if that key does not exist.
      * 
      * @param string $key The $http key to retrieve the value of.
      * 
      * @param string $alt The value to return if the key does not exist.
      * 
-     * @return mixed The value of $http[$key], or the alternate default
+     * @return mixed The value of $header[$key], or the alternate default
      * value.
      * 
      */
-    public function http($key = null, $alt = null)
+    public function getHeader($key = null, $alt = null)
     {
-        if ($key !== null) {
-            $key = strtoupper($key);
-        }
-        return $this->getValue('http', $key, $alt);
+        return $this->getValue('header', $key, $alt);
     }
     
     /**
@@ -519,9 +488,9 @@ class Context
      */
     public function parseAccept($header, $alt = null)
     {
-        $accept = $this->http($header);
+        $accept = $this->getHeader($header);
         
-        if ('accept' != substr(\strtolower($header), 0, 6)) {
+        if ('accept' != substr(strtolower($header), 0, 6)) {
             throw new Exception_Context('Not a HTTP accept key.');
         }
         
@@ -551,15 +520,15 @@ class Context
     
     /**
      * 
-     * Setup the "fake" `$http` property.
+     * Setup the "fake" `$header` property.
      * 
      * @return void
      * 
      */
-    protected function setupHttp()
+    protected function setupHeader()
     {
         // load the "fake" http request var
-        $this->http = array();
+        $this->header = array();
         
         foreach ($this->server as $key => $val) {
             
@@ -567,18 +536,18 @@ class Context
             if (substr($key, 0, 5) == 'HTTP_') {
                 
                 // normalize the header key
-                $nicekey = str_replace('_', '-', substr($key, 5));
+                $nicekey = str_replace('_', '-', strtolower(substr($key, 5)));
                 
                 // strip control characters from keys and values
                 $nicekey = preg_replace('/[\x00-\x1F]/', '', $nicekey);
-                $this->http[$nicekey] = preg_replace('/[\x00-\x1F]/', '', $val);
+                $this->header[$nicekey] = preg_replace('/[\x00-\x1F]/', '', $val);
                 
                 // no control characters wanted in $this->server for these
                 $this->server[$key] = preg_replace('/[\x00-\x1F]/', '', $val);
                 
                 // disallow external setting of X-JSON headers.
-                if ($nicekey == 'X-JSON') {
-                    unset($this->http[$nicekey]);
+                if ($nicekey == 'x-json') {
+                    unset($this->header[$nicekey]);
                     unset($this->server[$key]);
                 }
             }
@@ -600,6 +569,11 @@ class Context
      */
     protected function rebuildFiles($src, &$tgt)
     {
+        if (!$src) {
+            $tgt = array();
+            return;
+        }
+        
         // an array with these keys is a "target" for us (pre-sorted)
         $tgtkeys = array('error', 'name', 'size', 'tmp_name', 'type');
         
