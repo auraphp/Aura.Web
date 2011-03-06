@@ -15,10 +15,10 @@ The easiest way to do this is to call the `aura.web/scripts/instance.php` script
     $webcontext = require '/path/to/aura.web/scripts/instance.php';
 
 **NOTE:** 
-    If the variables `$csrf_secret_key` and `$csrf_user_id` are not defined before calling `aura.web/scripts/instance.php` CSRF testing will not be avaliable. A call to `aura\web\Context->isCsrf()` will cause the exception `aura\web\Exception_Context`.
+If the variables `$csrf_secret_key` and `$csrf_user_id` are not defined before calling `aura.web/scripts/instance.php` CSRF testing will not be avaliable. A call to `aura\web\Context->isCsrf()` will cause the exception `aura\web\Exception_Context`.
   
 **IMPORTANT:** 
-    All values returned from get* methods and the publicly available properties are from the user. These tainted values have not been filtered or sanitized in any way.
+All values returned from get* methods and the publicly available properties are from the user. These tainted values have not been filtered or sanitized in any way.
 
 #### Fetching a URI query:
 
