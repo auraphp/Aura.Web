@@ -51,7 +51,7 @@ User submitted data is a combination of `$post[key]` and `$files[key]` with file
 Advanced Usage
 --------------
 
-#### Receving a json, xml, etc input from a user
+#### Receving a json, xml or other content type input from a user
 
 If the content-type is not `multipart/form-data` and `$key = null` the raw input from a POST or PUT request is returned without any processing as a string.
 
@@ -118,7 +118,7 @@ Usage
             echo 'Invalid CSRF token.
             exit(1);
         }
-    } catch (Exception_InvalidTokenFormat $e) {
+    } catch (Exception_MalformedToken $e) {
         echo 'Malformed CSRF token.';
         exit;
     }

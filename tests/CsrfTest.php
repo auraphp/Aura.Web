@@ -92,7 +92,7 @@ class CsrfTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($csrf->isValidToken($token));
         
         // invalid token format, should cause a exception
-        $this->setExpectedException('aura\web\Exception_InvalidTokenFormat');
+        $this->setExpectedException('aura\web\Exception_MalformedToken');
         $csrf->isValidToken('invalid-token');
     }
 }

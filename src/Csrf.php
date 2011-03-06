@@ -138,7 +138,7 @@ class Csrf
         $token = explode('|', $incoming_token);
         
         if (3 != count($token)) {
-            throw new Exception_InvalidTokenFormat();
+            throw new Exception_MalformedToken();
         }
         
         list($hashtoken, $time, $uid) = $token;

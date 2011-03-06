@@ -272,7 +272,7 @@ class Context
         try {
             // if the token is valid return false. This is not a csrf attack.
             return !$this->csrf->isValidToken($token);
-        } catch (Exception_InvalidTokenFormat $e) {
+        } catch (Exception_MalformedToken $e) {
             return true;
         }
     }
