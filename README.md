@@ -8,7 +8,7 @@ Aura Web Context
 Basic Usage
 -----------
 
-#### Instantiating WebContext.
+#### Instantiating a Web Context.
 
 The easiest way to do this is to call the `aura.web/scripts/instance.php` script.
 
@@ -16,11 +16,8 @@ The easiest way to do this is to call the `aura.web/scripts/instance.php` script
 
 **NOTE:** 
 If the variables `$csrf_secret_key` and `$csrf_user_id` are not defined before calling `aura.web/scripts/instance.php` CSRF testing will not be avaliable. A call to `aura\web\Context->isCsrf()` will cause the exception `aura\web\Exception_Context`.
-  
-**IMPORTANT:** 
-All values returned from get* methods and the publicly available properties are from the user. These tainted values have not been filtered or sanitized in any way.
 
-#### Fetching a URI query:
+#### Fetching a get value:
 
     // example query: ?id=101&sort=desc
 
@@ -47,15 +44,23 @@ User submitted data is a combination of `$post[key]` and `$files[key]` with file
 
     $upload = $webcontext->getInput('upload');
 
+ 
+**IMPORTANT:** 
+All values returned by the get* methods and the public properties are from an untrusted source. These tainted values have not been filtered or sanitized in any way.
+
+Magic Quotes
+------------
+As of PHP 5.3 magic quotes have been deprecated and disabled by default. `aura\web\Context` does not test for or remove magic quotes.
+
 
 Advanced Usage
 --------------
 
-#### Receving a json, xml or other content type input from a user
+#### Receiving a json, xml or other content type input
 
 If the content-type is not `multipart/form-data` and `$key = null` the raw input from a POST or PUT request is returned without any processing as a string.
 
-#### POST/PUT example with a text/xml content-type:
+#### A POST or PUT example with a text/xml content-type:
 
     $xml = $webcontext->getInput();
     echo $xml;
@@ -93,9 +98,9 @@ Usage
     use aura\web\Csrf as Csrf;
     
     require '/path/to/aura.web/Csrf.php';
-    require '/path/to/aura.web/Exception/InvalidTokenFormat.php';
+    require '/path/to/aura.web/Exception/MalformedToken.php';
     
-    $server_secret = 'my-random-sectret';
+    $server_secret = 'my-random-secret';
     $user_id       = $user->getEmail();
 
     $csrf = new Csrf($server_secret, $user_id);
@@ -116,9 +121,9 @@ Usage
             echo 'Not a CSRF attack.';
         } else {
             echo 'Invalid CSRF token.
-            exit(1);
+            exit();
         }
     } catch (Exception_MalformedToken $e) {
         echo 'Malformed CSRF token.';
-        exit;
+        exit();
     }

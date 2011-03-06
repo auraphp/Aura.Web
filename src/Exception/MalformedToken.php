@@ -2,7 +2,7 @@
 
 namespace aura\web;
 
-class MalformedToken extends \Exception
+class Exception_MalformedToken extends \Exception
 {
     public function __construct()
     {
