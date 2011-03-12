@@ -133,7 +133,7 @@ class Context
         $this->setupHeader();
         $this->rebuildFiles($files, $this->files);
         
-        $override = $this->getHeader('X-HTTP-Method-Override');
+        $override = $this->getHeader('x-http-method-override');
         if ($this->getServer('REQUEST_METHOD') == 'POST' && $override) {
             $this->server['REQUEST_METHOD'] = strtoupper($override);
         }

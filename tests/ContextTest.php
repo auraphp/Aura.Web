@@ -35,6 +35,17 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->files  = array();
     }
 
+    public function testHttpMethodOverload()
+    {
+        $this->reset();
+        $this->server['REQUEST_METHOD']              = 'POST';
+        $this->server['HTTP_X_HTTP_METHOD_OVERRIDE'] = 'PUT';
+        $req    = $this->newContext();
+        $actual = $req->getServer('REQUEST_METHOD');
+        
+        $this->assertSame('PUT', $actual);
+    }
+    
     public function test__get()
     {
         $this->reset();
