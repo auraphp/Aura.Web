@@ -491,23 +491,22 @@ class Context
     protected function parseAccept($accept, $alt = null)
     {
         $accept = explode(',', $accept);
-        $pref   = array(array());
+        $sorted = array();
         
         foreach ((array) $accept as $key => $value) {
             $value = trim($value);
             
             if (false === strpos($value, ';q=')) {
-                $accept[$key] = array($value, 1.0);
+                $sorted[$value]  = 1.0;
             } else {
-                $accept[$key] = explode(';q=', $value);
+                list($value, $q) = explode(';q=', $value);
+                $sorted[$value]  = $q;
             }
-            
-            $pref[$key] = $accept[$key][1];
         }
         
         // sort by quality factor, highest first.
-        array_multisort($pref, SORT_DESC, $accept);
-        return $accept;
+        asort($sorted);
+        return $sorted;
     }
     
     /**

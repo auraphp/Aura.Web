@@ -635,17 +635,16 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         
         $req    = $this->newContext();
         $expect = array(
-            0 => array(0 => 'text/html',  1 => 1.0),
-            1 => array(0 => 'text/*',     1 => 0.9),
-            2 => array(0 => 'text/xhtml', 1 => 0.8),
+            'text/html'  => 1.0,
+            'text/*'     => 0.9,
+            'text/xhtml' => 0.8,
         );
         $actual = $req->getAccept('type');
         $this->assertEquals($expect, $actual);
         
         $actual = $req->getAccept('language');
-        $expect = array(
-            0 => array(0 => 'en-US',  1 => 1.0),
-        );
+        $expect = array('en-US' => 1.0);
+        
         $this->assertEquals($expect, $actual);
         
         $actual = $req->getAccept('charset', 'alt');
@@ -653,12 +652,12 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         
         $expect = array(
             'type' => array(
-                0 => array(0 => 'text/html',  1 => 1.0),
-                1 => array(0 => 'text/*',     1 => 0.9),
-                2 => array(0 => 'text/xhtml', 1 => 0.8),
+                'text/html'  => 1.0,
+                'text/*'     => 0.9,
+                'text/xhtml' => 0.8,
             ),
             'language' => array(
-                0 => array(0 => 'en-US',  1 => 1.0),
+                'en-US' => 1.0,
             ),
         );
         $actual = $req->getAccept();
