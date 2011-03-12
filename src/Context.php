@@ -89,6 +89,8 @@ class Context
      */
     protected $header;
     
+    protected $accept;
+    
     /**
      * 
      * The value of `php://input`.
@@ -475,8 +477,9 @@ class Context
     
     /**
      * 
-     * Parse a http[accept*] header and sort by the quality factor. The highest
-     * being first in the returned array. The returned data is unfiltered.
+     * Parse a http[accept*] header and sort by the quality factor, the 
+     * highest being first in the returned array. The returned data is 
+     * unfiltered.
      * 
      * @param string $header The name of the accept header to parse.
      * 
@@ -484,21 +487,9 @@ class Context
      * 
      * @return array
      * 
-     * @throws aura\web\Exception_Context
-     * 
      */
-    public function parseAccept($header, $alt = null)
+    protected function parseAccept($accept, $alt = null)
     {
-        $accept = $this->getHeader($header);
-        
-        if ('accept' != substr(strtolower($header), 0, 6)) {
-            throw new Exception_Context('Not a HTTP accept key.');
-        }
-        
-        if (!$accept) {
-            return $alt;
-        }
-        
         $accept = explode(',', $accept);
         $pref   = array(array());
         
@@ -517,6 +508,55 @@ class Context
         // sort by quality factor, highest first.
         array_multisort($pref, SORT_DESC, $accept);
         return $accept;
+    }
+    
+    /**
+     * 
+     * Gets an `Accept` header.  If you want the content-type, ask for 
+     * `'type'`; otherwise, if you want (e.g.) `'Accept-Language'`, ask for 
+     * `'language'`.
+     * 
+     * @param string $key The `$accept` key to return; if null, returns the
+     * entire `$accept` property.
+     * 
+     * @param mixed $alt The value to return if the key does not exist.
+     * 
+     * @return array
+     * 
+     */
+    public function getAccept($key = null, $alt = null)
+    {
+        // do we have an $accept property yet?
+        if (null === $this->accept) {
+            // create the $accept property
+            $this->accept = array();
+            // go through each header ...
+            foreach ($this->header as $label => $value) {
+                
+                // then extract and parse only accept* headers
+                $label = strtolower($label);
+                if ('accept' == substr($label, 0, 6)) {
+                    if ($label == 'accept') {
+                        // content type
+                        $label = 'type';
+                    } else {
+                        // accept-(charset|language|encoding)
+                        $label = substr($label, 7);
+                    }
+                    $this->accept[$label] = $this->parseAccept($value);
+                }
+            }
+        }
+        
+        if (null == $key) {
+            return $this->accept;
+        }
+        
+        if (isset($this->accept[$key])) {
+            return $this->accept[$key];
+        } else {
+            return $alt;
+        }
     }
     
     /**

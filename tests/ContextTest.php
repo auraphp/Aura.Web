@@ -616,24 +616,42 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('dib', $actual);
     }
     
-    public function testParseAccept()
+    public function testGetAccept()
     {
         $this->reset();
         $this->server['HTTP_ACCEPT'] = 'text/*;q=0.9, text/html ,text/xhtml;q=0.8';
+        $this->server['HTTP_ACCEPT_LANGUAGE'] = 'en-US';
+        
         $req    = $this->newContext();
         $expect = array(
             0 => array(0 => 'text/html',  1 => 1.0),
             1 => array(0 => 'text/*',     1 => 0.9),
             2 => array(0 => 'text/xhtml', 1 => 0.8),
         );
-        $actual = $req->parseAccept('accept');
+        $actual = $req->getAccept('type');
         $this->assertEquals($expect, $actual);
         
-        $actual = $req->parseAccept('accept-language', 'alt');
+        $actual = $req->getAccept('language');
+        $expect = array(
+            0 => array(0 => 'en-US',  1 => 1.0),
+        );
+        $this->assertEquals($expect, $actual);
+        
+        $actual = $req->getAccept('charset', 'alt');
         $this->assertSame('alt', $actual);
         
-        $this->setExpectedException('aura\web\Exception_Context');
-        $this->newContext()->parseAccept('non-accept');
+        $expect = array(
+            'type' => array(
+                0 => array(0 => 'text/html',  1 => 1.0),
+                1 => array(0 => 'text/*',     1 => 0.9),
+                2 => array(0 => 'text/xhtml', 1 => 0.8),
+            ),
+            'language' => array(
+                0 => array(0 => 'en-US',  1 => 1.0),
+            ),
+        );
+        $actual = $req->getAccept();
+        $this->assertEquals($expect, $actual);
     }
     
     public function testXJsonIsRemoved()
