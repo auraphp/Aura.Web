@@ -130,6 +130,11 @@ class Context
         
         $this->setupHeader();
         $this->rebuildFiles($files, $this->files);
+        
+        $override = $this->getHeader('X-HTTP-Method-Override');
+        if ($this->getServer('REQUEST_METHOD') == 'POST' && $override) {
+            $this->server['REQUEST_METHOD'] = strtoupper($override);
+        }
     }
     
     /**
@@ -187,12 +192,7 @@ class Context
      */
     public function isPut()
     {
-        $is_put      = $this->getServer('REQUEST_METHOD') == 'PUT';
-        
-        $is_override = $this->getServer('REQUEST_METHOD') == 'POST' &&
-                       $this->getHeader('X-HTTP-Method-Override') == 'PUT';
-        
-        return ($is_put || $is_override);
+        return 'PUT' == $this->getServer('REQUEST_METHOD');
     }
     
     /**
@@ -204,12 +204,7 @@ class Context
      */
     public function isDelete()
     {
-        $is_delete   = $this->getServer('REQUEST_METHOD') == 'DELETE';
-        
-        $is_override = $this->getServer('REQUEST_METHOD') == 'POST' &&
-                       $this->getHeader('X-HTTP-Method-Override') == 'DELETE';
-        
-        return ($is_delete || $is_override);
+        return 'DELETE' == $this->getServer('REQUEST_METHOD');
     }
     
     /**
@@ -387,13 +382,18 @@ class Context
     {
         $post  = $this->getValue('post',  $key, false);
         $files = $this->getValue('files', $key, false);
-        $ctype = array_shift(explode(';', $this->getServer('CONTENT_TYPE'), 2));
-        $ctype = trim($ctype);
+        
+        $parts = explode(';', $this->getServer('CONTENT_TYPE'), 2);
+        $ctype = trim(array_shift($parts));
         
         // POST or PUT data. It could be anything, a parsable string, xml, json, etc
         // So it is returned the way PHP received it.
-        if (null === $key && 'multipart/form-data' != $ctype &&
-            empty($post) && empty($files)) {
+        $use_raw = null === $key
+                && 'multipart/form-data' != $ctype
+                && empty($post)
+                && empty($files);
+                
+        if ($use_raw) {
             // in some cases php://input can only be read once
             if (false === $this->raw_input) {
                 $this->raw_input = file_get_contents('php://input');
@@ -419,7 +419,8 @@ class Context
         
         // are either or both arrays?
         $post_array  = is_array($post);
-        // files is allways an array so we test for a multidimensional array
+        
+        // files is always an array so we test for a multidimensional array
         $files_array = is_array($files[key($files)]);
         
         // neither are arrays, append to files
