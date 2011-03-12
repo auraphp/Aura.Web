@@ -4,7 +4,7 @@
  */
 $di->set('csrf', function() use ($di) {
     return $di->newInstance('aura\web\Csrf', array(
-        'secert'  => 'you must change me for each project',
+        'secret'  => 'you must change me for each project',
         'user_id' => $di->get('auth')->get_id,
     ));
 });
