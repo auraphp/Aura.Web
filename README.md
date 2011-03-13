@@ -17,11 +17,11 @@ The easiest way to do this is to call the `aura.web/scripts/instance.php` script
 **NOTE:** 
 If the variables `$csrf_secret_key` and `$csrf_user_id` are not defined before calling `aura.web/scripts/instance.php` CSRF testing will not be avaliable. A call to `aura\web\Context->isCsrf()` will cause the exception `aura\web\Exception_Context`.
 
-#### Fetching data
+### Fetching data
 
 All get* methods have two arguments `$key` and `$alt`. If the `$key` is null the whole array is returned. `$alt` is returned if the `$key` does not exist and by default `$alt` is null.
     
-### get* methods:
+#### get* methods:
 
     getQuery()
     getInput()
@@ -32,7 +32,7 @@ All get* methods have two arguments `$key` and `$alt`. If the `$key` is null the
     getAccept()
 
 
-### Avaliable properties:
+#### Avaliable properties:
 
     get
     post
