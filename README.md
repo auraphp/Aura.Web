@@ -17,6 +17,32 @@ The easiest way to do this is to call the `aura.web/scripts/instance.php` script
 **NOTE:** 
 If the variables `$csrf_secret_key` and `$csrf_user_id` are not defined before calling `aura.web/scripts/instance.php` CSRF testing will not be avaliable. A call to `aura\web\Context->isCsrf()` will cause the exception `aura\web\Exception_Context`.
 
+#### Fetching data
+
+All get* methods have two arguments `$key` and `$alt`. If the `$key` is null the whole array is returned. `$alt` is returned if the `$key` does not exist and by default `$alt` is null.
+    
+### get* methods:
+
+    getQuery()
+    getInput()
+    getServer()
+    getCookie()
+    getEnv()
+    getheader()
+    getAccept()
+
+
+### Avaliable properties:
+
+    get
+    post
+    cookies
+    server
+    env
+    files
+    header
+
+
 #### Fetching a get value:
 
     // example query: ?id=101&sort=desc
@@ -42,9 +68,29 @@ If the variables `$csrf_secret_key` and `$csrf_user_id` are not defined before c
 #### Fetching user submitted data:
 User submitted data is a combination of `$post[key]` and `$files[key]` with files taking precedence over post.
 
-    $upload = $webcontext->getInput('upload');
+    $comment = $webcontext->getInput('comment');
 
- 
+#### Fetching a header:
+All header keys are lowercase with dashes.
+
+    $type = $webcontext->getHeader('content-type');
+
+#### Fetching an accept header.
+If you want the content-type, ask for `type`; otherwise, if you want (e.g.) 'Accept-Language', ask for `language`.
+
+    // Accept-Language: en;q=0.7, en-US
+    $lang = $webcontext->getAccept('language');
+    print_r($lang);
+
+The result is an array; the array key is the accept-value and the array value is the quality factor. The results are sorted by the quality factor, the first result has the highest quality factor.
+
+#### Example results:
+
+    array(
+        'en-US' => 1.0,
+        'en'    => 0.7,
+    )
+
 **IMPORTANT:** 
 All values returned by the get* methods and the public properties are from an untrusted source. These tainted values have not been filtered or sanitized in any way.
 
