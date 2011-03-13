@@ -23,13 +23,13 @@ All get* methods have two arguments `$key` and `$alt`. If the `$key` is null the
     
 #### get* methods:
 
-    getQuery()
-    getInput()
-    getServer()
-    getCookie()
-    getEnv()
-    getheader()
-    getAccept()
+    getQuery($key, $alt = null)
+    getInput($key, $alt = null)
+    getServer($key, $alt = null)
+    getCookie($key, $alt = null)
+    getEnv($key, $alt = null)
+    getheader($key, $alt = null)
+    getAccept($key, $alt = null)
 
 
 #### Avaliable properties:
