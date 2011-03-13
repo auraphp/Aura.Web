@@ -14,12 +14,6 @@ namespace aura\web;
  * 
  * @package aura.web
  * 
- * @todo Combine $_POST and $_FILES in getPost() by default, then add 
- * getPostOnly() and getFilesOnly() ?  What about raw(), then, when files
- * have been sent?  Call it getData() ?
- * 
- * @todo rename 'http' to 'header' or 'headers'?
- * 
  */
 class Context
 {
@@ -89,6 +83,14 @@ class Context
      */
     protected $header;
     
+    /**
+     * 
+     * The parsed http[accept*] headers with each header sorted
+     * by the quality factor
+     * 
+     * @var array
+     * 
+     */
     protected $accept;
     
     /**
@@ -133,7 +135,13 @@ class Context
         $this->setupHeader();
         $this->rebuildFiles($files, $this->files);
         
+        // header takes precedence over post.
         $override = $this->getHeader('x-http-method-override');
+        
+        if (!$override && !empty($this->post['X-HTTP-Method-Override'])) {
+            $override = $this->post['X-HTTP-Method-Override'];
+        }
+        
         if ($this->getServer('REQUEST_METHOD') == 'POST' && $override) {
             $this->server['REQUEST_METHOD'] = strtoupper($override);
         }
@@ -388,7 +396,7 @@ class Context
         $parts = explode(';', $this->getServer('CONTENT_TYPE'), 2);
         $ctype = trim(array_shift($parts));
         
-        // POST or PUT data. It could be anything, a parsable string, xml, json, etc
+        // POST or PUT data. It could be anything, a urlencoded string, xml, json, etc
         // So it is returned the way PHP received it.
         $use_raw = null === $key
                 && 'multipart/form-data' != $ctype
@@ -449,18 +457,15 @@ class Context
         }
         
         // post array but single files, append to post
-        if ($post_array && ! $files_array) {
-            return array_merge($post, $files);
-        }
-        
-        // now what?
-        return $alt;
+        return array_merge($post, $files);
     }
     
     /**
      * 
      * Retrieves an **unfiltered** value by key from the `$header` property,
      * or an alternate default value if that key does not exist.
+     * 
+     * Note: All header keys are lowercase with dashes.
      * 
      * @param string $key The $http key to retrieve the value of.
      * 
