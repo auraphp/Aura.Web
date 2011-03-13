@@ -19,6 +19,9 @@ If the variables `$csrf_secret_key` and `$csrf_user_id` are not defined before c
 
 ### Fetching data
 
+**IMPORTANT:** 
+All values returned by the get* methods and the public properties are from an untrusted source. These tainted values have not been filtered or sanitized in any way.
+
 All get* methods have two arguments `$key` and `$alt`. If the `$key` is null the whole array is returned. `$alt` is returned if the `$key` does not exist and by default `$alt` is null.
     
 #### get* methods:
@@ -91,8 +94,6 @@ The result is an array; the array key is the accept-value and the array value is
         'en'    => 0.7,
     )
 
-**IMPORTANT:** 
-All values returned by the get* methods and the public properties are from an untrusted source. These tainted values have not been filtered or sanitized in any way.
 
 Magic Quotes
 ------------
