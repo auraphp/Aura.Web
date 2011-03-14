@@ -126,9 +126,9 @@ class Csrf
      * Test if a token is valid and has not timed out.
      * 
      * If the incoming token is not propertly formated the exception 
-     * aura\csrf\Exception_InvalidTokenFormat will be thrown.
+     * aura\csrf\Exception_MalformedToken will be thrown.
      * 
-     * @throws aura\csrf\Exception_InvalidTokenFormat
+     * @throws aura\web\Exception_MalformedToken
      * 
      * @param string $incoming_token
      * 
