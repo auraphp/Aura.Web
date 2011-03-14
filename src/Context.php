@@ -551,6 +551,7 @@ class Context
             return $this->accept;
         }
         
+        $key = strtolower($key);
         if (isset($this->accept[$key])) {
             return $this->accept[$key];
         } else {
