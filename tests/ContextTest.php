@@ -38,12 +38,21 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     public function testHttpMethodOverload()
     {
         $this->reset();
+        $this->post['X-HTTP-Method-Override']        = 'header-takes-precedence';
         $this->server['REQUEST_METHOD']              = 'POST';
         $this->server['HTTP_X_HTTP_METHOD_OVERRIDE'] = 'PUT';
         $req    = $this->newContext();
         $actual = $req->getServer('REQUEST_METHOD');
         
         $this->assertSame('PUT', $actual);
+        
+        $this->reset();
+        $this->post['X-HTTP-Method-Override']        = 'DELETE';
+        $this->server['REQUEST_METHOD']              = 'POST';
+        $req    = $this->newContext();
+        $actual = $req->getServer('REQUEST_METHOD');
+        
+        $this->assertSame('DELETE', $actual);
     }
     
     public function test__get()

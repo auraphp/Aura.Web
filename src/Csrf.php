@@ -8,6 +8,8 @@ namespace aura\web;
  * 
  * Generate and validate CSRF tokens.
  * 
+ * @package aura.web
+ * 
  */
 class Csrf
 {
