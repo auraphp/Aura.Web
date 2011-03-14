@@ -131,20 +131,9 @@ class Context
         $this->cookie = $cookie;
         $this->env    = $env;
         $this->csrf   = $csrf;
-        
-        $this->setupHeader();
+        $this->setHeader();
+        $this->httpMethodOverride();
         $this->rebuildFiles($files, $this->files);
-        
-        // header takes precedence over post.
-        $override = $this->getHeader('x-http-method-override');
-        
-        if (!$override && !empty($this->post['X-HTTP-Method-Override'])) {
-            $override = $this->post['X-HTTP-Method-Override'];
-        }
-        
-        if ($this->getServer('REQUEST_METHOD') == 'POST' && $override) {
-            $this->server['REQUEST_METHOD'] = strtoupper($override);
-        }
     }
     
     /**
@@ -268,7 +257,7 @@ class Context
      */
     public function isCsrf($key = '__csrf_token')
     {
-        if (!$this->csrf) {
+        if (! $this->csrf) {
             throw new Exception_Context('A CSRF library has not been provided');
         }
         
@@ -276,7 +265,7 @@ class Context
         
         try {
             // if the token is valid return false. This is not a csrf attack.
-            return !$this->csrf->isValidToken($token);
+            return ! $this->csrf->isValidToken($token);
         } catch (Exception_MalformedToken $e) {
             return true;
         }
@@ -434,7 +423,7 @@ class Context
         $files_array = is_array($files[key($files)]);
         
         // neither are arrays, append to files
-        if (!$post_array && !$files_array) {
+        if (! $post_array && ! $files_array) {
             array_push($files, $post);
             return $files;
         }
@@ -452,7 +441,7 @@ class Context
                 }
             }
             // merge the remaining post values
-            return ($post_array && !empty($post)) ?
+            return ($post_array && ! empty($post)) ?
                         array_merge((array) $post, $files) : $files;
         }
         
@@ -540,7 +529,7 @@ class Context
                 // then extract and parse only accept* headers
                 $label = strtolower($label);
                 if ('accept' == substr($label, 0, 6)) {
-                    if ($label == 'accept') {
+                    if ('accept' == $label) {
                         // content type
                         $label = 'type';
                     } else {
@@ -566,12 +555,12 @@ class Context
     
     /**
      * 
-     * Setup the "fake" `$header` property.
+     * Set the "fake" `$header` property.
      * 
      * @return void
      * 
      */
-    protected function setupHeader()
+    protected function setHeader()
     {
         // load the "fake" http request var
         $this->header = array();
@@ -579,7 +568,7 @@ class Context
         foreach ($this->server as $key => $val) {
             
             // only retain HTTP headers
-            if (substr($key, 0, 5) == 'HTTP_') {
+            if ('HTTP_' == substr($key, 0, 5)) {
                 
                 // normalize the header key
                 $nicekey = str_replace('_', '-', strtolower(substr($key, 5)));
@@ -592,11 +581,43 @@ class Context
                 $this->server[$key] = preg_replace('/[\x00-\x1F]/', '', $val);
                 
                 // disallow external setting of X-JSON headers.
-                if ($nicekey == 'x-json') {
+                if ('x-json' == $nicekey) {
                     unset($this->header[$nicekey]);
                     unset($this->server[$key]);
                 }
             }
+        }
+    }
+    
+    /**
+     * 
+     * Overrides the REQUEST_METHOD with X-HTTP-Method-Override header or 
+     * $_POST value.
+     * 
+     * @return void
+     * 
+     */
+    protected function httpMethodOverride()
+    {
+        // must be a POST to do an override
+        if ('POST' != $this->getServer('REQUEST_METHOD')) {
+            return;
+        }
+        
+        // look for override in header
+        $override = $this->getHeader('x-http-method-override');
+        if ($override) {
+            $this->server['REQUEST_METHOD'] = strtoupper($override);
+            return;
+        }
+        
+        // look for override in $_POST
+        $override = isset($this->post['X-HTTP-Method-Override'])
+                  ? $this->post['X-HTTP-Method-Override']
+                  : null;
+        if ($override) {
+            $this->server['REQUEST_METHOD'] = strtoupper($override);
+            return;
         }
     }
     
@@ -615,7 +636,7 @@ class Context
      */
     protected function rebuildFiles($src, &$tgt)
     {
-        if (!$src) {
+        if (! $src) {
             $tgt = array();
             return;
         }
@@ -671,7 +692,7 @@ class Context
     protected function getValue($var, $key, $alt)
     {
         // get the whole property, or just one key?
-        if ($key === null) {
+        if (null === $key) {
             // no key selected, return the whole array
             return $this->$var;
         } elseif (array_key_exists($key, $this->$var)) {
