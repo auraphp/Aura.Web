@@ -8,7 +8,7 @@ Aura Web Context
 Basic Usage
 -----------
 
-#### Instantiating a Web Context.
+### Instantiating a Web Context.
 
 The easiest way to do this is to call the `aura.web/scripts/instance.php` script.
 
@@ -46,7 +46,7 @@ All get* methods have two arguments `$key` and `$alt`. If the `$key` is null the
     header
 
 
-#### Fetching a get value:
+### Fetching a get value:
 
     // example query: ?id=101&sort=desc
 
@@ -68,17 +68,17 @@ All get* methods have two arguments `$key` and `$alt`. If the `$key` is null the
     1
     array('id' => 101, 'sort' => 'desc')
 
-#### Fetching user submitted data:
+### Fetching user submitted data:
 User submitted data is a combination of `$post[key]` and `$files[key]` with files taking precedence over post.
 
     $comment = $webcontext->getInput('comment');
 
-#### Fetching a header:
+### Fetching a header:
 All header keys are lowercase with dashes.
 
     $type = $webcontext->getHeader('content-type');
 
-#### Fetching an accept header.
+### Fetching an accept header.
 If you want the content-type, ask for `type`; otherwise, if you want (e.g.) 'Accept-Language', ask for `language`.
 
     // Accept-Language: en;q=0.7, en-US
@@ -103,7 +103,7 @@ As of PHP 5.3 magic quotes have been deprecated and disabled by default. `aura\w
 Advanced Usage
 --------------
 
-#### Receiving a json, xml or other content type input
+### Receiving a json, xml or other content type input
 
 If the content-type is not `multipart/form-data` and `$key = null` the raw input from a POST or PUT request is returned without any processing as a string.
 
@@ -117,6 +117,22 @@ If the content-type is not `multipart/form-data` and `$key = null` the raw input
     <xml>
         <value>Hello world!</value>
     </xml>
+
+
+### Overriding the HTTP request method
+The HTTP request method can be overridden with a header or post key. If header *and* post have `X-HTTP-Method-Override` set the header value takes precedence. 
+
+#### Header example:
+
+    header('X-HTTP-Method-Override: PUT');
+
+#### POST example:
+Use `X-HTTP-Method-Override` as the key. **Note:** the key is case sensitive.
+
+    <form action="/Comment/1" method="post">
+        <input type="image" src="/images/remove-icon.png" alt="Delete" />
+        <input name="X-HTTP-Method-Override" type="hidden" value="DELETE" />
+    </form>
 
 
 -----------------------------------------------
@@ -140,7 +156,7 @@ And two optional arguments:
 Usage
 -----
 
-#### Creating a standalone aura\web\Csrf instance:
+### Creating a standalone aura\web\Csrf instance:
     
     use aura\web\Csrf as Csrf;
     
@@ -152,7 +168,7 @@ Usage
 
     $csrf = new Csrf($server_secret, $user_id);
     
-#### Generating a token:
+### Generating a token:
 
     $token = $csrf->generateToken();
     echo $token;
@@ -161,7 +177,7 @@ Usage
 
     5199173921e7cc91dbee3145088af35e22df1d3|1299425613|2648677304d73a94de97218.48580521
 
-#### Validating a token:
+### Validating a token:
 
     try {
         if ($csrf->isValidToken($_POST['__csrf_token'])) {
