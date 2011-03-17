@@ -6,18 +6,9 @@ require_once 'PhpStream.php';
 
 class ContextTest extends \PHPUnit_Framework_TestCase
 {
-    protected $get    = array();
-    protected $post   = array();
-    protected $server = array();
-    protected $cookie = array();
-    protected $env    = array();
-    protected $files  = array();
-    
-    
     protected function newContext($csrf = null)
     {
-        return new Context($this->get, $this->post, $this->server, $this->cookie, 
-                           $this->env, $this->files, $csrf);
+        return new Context($GLOBALS, $csrf);
     }
     
     protected function newCsrf()
@@ -27,28 +18,28 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     
     protected function reset()
     {
-        $this->get    = array();
-        $this->post   = array();
-        $this->server = array();
-        $this->cookie = array();
-        $this->env    = array();
-        $this->files  = array();
+        $GLOBALS['_GET']    = array();
+        $GLOBALS['_POST']   = array();
+        $GLOBALS['_SERVER'] = array();
+        $GLOBALS['_FILES']  = array();
+        $GLOBALS['_ENV']    = array();
+        $GLOBALS['_FILES']  = array();
     }
 
     public function testHttpMethodOverload()
     {
         $this->reset();
-        $this->post['X-HTTP-Method-Override']        = 'header-takes-precedence';
-        $this->server['REQUEST_METHOD']              = 'POST';
-        $this->server['HTTP_X_HTTP_METHOD_OVERRIDE'] = 'PUT';
+        $_POST['X-HTTP-Method-Override']        = 'header-takes-precedence';
+        $_SERVER['REQUEST_METHOD']              = 'POST';
+        $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'] = 'PUT';
         $req    = $this->newContext();
         $actual = $req->getServer('REQUEST_METHOD');
         
         $this->assertSame('PUT', $actual);
         
         $this->reset();
-        $this->post['X-HTTP-Method-Override']        = 'DELETE';
-        $this->server['REQUEST_METHOD']              = 'POST';
+        $_POST['X-HTTP-Method-Override']        = 'DELETE';
+        $_SERVER['REQUEST_METHOD']              = 'POST';
         $req    = $this->newContext();
         $actual = $req->getServer('REQUEST_METHOD');
         
@@ -83,12 +74,12 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($req->isGet());
         
         $this->reset();
-        $this->server['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
         $req = $this->newContext();
         $this->assertTrue($req->isGet());
         
         $this->reset();
-        $this->server['REQUEST_METHOD'] = 'NOT-GET';
+        $_SERVER['REQUEST_METHOD'] = 'NOT-GET';
         $req = $this->newContext();
         $this->assertFalse($req->isGet());
     }
@@ -102,12 +93,12 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($req->isPost());
         
         $this->reset();
-        $this->server['REQUEST_METHOD'] = 'POST';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
         $req = $this->newContext();
         $this->assertTrue($req->isPost());
         
         $this->reset();
-        $this->server['REQUEST_METHOD'] = 'NOT-POST';
+        $_SERVER['REQUEST_METHOD'] = 'NOT-POST';
         $req = $this->newContext();
         $this->assertFalse($req->isPost());
     }
@@ -121,12 +112,12 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($req->isPut());
         
         $this->reset();
-        $this->server['REQUEST_METHOD'] = 'PUT';
+        $_SERVER['REQUEST_METHOD'] = 'PUT';
         $req = $this->newContext();
         $this->assertTrue($req->isPut());
         
         $this->reset();
-        $this->server['REQUEST_METHOD'] = 'NOT-PUT';
+        $_SERVER['REQUEST_METHOD'] = 'NOT-PUT';
         $req = $this->newContext();
         $this->assertFalse($req->isPut());
     }
@@ -140,12 +131,12 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($req->isDelete());
         
         $this->reset();
-        $this->server['REQUEST_METHOD'] = 'DELETE';
+        $_SERVER['REQUEST_METHOD'] = 'DELETE';
         $req = $this->newContext();
         $this->assertTrue($req->isDelete());
         
         $this->reset();
-        $this->server['REQUEST_METHOD'] = 'NOT-DELETE';
+        $_SERVER['REQUEST_METHOD'] = 'NOT-DELETE';
         $req = $this->newContext();
         $this->assertFalse($req->isDelete());
     }
@@ -159,12 +150,12 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($req->isHead());
         
         $this->reset();
-        $this->server['REQUEST_METHOD'] = 'HEAD';
+        $_SERVER['REQUEST_METHOD'] = 'HEAD';
         $req = $this->newContext();
         $this->assertTrue($req->isHead());
         
         $this->reset();
-        $this->server['REQUEST_METHOD'] = 'NOT-HEAD';
+        $_SERVER['REQUEST_METHOD'] = 'NOT-HEAD';
         $req = $this->newContext();
         $this->assertFalse($req->isHead());
     }
@@ -178,12 +169,12 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($req->isOptions());
         
         $this->reset();
-        $this->server['REQUEST_METHOD'] = 'OPTIONS';
+        $_SERVER['REQUEST_METHOD'] = 'OPTIONS';
         $req = $this->newContext();
         $this->assertTrue($req->isOptions());
         
         $this->reset();
-        $this->server['REQUEST_METHOD'] = 'NOT-OPTIONS';
+        $_SERVER['REQUEST_METHOD'] = 'NOT-OPTIONS';
         $req = $this->newContext();
         $this->assertFalse($req->isOptions());
     }
@@ -191,12 +182,12 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     public function testIsXhr()
     {
         $this->reset();
-        $this->server['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
+        $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
         $req = $this->newContext();
         $this->assertTrue($req->isXhr());
         
         $this->reset();
-        $this->server['HTTP_X_REQUESTED_WITH'] = 'XXX';
+        $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XXX';
         $req = $this->newContext();
         $this->assertFalse($req->isXhr());
         
@@ -211,7 +202,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     {
         $this->reset();
         $csrf  = $this->newCsrf();
-        $this->post['__csrf_token'] = $csrf->generateToken();
+        $_POST['__csrf_token'] = $csrf->generateToken();
         $req   = $this->newContext($this->newCsrf());
         
         $this->assertFalse($req->isCsrf());
@@ -234,12 +225,12 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($req->isSsl());
         
         $this->reset();
-        $this->server['HTTPS'] = 'on';
+        $_SERVER['HTTPS'] = 'on';
         $req = $this->newContext();
         $this->assertTrue($req->isSsl());
         
         $this->reset();
-        $this->server['SERVER_PORT'] = '443';
+        $_SERVER['SERVER_PORT'] = '443';
         $req = $this->newContext();
         $this->assertTrue($req->isSsl());
     }
@@ -247,7 +238,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     public function testGetQuery()
     {
         $this->reset();
-        $this->get['foo'] = 'bar';
+        $_GET['foo'] = 'bar';
         $req = $this->newContext();
         
         $actual = $req->getQuery('foo');
@@ -272,7 +263,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         stream_wrapper_register('php', 'aura\web\PhpStream');
         
         $this->reset();
-        $this->server['CONTENT_TYPE']  = 'multipart/form-data';
+        $_SERVER['CONTENT_TYPE']  = 'multipart/form-data';
         $req = $this->newContext();
         
         // if 'multipart/form-data' return null
@@ -280,7 +271,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($actual);
         
         $this->reset();
-        $this->server['CONTENT_TYPE'] = 'text/text';
+        $_SERVER['CONTENT_TYPE'] = 'text/text';
         $req = $this->newContext();
         
         $actual = $req->getInput();
@@ -292,7 +283,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     public function testPost()
     {
         $this->reset();
-        $this->post['foo'] = 'bar';
+        $_POST['foo'] = 'bar';
         $req = $this->newContext();
         
         $actual = $req->getInput('foo');
@@ -313,7 +304,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     public function testGetCookie()
     {
         $this->reset();
-        $this->cookie['foo'] = 'bar';
+        $_COOKIE['foo'] = 'bar';
         $req = $this->newContext();
         
         $actual = $req->getCookie('foo');
@@ -334,7 +325,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     public function testGetEnv()
     {
         $this->reset();
-        $this->env['foo'] = 'bar';
+        $_ENV['foo'] = 'bar';
         $req = $this->newContext();
         
         $actual = $req->getEnv('foo');
@@ -355,7 +346,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     public function testGetServer()
     {
         $this->reset();
-        $this->server['foo'] = 'bar';
+        $_SERVER['foo'] = 'bar';
         $req = $this->newContext();
         
         $actual = $req->getServer('foo');
@@ -377,7 +368,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     {
         $this->reset();
         // single file
-        $this->files['foo'] = array(
+        $_FILES['foo'] = array(
             'error'     => null,
             'name'      => 'bar',
             'size'      => null,
@@ -385,7 +376,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             'type'      => null,
         );
         // bar[]
-        $this->files['bar'] = array(
+        $_FILES['bar'] = array(
             'error'     => array(null, null),
             'name'      => array('foo', 'fooz'),
             'size'      => array(null, null),
@@ -393,14 +384,14 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             'type'      => array(null, null),
         );
         // upload[file1]
-        $this->files['upload']['file1'] = array(
+        $_FILES['upload']['file1'] = array(
             'error'     => null,
             'name'      => 'file1.bar',
             'size'      => null,
             'tmp_name'  => null,
             'type'      => null,
         );
-        $this->files['upload']['file2'] = array(
+        $_FILES['upload']['file2'] = array(
             'error'     => null,
             'name'      => 'file2.bar',
             'size'      => null,
@@ -430,7 +421,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         
         // return all
         $this->reset();
-        $this->files['foo'] = array(
+        $_FILES['foo'] = array(
             'error'     => null,
             'name'      => 'bar',
             'size'      => null,
@@ -440,14 +431,14 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         
         $req    = $this->newContext();
         $actual = $req->getInput();
-        $this->assertSame($this->files, $actual);
+        $this->assertSame($_FILES, $actual);
     }
 
     public function testGetInput()
     {
         $this->reset();
-        $this->post['foo']  = 'bar';
-        $this->files['baz'] = array(
+        $_POST['foo']  = 'bar';
+        $_FILES['baz'] = array(
             'error'     => null,
             'name'      => 'dib',
             'size'      => null,
@@ -476,14 +467,14 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     public function testgetInputWithPostAndFile()
     {
         $this->reset();
-        $this->files['baz'] = array(
+        $_FILES['baz'] = array(
             'error'     => null,
             'name'      => 'dib',
             'size'      => null,
             'tmp_name'  => null,
             'type'      => null,
         );
-        $this->post['baz']  = 'foo';
+        $_POST['baz']  = 'foo';
         $req                = $this->newContext();
         $actual             = $req->getInput('baz');
         
@@ -494,14 +485,14 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     public function testgetInputWithMultiplePostsAndFile()
     {
         $this->reset();
-        $this->files['baz'] = array(
+        $_FILES['baz'] = array(
             'error'     => null,
             'name'      => 'dib',
             'size'      => null,
             'tmp_name'  => null,
             'type'      => null,
         );
-        $this->post['baz']  = array(
+        $_POST['baz']  = array(
             'foo', 
             'name' => 'files-take-precedence',
             'var'  => 123,
@@ -518,8 +509,8 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     {
         $this->reset();
         // baz[]
-        $this->post['baz']  = 'bars';
-        $this->files['baz'] = array(
+        $_POST['baz']  = 'bars';
+        $_FILES['baz'] = array(
             'error'     => array(null, null),
             'name'      => array('foo', 'fooz'),
             'size'      => array(null, null),
@@ -527,15 +518,15 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             'type'      => array(null, null),
         );
         // upload[file1]
-        $this->post['upload']  = 'bars';
-        $this->files['upload']['file1'] = array(
+        $_POST['upload']  = 'bars';
+        $_FILES['upload']['file1'] = array(
             'error'     => null,
             'name'      => 'file1.bar',
             'size'      => null,
             'tmp_name'  => null,
             'type'      => null,
         );
-        $this->files['upload']['file2'] = array(
+        $_FILES['upload']['file2'] = array(
             'error'     => null,
             'name'      => 'file2.bar',
             'size'      => null,
@@ -566,13 +557,13 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     {
         $this->reset();
         // baz[]
-        $this->post['baz']  = array(
+        $_POST['baz']  = array(
             'mars', 
             array(
                 0      => 'bars',
                 'name' => 'files-take-precedence',
         ));
-        $this->files['baz'] = array(
+        $_FILES['baz'] = array(
             'error'     => array(null, null),
             'name'      => array('foo', 'fooz'),
             'size'      => array(null, null),
@@ -581,20 +572,20 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         );
         
         // upload[file1]
-        $this->post['upload']  = array(
+        $_POST['upload']  = array(
             'file1' => 'mars', 
             'file2' => array(
                 0      => 'bars',
                 'name' => 'files-take-precedence'
         ));
-        $this->files['upload']['file1'] = array(
+        $_FILES['upload']['file1'] = array(
             'error'     => null,
             'name'      => 'file1.bar',
             'size'      => null,
             'tmp_name'  => null,
             'type'      => null,
         );
-        $this->files['upload']['file2'] = array(
+        $_FILES['upload']['file2'] = array(
             'error'     => null,
             'name'      => 'file2.bar',
             'size'      => null,
@@ -623,7 +614,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     public function testGetHeader()
     {
         $this->reset();
-        $this->server['HTTP_FOO'] = 'bar';
+        $_SERVER['HTTP_FOO'] = 'bar';
         $req = $this->newContext();
         
         $actual = $req->getHeader('foo');
@@ -639,8 +630,8 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     public function testGetAccept()
     {
         $this->reset();
-        $this->server['HTTP_ACCEPT'] = 'text/*;q=0.9, text/html ,text/xhtml;q=0.8';
-        $this->server['HTTP_ACCEPT_LANGUAGE'] = 'en-US';
+        $_SERVER['HTTP_ACCEPT'] = 'text/*;q=0.9, text/html ,text/xhtml;q=0.8';
+        $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en-US';
         
         $req    = $this->newContext();
         $expect = array(
@@ -676,7 +667,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     public function testXJsonIsRemoved()
     {
         $this->reset();
-        $this->server['HTTP_X_JSON'] = 'remove-me';
+        $_SERVER['HTTP_X_JSON'] = 'remove-me';
         $req = $this->newContext();
         
         $actual = $req->getHeader('x-json');

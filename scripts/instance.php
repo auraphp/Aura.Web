@@ -9,4 +9,4 @@ if (isset($csrf_secret_key) && isset($csrf_user_id)) {
     $csrf = null;
 }
 
-return new Context($_GET, $_POST, $_SERVER, $_COOKIE, $_ENV, $_FILES, $csrf);
+return new Context($_GLOBALSS, $csrf);

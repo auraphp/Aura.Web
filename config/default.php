@@ -11,12 +11,7 @@ $di->set('csrf', function() use ($di) {
 
 $di->set('web_context', function() use ($di) {
     return $di->newInstance('aura\web\Context', array(
-        'get'    => $_GET,
-        'post'   => $_POST,
-        'server' => $_SERVER,
-        'cookie' => $_COOKIE,
-        'env'    => $_ENV,
-        'files'  => $_FILES,
-        'csrf'   => $di->get('csrf')
+        'globals' => $_GLOBALS,
+        'csrf'    => $di->get('csrf')
     ));
 });
