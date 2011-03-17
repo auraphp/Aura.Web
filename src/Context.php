@@ -557,7 +557,7 @@ class Context
      */
     protected function setHeader()
     {
-        // load the "fake" http request var
+        // load the "fake" header var
         $this->header = array();
         
         foreach ($this->server as $key => $val) {
@@ -570,10 +570,11 @@ class Context
                 
                 // strip control characters from keys and values
                 $nicekey = preg_replace('/[\x00-\x1F]/', '', $nicekey);
-                $this->header[$nicekey] = preg_replace('/[\x00-\x1F]/', '', $val);
+                $val     = preg_replace('/[\x00-\x1F]/', '', $val);
                 
+                $this->header[$nicekey] = $val;
                 // no control characters wanted in $this->server for these
-                $this->server[$key] = preg_replace('/[\x00-\x1F]/', '', $val);
+                $this->server[$key]     = $val;
                 
                 // disallow external setting of X-JSON headers.
                 if ('x-json' == $nicekey) {
