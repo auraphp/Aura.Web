@@ -449,8 +449,6 @@ class Context
      * Retrieves an **unfiltered** value by key from the `$header` property,
      * or an alternate default value if that key does not exist.
      * 
-     * Note: All header keys are lowercase with dashes.
-     * 
      * @param string $key The $http key to retrieve the value of.
      * 
      * @param string $alt The value to return if the key does not exist.
@@ -461,6 +459,7 @@ class Context
      */
     public function getHeader($key = null, $alt = null)
     {
+        $key = strtolower($key);
         return $this->getValue('header', $key, $alt);
     }
     
