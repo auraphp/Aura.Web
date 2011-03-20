@@ -75,20 +75,6 @@ abstract class Page
     
     /**
      * 
-     * Read-only access to properties.
-     * 
-     * @param string $key The property to read.
-     * 
-     * @return mixed The property value.
-     * 
-     */
-    public function __get($key)
-    {
-        return $this->$key;
-    }
-    
-    /**
-     * 
      * Constructor.
      * 
      * @param Context $context The request environment.
@@ -103,7 +89,7 @@ abstract class Page
         $this->context  = $context;
         $this->signal   = $signal;
         $this->transfer = $transfer;
-        $this->params   = new \ArrayObject((array) $params);
+        $this->params   = new \ArrayObject((array) $params, \ArrayObject::ARRAY_AS_PROPS);
         
         // get an action out of the params
         if (isset($this->params->action)) {
@@ -146,9 +132,9 @@ abstract class Page
         $this->signal->send($this, 'pre_exec', $this);
         $this->signal->send($this, 'pre_action', $this);
         if (! $this->isSkipAction()) {
-            $method = 'action' . $this->action;
-            if (! method_exists(array($this, $method))) {
-                throw new Exception_NoMethodForAction($action);
+            $method = 'action' . ucfirst($this->action);
+            if (! method_exists($this, $method)) {
+                throw new Exception_NoMethodForAction($this->action);
             }
             $this->$method();
             $this->signal->send($this, 'post_action', $this);

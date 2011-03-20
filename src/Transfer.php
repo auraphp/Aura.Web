@@ -115,9 +115,9 @@ class Transfer
      */
     public function __construct()
     {
-        $this->cookies     = new \ArrayObject;
-        $this->data        = new \ArrayObject;
-        $this->headers     = new \ArrayObject;
+        $this->cookies = new \ArrayObject;
+        $this->data    = new \ArrayObject(array(), \ArrayObject::ARRAY_AS_PROPS);
+        $this->headers = new \ArrayObject;
     }
     
     /**

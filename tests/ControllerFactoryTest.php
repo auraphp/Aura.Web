@@ -21,7 +21,6 @@ class ControllerFactoryTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->factory = $this->newFactory();
     }
 
     protected function newFactory($map = null, $not_found = null)
@@ -46,9 +45,30 @@ class ControllerFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testNewInstance()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $factory = $this->newFactory(array('mock' => 'aura\web\MockController'));
+        $name = 'mock';
+        $params = array();
+        $controller = $factory->newInstance($name, $params);
+        $this->assertType('aura\web\MockController', $controller);
+    }
+    
+    public function testNewInstanceNotFound()
+    {
+        $factory = $this->newFactory(array(), 'aura\web\MockController');
+        $name = 'no-such-name';
+        $params = array();
+        $controller = $factory->newInstance($name, $params);
+        $this->assertType('aura\web\MockController', $controller);
+    }
+    
+    /**
+     * @expectedException \aura\web\Exception_NoClassForController
+     */
+    public function testNewInstanceException()
+    {
+        $factory = $this->newFactory();
+        $name = 'no-such-name';
+        $params = array();
+        $controller = $factory->newInstance($name, $params);
     }
 }

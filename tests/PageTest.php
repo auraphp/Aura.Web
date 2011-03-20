@@ -1,6 +1,9 @@
 <?php
 namespace aura\web;
 use aura\signal\Manager as SignalManager;
+use aura\signal\HandlerFactory;
+use aura\signal\ResultFactory;
+use aura\signal\ResultCollection;
 
 /**
  * Test class for Page.
@@ -25,8 +28,8 @@ class PageTest extends \PHPUnit_Framework_TestCase
     protected function newPage($params = null)
     {
         return new MockPage(
-            new Context,
-            new SignalManager,
+            new Context($GLOBALS),
+            new SignalManager(new HandlerFactory, new ResultFactory, new ResultCollection),
             new Transfer,
             $params
         );
@@ -42,25 +45,27 @@ class PageTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement test__get().
+     * @todo Implement testExec().
      */
-    public function test__get()
+    public function testExecAndHooks()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $page = $this->newPage(array('action' => 'index'));
+        $transfer = $page->exec();
+        $this->assertTrue($page->_pre_exec);
+        $this->assertTrue($page->_pre_action);
+        $this->assertTrue($page->_post_action);
+        $this->assertTrue($page->_post_exec);
+        $this->assertType('aura\web\Transfer', $transfer);
+        $this->assertSame('actionIndex', $transfer->data['action_method']);
     }
 
     /**
-     * @todo Implement testExec().
+     * @expectedException \aura\web\Exception_NoMethodForAction
      */
-    public function testExec()
+    public function testExecNoMethodForAction()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $page = $this->newPage(array('action' => 'noSuchAction'));
+        $transfer = $page->exec();
     }
 
     /**
@@ -68,64 +73,14 @@ class PageTest extends \PHPUnit_Framework_TestCase
      */
     public function testSkipAction()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testIsSkipAction().
-     */
-    public function testIsSkipAction()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testPreExec().
-     */
-    public function testPreExec()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testPreAction().
-     */
-    public function testPreAction()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testPostAction().
-     */
-    public function testPostAction()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testPostExec().
-     */
-    public function testPostExec()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $page = $this->newPage(array('action' => 'index'));
+        $page->skipAction();
+        $transfer = $page->exec();
+        $this->assertTrue($page->_pre_exec);
+        $this->assertTrue($page->_pre_action);
+        $this->assertFalse($page->_post_action);
+        $this->assertTrue($page->_post_exec);
+        $this->assertType('aura\web\Transfer', $transfer);
+        $this->assertFalse(isset($transfer->data['action_method']));
     }
 }
