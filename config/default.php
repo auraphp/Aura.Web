@@ -5,6 +5,71 @@
 $di->params['aura\web\Context'] = array(
     'globals' => $GLOBALS,
     'csrf'    => $di->lazyGet('web_csrf'),
+    'agents'  => array(
+        'mobile'=>array(
+            'Android',
+            'BlackBerry',
+            'Blazer',
+            'Brew',
+            'IEMobile',
+            'iPad',
+            'iPhone',
+            'iPod',
+            'KDDI',
+            'Kindle',
+            'Maemo',
+            'MOT-', // Motorola Internet Browser
+            'Nokia',
+            'SymbianOS',
+            'UP\.Browser', // Openwave Mobile Browser
+            'UP\.Link', 
+            'Opera Mobi',
+            'Opera Mini',        
+            'webOS', // Palm devices
+            'Playstation',
+            'PS2',
+            'Windows CE',
+            'Polaris',
+            'SEMC',
+            'NetFront',
+            'Fennec'
+        ),
+        'crawlers'=>array(
+            'Ask',
+            'Baidu',
+            'Google',        
+            'Googlebot',
+            'AdsBot',
+            'gsa-crawler',
+            'adidxbot', 
+            'librabot',
+            'llssbot',
+            'bingbot',
+            'Danger hiptop',
+            'MSMOBOT',
+            'MSNBot',
+            'MSR-ISRCCrawler',
+            'MSRBOT',
+            'Vancouver',
+            'Y!J',
+            'Yahoo',
+            'slurp',        
+            'mp3Spider',
+            'Scooter',
+            'Y!OASIS',
+            'YRL_ODP_CRAWLER',
+            'Yandex',
+            'Fast',
+            'Lycos',
+            'heritrix',
+            'ia_archiver',
+            'InternetArchive',
+            'archive.org_bot',
+            'Nutch',
+            'WordPress',
+            'Wget'
+        )
+    )
 );
 
 $di->params['aura\web\Csrf'] = array(

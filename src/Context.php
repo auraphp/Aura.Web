@@ -113,10 +113,23 @@ class Context
     
     /**
      * 
+     * An array of http user-agents used in matching 
+     * mobile browsers and crawlers
+     *
+     * @see isMobile()
+     * @see isCrawler()
+     * 
+     * @var array
+     * 
+     */
+    protected $agents;
+    
+    /**
+     * 
      * Constructor.
      * 
      */
-    public function __construct(array $globals, Csrf $csrf = null)
+    public function __construct(array $globals, array $agents, Csrf $csrf = null)
     {
         $this->get    = empty($globals['_GET'])    ? array() : $globals['_GET'];
         $this->post   = empty($globals['_POST'])   ? array() : $globals['_POST'];
@@ -124,6 +137,7 @@ class Context
         $this->cookie = empty($globals['_COOKIE']) ? array() : $globals['_COOKIE'];
         $this->env    = empty($globals['_ENV'])    ? array() : $globals['_ENV'];
         $files        = empty($globals['_FILES'])  ? array() : $globals['_FILES'];
+        $this->agents = $agents;
         $this->csrf   = $csrf;
         
         $this->setHeader();
@@ -235,6 +249,56 @@ class Context
     public function isXhr()
     {
         return 'xmlhttprequest' == strtolower($this->getServer('HTTP_X_REQUESTED_WITH'));
+    }
+    
+    /**
+     *  
+     * Is this a mobile device? 
+     * Note: If no user-agent is passed, the HTTP_USER_AGENT is used.
+     *
+     * @param string $string The user-agent to test.
+     * 
+     * @return mixed False if not mobile, or the matched pattern if it is.
+     * 
+     */
+    public function isMobile($string = null)
+    {
+        if (! $string) {
+            $string = $this->getServer('HTTP_USER_AGENT');
+        }
+        
+        foreach ($this->agents['mobile'] as $agent) {
+            $match = preg_match("/$agent/i", $string); // case-insensitive
+            if ($match) {
+                return $agent;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     *  
+     * Is this a crawler/bot device? 
+     * Note: If no user-agent is passed, the HTTP_USER_AGENT is used.
+     *
+     * @param string $string The user-agent to test.
+     * 
+     * @return mixed False if not a crawler, or the matched pattern if it is.
+     * 
+     */
+    public function isCrawler($string = null)
+    {
+        if (! $string) {
+            $string = $this->getServer('HTTP_USER_AGENT');
+        }
+        
+        foreach ($this->agents['crawlers'] as $agent) {
+            $match = preg_match("/$agent/i", $string); // case-insensitive
+            if ($match) {
+                return $agent;
+            }
+        }
+        return false;
     }
     
     /**

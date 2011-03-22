@@ -9,4 +9,8 @@ if (isset($csrf_secret_key) && isset($csrf_user_id)) {
     $csrf = null;
 }
 
-return new Context($_GLOBALS, $csrf);
+if (! $agents) {
+    $agents = array();
+}
+
+return new Context($GLOBALS, $agents, $csrf);
