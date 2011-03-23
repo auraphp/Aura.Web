@@ -34,7 +34,7 @@ $di->params['aura\web\Context'] = array(
             'NetFront',
             'Fennec'
         ),
-        'crawlers'=>array(
+        'crawler'=>array(
             'Ask',
             'Baidu',
             'Google',        

@@ -122,14 +122,98 @@ class Context
      * @var array
      * 
      */
-    protected $agents;
+    protected $agents = array(
+        'mobile'=>array(
+            'Android',
+            'BlackBerry',
+            'Blazer',
+            'Brew',
+            'IEMobile',
+            'iPad',
+            'iPhone',
+            'iPod',
+            'KDDI',
+            'Kindle',
+            'Maemo',
+            'MOT-', // Motorola Internet Browser
+            'Nokia',
+            'SymbianOS',
+            'UP\.Browser', // Openwave Mobile Browser
+            'UP\.Link', 
+            'Opera Mobi',
+            'Opera Mini',        
+            'webOS', // Palm devices
+            'Playstation',
+            'PS2',
+            'Windows CE',
+            'Polaris',
+            'SEMC',
+            'NetFront',
+            'Fennec'
+        ),
+        'crawler'=>array(
+            'Ask',
+            'Baidu',
+            'Google',        
+            'Googlebot',
+            'AdsBot',
+            'gsa-crawler',
+            'adidxbot', 
+            'librabot',
+            'llssbot',
+            'bingbot',
+            'Danger hiptop',
+            'MSMOBOT',
+            'MSNBot',
+            'MSR-ISRCCrawler',
+            'MSRBOT',
+            'Vancouver',
+            'Y!J',
+            'Yahoo',
+            'slurp',        
+            'mp3Spider',
+            'Scooter',
+            'Y!OASIS',
+            'YRL_ODP_CRAWLER',
+            'Yandex',
+            'Fast',
+            'Lycos',
+            'heritrix',
+            'ia_archiver',
+            'InternetArchive',
+            'archive.org_bot',
+            'Nutch',
+            'WordPress',
+            'Wget'
+        )
+    );
+    
+    /**
+     * 
+     * A property to hold previous calls to isMobile() 
+     * so you don't have to loop through $this->agents['mobile'] again.
+     * 
+     * @var mixed
+     * 
+     */
+    protected $is_mobile;
+    
+    /**
+     * 
+     * A property to hold previous calls to isCrawler() 
+     * so you don't have to loop through $this->agents['crawler'] again.
+     * 
+     * @var mixed 
+     * 
+     */
+    protected $is_crawler;
     
     /**
      * 
      * Constructor.
      * 
      */
-    public function __construct(array $globals, array $agents, Csrf $csrf = null)
+    public function __construct(array $globals, Csrf $csrf = null, array $agents = null)
     {
         $this->get    = empty($globals['_GET'])    ? array() : $globals['_GET'];
         $this->post   = empty($globals['_POST'])   ? array() : $globals['_POST'];
@@ -137,8 +221,11 @@ class Context
         $this->cookie = empty($globals['_COOKIE']) ? array() : $globals['_COOKIE'];
         $this->env    = empty($globals['_ENV'])    ? array() : $globals['_ENV'];
         $files        = empty($globals['_FILES'])  ? array() : $globals['_FILES'];
-        $this->agents = $agents;
         $this->csrf   = $csrf;
+        
+        if ($agents) {
+            $this->agents = array_merge_recursive($this->agents, $agents);
+        }
         
         $this->setHeader();
         $this->httpMethodOverride();
@@ -254,51 +341,45 @@ class Context
     /**
      *  
      * Is this a mobile device? 
-     * Note: If no user-agent is passed, the HTTP_USER_AGENT is used.
-     *
-     * @param string $string The user-agent to test.
      * 
      * @return mixed False if not mobile, or the matched pattern if it is.
      * 
      */
-    public function isMobile($string = null)
+    public function isMobile()
     {
-        if (! $string) {
-            $string = $this->getServer('HTTP_USER_AGENT');
+        if ($this->is_mobile !== null) {
+            return $this->is_mobile;
         }
         
         foreach ($this->agents['mobile'] as $agent) {
-            $match = preg_match("/$agent/i", $string); // case-insensitive
+            $match = preg_match("/$agent/i", $this->getServer('HTTP_USER_AGENT')); // case-insensitive
             if ($match) {
-                return $agent;
+                return $this->is_mobile = $agent;
             }
         }
-        return false;
+        return $this->is_mobile = false;
     }
     
     /**
      *  
      * Is this a crawler/bot device? 
-     * Note: If no user-agent is passed, the HTTP_USER_AGENT is used.
-     *
-     * @param string $string The user-agent to test.
      * 
      * @return mixed False if not a crawler, or the matched pattern if it is.
      * 
      */
-    public function isCrawler($string = null)
+    public function isCrawler()
     {
-        if (! $string) {
-            $string = $this->getServer('HTTP_USER_AGENT');
+        if ($this->is_crawler !== null) {
+            return $this->is_crawler;
         }
         
-        foreach ($this->agents['crawlers'] as $agent) {
-            $match = preg_match("/$agent/i", $string); // case-insensitive
+        foreach ($this->agents['crawler'] as $agent) {
+            $match = preg_match("/$agent/i", $this->getServer('HTTP_USER_AGENT')); // case-insensitive
             if ($match) {
-                return $agent;
+                return $this->is_crawler = $agent;
             }
         }
-        return false;
+        return $this->is_crawler = false;
     }
     
     /**
