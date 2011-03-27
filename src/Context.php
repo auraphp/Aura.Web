@@ -138,8 +138,8 @@ class Context
             'MOT-', // Motorola Internet Browser
             'Nokia',
             'SymbianOS',
-            'UP\.Browser', // Openwave Mobile Browser
-            'UP\.Link', 
+            'UP.Browser', // Openwave Mobile Browser
+            'UP.Link', 
             'Opera Mobi',
             'Opera Mini',        
             'webOS', // Palm devices
@@ -181,7 +181,7 @@ class Context
             'heritrix',
             'ia_archiver',
             'InternetArchive',
-            'archive\.org_bot',
+            'archive.org_bot',
             'Nutch',
             'WordPress',
             'Wget'
@@ -347,17 +347,30 @@ class Context
      */
     public function isMobile()
     {
+        // have we found a mobile agent previously?
         if ($this->is_mobile !== null) {
+            // yes, return it
             return $this->is_mobile;
         }
         
+        // by default, not mobile
+        $this->is_mobile = false;
+        
+        // what is the actual user-agent string?
+        $user_agent = $this->getServer('HTTP_USER_AGENT');
+        
+        // look for mobile agents
         foreach ($this->agents['mobile'] as $agent) {
-            $match = preg_match("/$agent/i", $this->getServer('HTTP_USER_AGENT')); // case-insensitive
+            $find = preg_quote($agent);
+            $match = preg_match("/$find/i", $user_agent); // case-insensitive
             if ($match) {
-                return $this->is_mobile = $agent;
+                $this->is_mobile = $agent;
+                break;
             }
         }
-        return $this->is_mobile = false;
+        
+        // done!
+        return $this->is_mobile;
     }
     
     /**
@@ -369,17 +382,30 @@ class Context
      */
     public function isCrawler()
     {
+        // have we found a crawler agent previously?
         if ($this->is_crawler !== null) {
+            // yes, return it
             return $this->is_crawler;
         }
         
+        // by default, not crawler
+        $this->is_crawler = false;
+        
+        // what is the actual user-agent string?
+        $user_agent = $this->getServer('HTTP_USER_AGENT');
+        
+        // look for crawler agents
         foreach ($this->agents['crawler'] as $agent) {
-            $match = preg_match("/$agent/i", $this->getServer('HTTP_USER_AGENT')); // case-insensitive
+            $find = preg_quote($agent);
+            $match = preg_match("/$find/i", $user_agent); // case-insensitive
             if ($match) {
-                return $this->is_crawler = $agent;
+                $this->is_crawler = $agent;
+                break;
             }
         }
-        return $this->is_crawler = false;
+        
+        // done!
+        return $this->is_crawler;
     }
     
     /**

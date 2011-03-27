@@ -252,8 +252,8 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             array('MOT-' ,'MOT-L6/0A.52.45R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1'),
             array('Nokia', 'Mozilla/4.0 (compatible; MSIE 5.0; Series80/2.0 Nokia9300/05.22 Profile/MIDP-2.0 Configuration/CLDC-1.1)'),
             array('SymbianOS', 'Mozilla/5.0 (SymbianOS/9.1; U; en-us) AppleWebKit/413 (KHTML, like Gecko) Safari/413 es61i'),
-            array('UP\.Browser', 'OPWV-SDK UP.Browser/7.0.2.3.119 (GUI) MMP/2.0 Push/PO'),
-            array('UP\.Link', 'HTC-ST7377/1.59.502.3 (67150) Opera/9.50 (Windows NT 5.1; U; en) UP.Link/6.3.1.17.0'),
+            array('UP.Browser', 'OPWV-SDK UP.Browser/7.0.2.3.119 (GUI) MMP/2.0 Push/PO'),
+            array('UP.Link', 'HTC-ST7377/1.59.502.3 (67150) Opera/9.50 (Windows NT 5.1; U; en) UP.Link/6.3.1.17.0'),
             array('Opera Mobi', 'Opera/9.80 (S60; SymbOS; Opera Mobi/499; U; en-GB) Presto/2.4.18 Version/10.00'),
             array('Opera Mini', 'Opera/9.60 (J2ME/MIDP; Opera Mini/4.2.13918/488; U; en) Presto/2.2.0'),
             array('webOS', 'Mozilla/5.0 (webOS/1.0; U; en-US) AppleWebKit/525.27.1 (KHTML, like Gecko) Version/1.0 Safari/525.27.1 Pre/1.0'),
@@ -265,6 +265,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             array('Fennec', 'Mozilla/5.0 (X11; U; Linux armv61; en-US; rv:1.9.1b2pre) Gecko/20081015 Fennec/1.0a1'),
         );
         
+        // test each of the known agents
         foreach ($agents as $agent) {
             $this->reset();
             $pattern = $agent[0];
@@ -272,6 +273,15 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             $req = $this->newContext();
             $this->assertSame($pattern, $req->isMobile());
         }
+        
+        // test an unknown agent
+        $_SERVER['HTTP_USER_AGENT'] = 'NoSuchAgent/1.0';
+        $req = $this->newContext();
+        $this->assertFalse($req->isMobile());
+        
+        // try to get it again, for code coverage
+        $this->assertFalse($req->isMobile());
+        
     }
     
     public function testIsCrawler()
@@ -301,7 +311,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             array('heritrix', 'Mozilla/5.0 (compatible; heritrix/1.12.1 +http://www.page-store.com) [email:paul@page-store.com]'),
             array('ia_archiver', 'ia_archiver/8.8 (Windows XP 7.2; en-US;)'),
             array('InternetArchive', 'internetarchive/0.8-dev (Nutch; http://lucene.apache.org/nutch/bot.html; nutch-agent@lucene.apache.org)'),
-            array('archive\.org_bot', 'Mozilla/5.0 (compatible; archive.org_bot/1.13.1x +http://crawler.archive.org)'),
+            array('archive.org_bot', 'Mozilla/5.0 (compatible; archive.org_bot/1.13.1x +http://crawler.archive.org)'),
             array('WordPress', 'wordpress/2.1.3'),
             array('Mp3Bot', 'Mozilla/5.0 (compatible; Mp3Bot/0.4; +http://mp3realm.org/mp3bot/)'),
             array('mp3Spider', 'mp3spider cn-search-devel'),
@@ -316,6 +326,14 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             $req = $this->newContext();
             $this->assertSame($pattern, $req->isCrawler());
         }
+        
+        // test an unknown agent
+        $_SERVER['HTTP_USER_AGENT'] = 'NoSuchAgent/1.0';
+        $req = $this->newContext();
+        $this->assertFalse($req->isCrawler());
+        
+        // try to get it again, for code coverage
+        $this->assertFalse($req->isCrawler());
     }
 
     public function testGetQuery()
