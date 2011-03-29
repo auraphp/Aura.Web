@@ -659,12 +659,12 @@ class Context
                 $sorted[$value]  = 1.0;
             } else {
                 list($value, $q) = explode(';q=', $value);
-                $sorted[$value]  = $q;
+                $sorted[$value]  = (float) $q;
             }
         }
         
         // sort by quality factor, highest first.
-        asort($sorted);
+        arsort($sorted);
         return $sorted;
     }
     

@@ -741,12 +741,12 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             'text/xhtml' => 0.8,
         );
         $actual = $req->getAccept('type');
-        $this->assertEquals($expect, $actual);
+        $this->assertSame($expect, $actual);
         
         $actual = $req->getAccept('language');
         $expect = array('en-US' => 1.0);
         
-        $this->assertEquals($expect, $actual);
+        $this->assertSame($expect, $actual);
         
         $actual = $req->getAccept('charset', 'alt');
         $this->assertSame('alt', $actual);
@@ -762,7 +762,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             ),
         );
         $actual = $req->getAccept();
-        $this->assertEquals($expect, $actual);
+        $this->assertSame($expect, $actual);
     }
     
     public function testXJsonIsRemoved()
