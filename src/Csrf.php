@@ -1,6 +1,10 @@
 <?php
 /**
+ * 
+ * This file is part of the Aura project for PHP.
+ * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
  */
 namespace aura\web;
 
@@ -13,32 +17,54 @@ namespace aura\web;
  */
 class Csrf
 {
-    /** @var string Project unique key. */
+    /**
+     * 
+     * Unique key for the project, application, or site.
+     * 
+     * @var string
+     * 
+     */
     protected $secret_key;
     
-    /** @var string Something unique to the user. NOT a password! */
-    protected $user_id;
+    /**
+     * 
+     * Unique key for the user (not a password!).
+     * 
+     * @var string
+     * 
+     */
+    protected $user_key;
 
-    /** @var string Hash algorithm. */
+    /**
+     * 
+     * The hash algorithm to use.
+     * 
+     * @var string
+     * 
+     */
     protected $hash_algo;
     
-    /** @var integer Time in seconds before a token expires. */
+    /**
+     * 
+     * The time, in seconds, before a token expires.
+     * 
+     * @var int
+     * 
+     */
     protected $timeout;
-
-
 
     /**
      * 
      * NOTE: Each project should have a unique and random $secret_key.
      * 
-     * The $user_id must be something unique to the user and does not change
+     * The $user_key must be something unique to the user and does not change
      * between requests. This allows the token to be linked to one user. 
-     * The $user_id could be an email address or the primary key from the users 
+     * The $user_key could be an email address or the primary key from the users 
      * table, anything unique to the user, except for passwords will do.
      * 
      * @param string  $secret_key Project unique key.
      * 
-     * @param mixed   $user_id    Unique id for a user i.e. email address.
+     * @param mixed   $user_key   Unique key for a user; e.g., an email address.
      * 
      * @param integer $timeout    In seconds. Default is 30 minutes.
      * 
@@ -47,10 +73,10 @@ class Csrf
      * @todo cli script to generate random keys
      * 
      */
-    public function __construct($secret_key, $user_id, $timeout = 1800, $hash_algo = 'sha1')
+    public function __construct($secret_key, $user_key, $timeout = 1800, $hash_algo = 'sha1')
     {
         $this->secret_key = $secret_key;
-        $this->user_id    = $user_id;
+        $this->user_key    = $user_key;
         $this->timeout    = $timeout;
         $this->hash_algo  = $hash_algo;
     }
@@ -113,10 +139,13 @@ class Csrf
             $rawtoken = time() . '|' . uniqid(mt_rand(), true);
         } 
         
-        // we want the user_id to remain secret just incase it's an email 
+        // we want the user_key to remain secret just in case it's an email 
         // address or worse
-        $hashtoken = hash_hmac($this->hash_algo, $rawtoken . $this->user_id, 
-                                $this->secret_key);
+        $hashtoken = hash_hmac(
+            $this->hash_algo,
+            $rawtoken . $this->user_key, 
+            $this->secret_key
+        );
         
         return $hashtoken . '|' . $rawtoken;
     }

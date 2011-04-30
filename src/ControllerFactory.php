@@ -11,7 +11,8 @@ use aura\di\ForgeInterface as ForgeInterface;
 
 /**
  * 
- * A factory to create controller objects.
+ * A factory to create controller objects; these need not be only Page
+ * controllers, but (e.g.) Resource or App controllers.
  * 
  * @package aura.web
  * 

@@ -636,7 +636,7 @@ class Context
     
     /**
      * 
-     * Parse a http[accept*] header and sort by the quality factor, the 
+     * Parse an HTTP `Accept*` header and sort by the quality factor, the 
      * highest being first in the returned array. The returned data is 
      * unfiltered.
      * 
@@ -706,7 +706,7 @@ class Context
             }
         }
         
-        if (null == $key) {
+        if (null === $key) {
             return $this->accept;
         }
         
