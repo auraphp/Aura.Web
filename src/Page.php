@@ -47,7 +47,7 @@ abstract class Page
      * 
      * A data transfer object for the eventual HTTP response.
      * 
-     * @var Transfer
+     * @var ResponseTransfer
      * 
      */
     protected $response;

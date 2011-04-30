@@ -30,7 +30,7 @@ class PageTest extends \PHPUnit_Framework_TestCase
         return new MockPage(
             new Context($GLOBALS),
             new SignalManager(new HandlerFactory, new ResultFactory, new ResultCollection),
-            new Transfer,
+            new ResponseTransfer,
             $params
         );
     }
@@ -55,8 +55,8 @@ class PageTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($page->_pre_action);
         $this->assertTrue($page->_post_action);
         $this->assertTrue($page->_post_exec);
-        $this->assertType('aura\web\Transfer', $transfer);
-        $this->assertSame('actionIndex', $transfer->data['action_method']);
+        $this->assertType('aura\web\ResponseTransfer', $transfer);
+        $this->assertSame('actionIndex', $transfer->view_data['action_method']);
     }
 
     /**
@@ -77,10 +77,10 @@ class PageTest extends \PHPUnit_Framework_TestCase
         $page->skipAction();
         $transfer = $page->exec();
         $this->assertTrue($page->_pre_exec);
-        $this->assertTrue($page->_pre_action);
+        $this->assertFalse($page->_pre_action);
         $this->assertFalse($page->_post_action);
         $this->assertTrue($page->_post_exec);
-        $this->assertType('aura\web\Transfer', $transfer);
-        $this->assertFalse(isset($transfer->data['action_method']));
+        $this->assertType('aura\web\ResponseTransfer', $transfer);
+        $this->assertFalse(isset($transfer->view_data['action_method']));
     }
 }

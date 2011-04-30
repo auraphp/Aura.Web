@@ -41,6 +41,6 @@ class MockPage extends Page
     
     public function actionIndex()
     {
-        $this->transfer->data['action_method'] = 'actionIndex';
+        $this->response->view_data['action_method'] = 'actionIndex';
     }
 }
