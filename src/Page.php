@@ -13,6 +13,22 @@ use aura\signal\Manager as SignalManager;
  * 
  * A page controller.
  * 
+ *      public function actionBrowse()
+ *      {
+ *          // blah blah blah
+ *          
+ *          // now set the view
+ *          $this->response->view = array(
+ *              'text/html' => 'index',
+ *              // closure always takes one param, the response transfer object
+ *              'application/json' => function($response) {
+ *                  $response->layout = null;
+ *                  return json_encode($response->view_data->list);
+ *              },
+ *              'application/xml' => 'default.xml',
+ *          );
+ *      }
+ *     
  * @package aura.web
  * 
  */
@@ -34,7 +50,7 @@ abstract class Page
      * @var Transfer
      * 
      */
-    protected $transfer;
+    protected $response;
     
     /**
      * 
@@ -81,20 +97,21 @@ abstract class Page
      * 
      */
     public function __construct(
-        Context       $context,
-        SignalManager $signal,
-        Transfer      $transfer,
-        array         $params = null
+        Context          $context,
+        SignalManager    $signal,
+        ResponseTransfer $response,
+        array            $params = array()
     ) {
         $this->context  = $context;
         $this->signal   = $signal;
-        $this->transfer = $transfer;
-        $this->params   = new \ArrayObject((array) $params, \ArrayObject::ARRAY_AS_PROPS);
+        $this->response = $response;
+        $this->params   = $params;
         
         // get an action out of the params
-        if (isset($this->params->action)) {
-            $this->action = $this->params->action;
-        }
+        $this->action = $this->getParam('action');
+        
+        // get a format out of the params
+        $this->response->setFormat($this->getParam('format'));
         
         // add signals
         $this->signal->handler($this, 'pre_exec', array($this, 'preExec'));
@@ -130,19 +147,19 @@ abstract class Page
     public function exec()
     {
         $this->signal->send($this, 'pre_exec', $this);
-        $this->signal->send($this, 'pre_action', $this);
         if (! $this->isSkipAction()) {
             $method = 'action' . ucfirst($this->action);
             if (! method_exists($this, $method)) {
                 throw new Exception_NoMethodForAction($this->action);
             }
+            $this->signal->send($this, 'pre_action', $this);
             $this->$method();
             $this->signal->send($this, 'post_action', $this);
         }
         $this->signal->send($this, 'post_exec', $this);
         
-        // done, return the transfer object
-        return $this->transfer;
+        // done, return the response transfer object
+        return $this->response;
     }
     
     /**
@@ -211,5 +228,12 @@ abstract class Page
      */
     public function postExec()
     {
+    }
+    
+    protected function getParam($key, $default = null)
+    {
+        return isset($this->params[$key])
+             ? $this->params[$key]
+             : $default;
     }
 }
