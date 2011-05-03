@@ -82,6 +82,15 @@ class ResponseTransfer
     
     /**
      * 
+     * The filename .format extension used to determine the content-type.
+     * 
+     * @var bool
+     * 
+     */
+    protected $format;
+    
+    /**
+     * 
      * The response headers (less the cookies).
      * 
      * @var array
@@ -869,7 +878,7 @@ class ResponseTransfer
      * @return string
      * 
      */
-    public function getFormat($format)
+    public function getFormat()
     {
         return $this->format;
     }
@@ -934,37 +943,12 @@ class ResponseTransfer
      */
     public function matchView()
     {
-        // is there a view at all?
-        if (! $this->view) {
-            return;
+        $view = $this->match($this->getView());
+        if ($view !== false) {
+            return $view;
+        } else {
+            throw new Exception_NoAcceptableView($this->content_type);
         }
-        
-        // is the view a string?
-        if (is_string($this->view)) {
-            return $this->view;
-        }
-        
-        // is the view a closure?
-        if ($this->view instanceof \Closure) {
-            $view = $this->view;
-            return $view($this);
-        }
-        
-        // is the view an array, with a matching content-type key?
-        $has_match = is_array($this->view)
-                  && isset($this->view[$this->content_type]);
-        if ($has_match) {
-            $view = $this->view[$this->content_type];
-            // allow for closure or string
-            if ($view instanceof \Closure) {
-                return $view($this);
-            } else {
-                return $view;
-            }
-        }
-        
-        // no good
-        throw new Exception_NoAcceptableView($this->content_type);
     }
     
     /**
@@ -977,31 +961,55 @@ class ResponseTransfer
      */
     public function matchLayout()
     {
-        // is there a layout at all?
-        if (! $this->layout) {
-            return;
+        $layout = $this->match($this->getLayout());
+        if ($layout !== false) {
+            return $layout;
+        } else {
+            throw new Exception_NoAcceptableLayout($this->content_type);
+        }
+    }
+    
+    /**
+     * 
+     * Support method for matching views and layouts.
+     * 
+     * @param mixed $spec The $view or $layout specification.
+     * 
+     * @return mixed The matching view or layout.
+     * 
+     */
+    protected function match($spec)
+    {
+        // is the spec empty?
+        if (! $spec) {
+            return null;
         }
         
-        // is the layout a string?
-        if (is_string($this->layout)) {
-            return $this->layout;
+        // is the spec a string?
+        if (is_string($spec)) {
+            return $spec;
         }
         
-        // is the layout an array, with a matching content-type key?
-        $match_type = is_array($this->layout)
-                   && isset($this->layout[$this->content_type]);
-        if ($match_type) {
-            return $this->layout[$this->content_type];
+        // is the spec a closure?
+        if ($spec instanceof \Closure) {
+            return $spec($this);
         }
         
-        // is the layout a closure?
-        if ($this->layout instanceof \Closure) {
-            $layout = $this->layout;
-            return $layout($this);
+        // is the spec an array, with a matching content-type key?
+        $has_match = is_array($spec)
+                  && isset($spec[$this->content_type]);
+        if ($has_match) {
+            $match = $spec[$this->content_type];
+            // allow for closure or string
+            if ($match instanceof \Closure) {
+                return $match($this);
+            } else {
+                return $match;
+            }
         }
         
-        // no good
-        throw new Exception_NoAcceptableLayout($this->content_type);
+        // no match
+        return false;
     }
     
     /**

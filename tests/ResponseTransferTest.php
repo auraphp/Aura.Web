@@ -363,187 +363,309 @@ class ResponseTransferTest extends \PHPUnit_Framework_TestCase
     /**
      * @todo Implement testSetView().
      */
-    public function testSetView()
+    public function testSetAndGetView()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testGetView().
-     */
-    public function testGetView()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $expect = 'foo';
+        $this->response->setView($expect);
+        $actual = $this->response->getView();
+        $this->assertSame($expect, $actual);
     }
 
     /**
      * @todo Implement testSetViewData().
      */
-    public function testSetViewData()
+    public function testSetAndGetViewData()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+        $expect = array(
+            'foo' => 'bar',
         );
-    }
-
-    /**
-     * @todo Implement testGetViewData().
-     */
-    public function testGetViewData()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->response->setViewData($expect);
+        $actual = $this->response->getViewData();
+        $this->assertSame($expect, $actual);
     }
 
     /**
      * @todo Implement testSetViewPaths().
      */
-    public function testSetViewPaths()
+    public function testSetAndGetViewPaths()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+        $expect = array(
+            '/path/to/templates',
         );
-    }
-
-    /**
-     * @todo Implement testGetViewPaths().
-     */
-    public function testGetViewPaths()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->response->setViewPaths($expect);
+        $actual = $this->response->getViewPaths();
+        $this->assertSame($expect, $actual);
     }
 
     /**
      * @todo Implement testSetLayout().
      */
-    public function testSetLayout()
+    public function testSetAndGetLayout()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testGetLayout().
-     */
-    public function testGetLayout()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $expect = 'foo';
+        $this->response->setLayout($expect);
+        $actual = $this->response->getLayout();
+        $this->assertSame($expect, $actual);
     }
 
     /**
      * @todo Implement testSetLayoutData().
      */
-    public function testSetLayoutData()
+    public function testSetAndGetLayoutData()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+        $expect = array(
+            'foo' => 'bar',
         );
-    }
-
-    /**
-     * @todo Implement testGetLayoutData().
-     */
-    public function testGetLayoutData()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->response->setLayoutData($expect);
+        $actual = $this->response->getLayoutData();
+        $this->assertSame($expect, $actual);
     }
 
     /**
      * @todo Implement testSetLayoutPaths().
      */
-    public function testSetLayoutPaths()
+    public function testSetAndGetLayoutPaths()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+        $expect = array(
+            '/path/to/templates',
         );
-    }
-
-    /**
-     * @todo Implement testGetLayoutPaths().
-     */
-    public function testGetLayoutPaths()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->response->setLayoutPaths($expect);
+        $actual = $this->response->getLayoutPaths();
+        $this->assertSame($expect, $actual);
     }
 
     /**
      * @todo Implement testSetFormat().
      */
-    public function testSetFormat()
+    public function testSetAndGetFormat()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @todo Implement testGetFormat().
-     */
-    public function testGetFormat()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $expect = '.json';
+        $this->response->setFormat($expect);
+        $actual = $this->response->getFormat();
+        $this->assertSame($expect, $actual);
     }
 
     /**
      * @todo Implement testNegotiateContentType().
      */
-    public function testNegotiateContentType()
+    public function testNegotiateContentType_alreadySet()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $type = 'application/json';
+        $this->response->setContentType($type);
+        $this->assertNull($this->response->negotiateContentType());
+        $this->assertSame($type, $this->response->getContentType());
     }
 
+    public function testNegotiateContentType_byFormat()
+    {
+        $type = 'application/json';
+        $this->response->setFormat('.json');
+        $this->assertTrue($this->response->negotiateContentType());
+        $this->assertSame($type, $this->response->getContentType());
+    }
+
+    public function testNegotiateContentType_byView()
+    {
+        $type = 'application/json';
+        
+        $accept = array(
+            '1.0' => 'application/json',
+        );
+        
+        $this->response->setView(array(
+            'text/html'        => 'view',
+            'application/json' => 'view.json',
+            'application/xml'  => 'view.xml',
+        ));
+        
+        $this->assertTrue($this->response->negotiateContentType($accept));
+        $this->assertSame($type, $this->response->getContentType());
+    }
+
+    public function testNegotiateContentType_byLayout()
+    {
+        $type = 'application/json';
+        
+        $accept = array(
+            '1.0' => 'application/json',
+        );
+        
+        $this->response->setLayout(array(
+            'text/html'        => 'view',
+            'application/json' => 'view.json',
+            'application/xml'  => 'view.xml',
+        ));
+        
+        $this->assertTrue($this->response->negotiateContentType($accept));
+        $this->assertSame($type, $this->response->getContentType());
+    }
+
+    public function testNegotiateContentType_noAcceptableType()
+    {
+        $type = 'application/json';
+        
+        $accept = array(
+            '1.0' => 'application/json',
+        );
+        
+        $this->response->setView(array(
+            'text/html'        => 'view',
+            'application/xml'  => 'view.xml',
+        ));
+        
+        $this->response->setLayout(array(
+            'text/html'        => 'view',
+            'application/xml'  => 'view.xml',
+        ));
+        
+        $this->assertFalse($this->response->negotiateContentType());
+    }
+    
     /**
      * @todo Implement testMatchView().
      */
-    public function testMatchView()
+    public function testMatchView_null()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertNull($this->response->matchView());
+    }
+    
+    public function testMatchView_string()
+    {
+        $expect = 'view.json';
+        $this->response->setView($expect);
+        $actual = $this->response->matchView();
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testMatchView_closure()
+    {
+        $this->response->view_data->foo = 'bar';
+        $this->response->setView(function($response) {
+            return $response->view_data->foo;
+        });
+        $actual = $this->response->matchView();
+        $this->assertSame('bar', $actual);
+    }
+    
+    public function testMatchView_arrayString()
+    {
+        $this->response->setContentType('application/json');
+        
+        $this->response->setView(array(
+            'text/html'        => 'view',
+            'application/json' => 'view.json',
+            'application/xml'  => 'view.xml',
+        ));
+        
+        $expect = 'view.json';
+        $actual = $this->response->matchView();
+        $this->assertSame($expect, $actual);
     }
 
+    public function testMatchView_arrayClosure()
+    {
+        $this->response->setContentType('application/xml');
+        
+        $this->response->view_data->foo = 'bar';
+        
+        $this->response->setView(array(
+            'text/html'        => 'view',
+            'application/json' => 'view.json',
+            'application/xml'  => function($response) {
+                return $response->view_data->foo;
+            },
+        ));
+        
+        $actual = $this->response->matchView();
+        $this->assertSame('bar', $actual);
+    }
+
+    public function testMatchView_noAcceptableView()
+    {
+        $this->setExpectedException('aura\web\Exception_NoAcceptableView');
+        
+        $this->response->setContentType('application/xhtml+xml');
+        
+        $this->response->setView(array(
+            'text/html'        => 'view',
+            'application/json' => 'view.json',
+            'application/xml'  => 'view.xml',
+        ));
+        
+        $this->response->matchView();
+    }
+    
     /**
      * @todo Implement testMatchLayout().
      */
-    public function testMatchLayout()
+    public function testMatchLayout_null()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertNull($this->response->matchLayout());
+    }
+    
+    public function testMatchLayout_string()
+    {
+        $expect = 'layout.json';
+        $this->response->setLayout($expect);
+        $actual = $this->response->matchLayout();
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testMatchLayout_closure()
+    {
+        $this->response->layout_data->foo = 'bar';
+        $this->response->setLayout(function($response) {
+            return $response->layout_data->foo;
+        });
+        $actual = $this->response->matchLayout();
+        $this->assertSame('bar', $actual);
+    }
+    
+    public function testMatchLayout_arrayString()
+    {
+        $this->response->setContentType('application/json');
+        
+        $this->response->setLayout(array(
+            'text/html'        => 'layout',
+            'application/json' => 'layout.json',
+            'application/xml'  => 'layout.xml',
+        ));
+        
+        $expect = 'layout.json';
+        $actual = $this->response->matchLayout();
+        $this->assertSame($expect, $actual);
+    }
+
+    public function testMatchLayout_arrayClosure()
+    {
+        $this->response->setContentType('application/xml');
+        
+        $this->response->layout_data->foo = 'bar';
+        
+        $this->response->setLayout(array(
+            'text/html'        => 'layout',
+            'application/json' => 'layout.json',
+            'application/xml'  => function($response) {
+                return $response->layout_data->foo;
+            },
+        ));
+        
+        $actual = $this->response->matchLayout();
+        $this->assertSame('bar', $actual);
+    }
+
+    public function testMatchLayout_noAcceptableLayout()
+    {
+        $this->setExpectedException('aura\web\Exception_NoAcceptableLayout');
+        
+        $this->response->setContentType('application/xhtml+xml');
+        
+        $this->response->setLayout(array(
+            'text/html'        => 'layout',
+            'application/json' => 'layout.json',
+            'application/xml'  => 'layout.xml',
+        ));
+        
+        $this->response->matchLayout();
     }
 }
