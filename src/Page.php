@@ -108,10 +108,15 @@ abstract class Page
         $this->params   = $params;
         
         // get an action out of the params
-        $this->action = $this->getParam('action');
+        $this->action = isset($this->params['action'])
+                      ? $this->params['action']
+                      : null;
         
         // get a format out of the params
-        $this->response->setFormat($this->getParam('format'));
+        $format = isset($this->params['format'])
+                ? $this->params['format']
+                : null;
+        $this->response->setFormat($format);
         
         // add signals
         $this->signal->handler($this, 'pre_exec', array($this, 'preExec'));
@@ -126,10 +131,13 @@ abstract class Page
      * 
      * - signals `'pre_exec'`
      * 
-     * - signals `'pre_action'`
+     * - is the action is not to be skipped ...
      * 
-     * - is the action is not to be skipped, calls `action()` and signals 
-     *   `'post_action'`
+     *     - signals `'pre_action'`
+     * 
+     *     - calls `invokeMethod()` to run the action
+     * 
+     *     - signals `'post_action'`
      * 
      * - signals `'post_exec'`
      * 
@@ -153,7 +161,7 @@ abstract class Page
                 throw new Exception_NoMethodForAction($this->action);
             }
             $this->signal->send($this, 'pre_action', $this);
-            $this->$method();
+            $this->invokeMethod($method);
             $this->signal->send($this, 'post_action', $this);
         }
         $this->signal->send($this, 'post_exec', $this);
@@ -230,10 +238,28 @@ abstract class Page
     {
     }
     
-    protected function getParam($key, $default = null)
+    /**
+     * 
+     * Invokes a method by name, matching method params to `$this->params`.
+     * 
+     * @param string $name The method name to execute, typcially an action.
+     * 
+     * @return mixed The return from the executed method.
+     * 
+     */
+    protected function invokeMethod($name)
     {
-        return isset($this->params[$key])
-             ? $this->params[$key]
-             : $default;
+        $args = array();
+        $method = new \ReflectionMethod($this, $name);
+        foreach ($method->getParameters() as $param) {
+            if (isset($this->params[$param->name])) {
+                $args[] = $this->params[$param->name];
+            } elseif ($param->isDefaultValueAvailable()) {
+                $args[] = $param->getDefaultValue();
+            } else {
+                $args[] = null;
+            }
+        }
+        return $method->invokeArgs($this, $args);
     }
 }

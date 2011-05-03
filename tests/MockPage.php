@@ -43,4 +43,11 @@ class MockPage extends Page
     {
         $this->response->view_data['action_method'] = 'actionIndex';
     }
+    
+    public function actionParams($foo, $bar, $baz = 'dib')
+    {
+        $this->response->view_data->foo = $foo;
+        $this->response->view_data->bar = $bar;
+        $this->response->view_data->baz = $baz;
+    }
 }

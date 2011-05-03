@@ -83,4 +83,24 @@ class PageTest extends \PHPUnit_Framework_TestCase
         $this->assertType('aura\web\ResponseTransfer', $transfer);
         $this->assertFalse(isset($transfer->view_data['action_method']));
     }
+    
+    public function testExecAndParams()
+    {
+        $page = $this->newPage(array(
+            'action' => 'params',
+            'foo' => 'zim',
+        ));
+        
+        $transfer = $page->exec();
+        
+        $expect = array (
+          'foo' => 'zim',
+          'bar' => NULL,
+          'baz' => 'dib',
+        );
+        
+        $actual = $transfer->getViewData();
+        
+        $this->assertSame($expect, $actual);
+    }
 }
