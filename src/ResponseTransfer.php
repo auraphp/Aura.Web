@@ -353,7 +353,7 @@ class ResponseTransfer
      * 
      * @param string $value The value of the cookie.
      * 
-     * @param int|string $expires The Unix timestamp after which the cookie
+     * @param int|string $expire The Unix timestamp after which the cookie
      * expires.  If non-numeric, the method uses strtotime() on the value.
      * 
      * @param string $path The path on the server in which the cookie will be
@@ -371,16 +371,16 @@ class ResponseTransfer
      * @return void
      * 
      */
-    public function setCookie($name, $value = '', $expires = 0,
+    public function setCookie($name, $value = '', $expire = 0,
         $path = '', $domain = '', $secure = false, $httponly = null)
     {
         $this->cookies[$name] = array(
-            'value'     => $value,
-            'expires'   => $expires,
-            'path'      => $path,
-            'domain'    => $domain,
-            'secure'    => $secure,
-            'httponly'  => $httponly,
+            'value'    => $value,
+            'expire'   => $expire,
+            'path'     => $path,
+            'domain'   => $domain,
+            'secure'   => $secure,
+            'httponly' => $httponly,
         );
     }
     
@@ -400,15 +400,15 @@ class ResponseTransfer
         // was httponly set for this cookie?  if not,
         // use the default.
         $cookie['httponly'] = ($cookie['httponly'] === null)
-                            ? $this->_cookies_httponly
+                            ? $this->cookies_httponly
                             : (bool) $cookie['httponly'];
         
         // try to allow for times not in unix-timestamp format
-        if (! is_numeric($cookie['expires'])) {
-            $cookie['expires'] = strtotime($cookie['expires']);
+        if (! is_numeric($cookie['expire'])) {
+            $cookie['expire'] = strtotime($cookie['expire']);
         }
         
-        $cookie['expires'] = (int) $cookie['expires'];
+        $cookie['expire'] = (int) $cookie['expire'];
         $cookie['secure']  = (bool) $cookie['secure'];
         return $cookie;
     }
@@ -553,7 +553,7 @@ class ResponseTransfer
     {
         $this->redirect = $uri;
         $this->setStatusCode($code);
-        $this->setStatusCode($text);
+        $this->setStatusText($text);
     }
     
     /**

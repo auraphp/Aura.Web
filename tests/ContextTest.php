@@ -6,9 +6,9 @@ require_once 'PhpStream.php';
 
 class ContextTest extends \PHPUnit_Framework_TestCase
 {
-    protected function newContext($csrf = null)
+    protected function newContext($csrf = null, $agents = null)
     {
-        return new Context($GLOBALS, $csrf);
+        return new Context($GLOBALS, $csrf, $agents);
     }
     
     protected function newCsrf()
@@ -32,16 +32,16 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $_POST['X-HTTP-Method-Override']        = 'header-takes-precedence';
         $_SERVER['REQUEST_METHOD']              = 'POST';
         $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'] = 'PUT';
-        $req    = $this->newContext();
-        $actual = $req->getServer('REQUEST_METHOD');
+        $context    = $this->newContext();
+        $actual = $context->getServer('REQUEST_METHOD');
         
         $this->assertSame('PUT', $actual);
         
         $this->reset();
         $_POST['X-HTTP-Method-Override']        = 'DELETE';
         $_SERVER['REQUEST_METHOD']              = 'POST';
-        $req    = $this->newContext();
-        $actual = $req->getServer('REQUEST_METHOD');
+        $context    = $this->newContext();
+        $actual = $context->getServer('REQUEST_METHOD');
         
         $this->assertSame('DELETE', $actual);
     }
@@ -49,153 +49,153 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     public function test__get()
     {
         $this->reset();
-        $req = $this->newContext();
+        $context = $this->newContext();
         
         // test that we can access without causing an exception
-        $req->get;
-        $req->post;
-        $req->server;
-        $req->cookie;
-        $req->env;
-        $req->files;
-        $req->header;
+        $context->get;
+        $context->post;
+        $context->server;
+        $context->cookie;
+        $context->env;
+        $context->files;
+        $context->header;
         
         // invalid or protected should cause an exception
         $this->setExpectedException('\UnexpectedValueException');
-        $req->invalid;
+        $context->invalid;
     }
 
     public function testIsGet()
     {
         $this->reset();
-        $req = $this->newContext();
+        $context = $this->newContext();
         
         // REQUEST_METHOD not set
-        $this->assertFalse($req->isGet());
+        $this->assertFalse($context->isGet());
         
         $this->reset();
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $req = $this->newContext();
-        $this->assertTrue($req->isGet());
+        $context = $this->newContext();
+        $this->assertTrue($context->isGet());
         
         $this->reset();
         $_SERVER['REQUEST_METHOD'] = 'NOT-GET';
-        $req = $this->newContext();
-        $this->assertFalse($req->isGet());
+        $context = $this->newContext();
+        $this->assertFalse($context->isGet());
     }
 
     public function testIsPost()
     {
         $this->reset();
-        $req = $this->newContext();
+        $context = $this->newContext();
         
         // REQUEST_METHOD not set
-        $this->assertFalse($req->isPost());
+        $this->assertFalse($context->isPost());
         
         $this->reset();
         $_SERVER['REQUEST_METHOD'] = 'POST';
-        $req = $this->newContext();
-        $this->assertTrue($req->isPost());
+        $context = $this->newContext();
+        $this->assertTrue($context->isPost());
         
         $this->reset();
         $_SERVER['REQUEST_METHOD'] = 'NOT-POST';
-        $req = $this->newContext();
-        $this->assertFalse($req->isPost());
+        $context = $this->newContext();
+        $this->assertFalse($context->isPost());
     }
 
     public function testIsPut()
     {
         $this->reset();
-        $req = $this->newContext();
+        $context = $this->newContext();
         
         // REQUEST_METHOD not set
-        $this->assertFalse($req->isPut());
+        $this->assertFalse($context->isPut());
         
         $this->reset();
         $_SERVER['REQUEST_METHOD'] = 'PUT';
-        $req = $this->newContext();
-        $this->assertTrue($req->isPut());
+        $context = $this->newContext();
+        $this->assertTrue($context->isPut());
         
         $this->reset();
         $_SERVER['REQUEST_METHOD'] = 'NOT-PUT';
-        $req = $this->newContext();
-        $this->assertFalse($req->isPut());
+        $context = $this->newContext();
+        $this->assertFalse($context->isPut());
     }
 
     public function testIsDelete()
     {
         $this->reset();
-        $req = $this->newContext();
+        $context = $this->newContext();
         
         // REQUEST_METHOD not set
-        $this->assertFalse($req->isDelete());
+        $this->assertFalse($context->isDelete());
         
         $this->reset();
         $_SERVER['REQUEST_METHOD'] = 'DELETE';
-        $req = $this->newContext();
-        $this->assertTrue($req->isDelete());
+        $context = $this->newContext();
+        $this->assertTrue($context->isDelete());
         
         $this->reset();
         $_SERVER['REQUEST_METHOD'] = 'NOT-DELETE';
-        $req = $this->newContext();
-        $this->assertFalse($req->isDelete());
+        $context = $this->newContext();
+        $this->assertFalse($context->isDelete());
     }
 
     public function testIsHead()
     {
         $this->reset();
-        $req = $this->newContext();
+        $context = $this->newContext();
         
         // REQUEST_METHOD not set
-        $this->assertFalse($req->isHead());
+        $this->assertFalse($context->isHead());
         
         $this->reset();
         $_SERVER['REQUEST_METHOD'] = 'HEAD';
-        $req = $this->newContext();
-        $this->assertTrue($req->isHead());
+        $context = $this->newContext();
+        $this->assertTrue($context->isHead());
         
         $this->reset();
         $_SERVER['REQUEST_METHOD'] = 'NOT-HEAD';
-        $req = $this->newContext();
-        $this->assertFalse($req->isHead());
+        $context = $this->newContext();
+        $this->assertFalse($context->isHead());
     }
 
     public function testIsOptions()
     {
         $this->reset();
-        $req = $this->newContext();
+        $context = $this->newContext();
         
         // REQUEST_METHOD not set
-        $this->assertFalse($req->isOptions());
+        $this->assertFalse($context->isOptions());
         
         $this->reset();
         $_SERVER['REQUEST_METHOD'] = 'OPTIONS';
-        $req = $this->newContext();
-        $this->assertTrue($req->isOptions());
+        $context = $this->newContext();
+        $this->assertTrue($context->isOptions());
         
         $this->reset();
         $_SERVER['REQUEST_METHOD'] = 'NOT-OPTIONS';
-        $req = $this->newContext();
-        $this->assertFalse($req->isOptions());
+        $context = $this->newContext();
+        $this->assertFalse($context->isOptions());
     }
 
     public function testIsXhr()
     {
         $this->reset();
         $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
-        $req = $this->newContext();
-        $this->assertTrue($req->isXhr());
+        $context = $this->newContext();
+        $this->assertTrue($context->isXhr());
         
         $this->reset();
         $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XXX';
-        $req = $this->newContext();
-        $this->assertFalse($req->isXhr());
+        $context = $this->newContext();
+        $this->assertFalse($context->isXhr());
         
         $this->reset();
-        $req = $this->newContext();
+        $context = $this->newContext();
         
         // HTTP_X_REQUESTED_WITH not set
-        $this->assertFalse($req->isXhr());
+        $this->assertFalse($context->isXhr());
     }
 
     public function testIsCsrf()
@@ -203,36 +203,36 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->reset();
         $csrf  = $this->newCsrf();
         $_POST['__csrf_token'] = $csrf->generateToken();
-        $req   = $this->newContext($this->newCsrf());
+        $context   = $this->newContext($this->newCsrf());
         
-        $this->assertFalse($req->isCsrf());
-        $this->assertTrue($req->isCsrf('invalid_key'));
+        $this->assertFalse($context->isCsrf());
+        $this->assertTrue($context->isCsrf('invalid_key'));
         
         // if Csrf library is not provided an exception is thrown
         $this->reset();
-        $req = $this->newContext();
+        $context = $this->newContext();
         
         $this->setExpectedException('aura\web\Exception_Context');
-        $req->isCsrf();
+        $context->isCsrf();
     }
 
     public function testIsSsl()
     {
         $this->reset();
-        $req = $this->newContext();
+        $context = $this->newContext();
         
         // HTTPS & SERVER_PORT not set
-        $this->assertFalse($req->isSsl());
+        $this->assertFalse($context->isSsl());
         
         $this->reset();
         $_SERVER['HTTPS'] = 'on';
-        $req = $this->newContext();
-        $this->assertTrue($req->isSsl());
+        $context = $this->newContext();
+        $this->assertTrue($context->isSsl());
         
         $this->reset();
         $_SERVER['SERVER_PORT'] = '443';
-        $req = $this->newContext();
-        $this->assertTrue($req->isSsl());
+        $context = $this->newContext();
+        $this->assertTrue($context->isSsl());
     }
     
     public function testIsMobile()
@@ -270,17 +270,24 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             $this->reset();
             $pattern = $agent[0];
             $_SERVER['HTTP_USER_AGENT'] = $agent[1];
-            $req = $this->newContext();
-            $this->assertSame($pattern, $req->isMobile());
+            $context = $this->newContext();
+            $this->assertSame($pattern, $context->isMobile());
         }
+        
+        // test an added agent
+        $this->reset();
+        $_SERVER['HTTP_USER_AGENT'] = 'Foo/1.1';
+        $agents = array('mobile' => array('Foo'));
+        $context = $this->newContext(null, $agents);
+        $this->assertSame('Foo', $context->isMobile());
         
         // test an unknown agent
         $_SERVER['HTTP_USER_AGENT'] = 'NoSuchAgent/1.0';
-        $req = $this->newContext();
-        $this->assertFalse($req->isMobile());
+        $context = $this->newContext();
+        $this->assertFalse($context->isMobile());
         
         // try to get it again, for code coverage
-        $this->assertFalse($req->isMobile());
+        $this->assertFalse($context->isMobile());
         
     }
     
@@ -316,44 +323,51 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             array('Mp3Bot', 'Mozilla/5.0 (compatible; Mp3Bot/0.4; +http://mp3realm.org/mp3bot/)'),
             array('mp3Spider', 'mp3spider cn-search-devel'),
             array('Wget', 'Wget/1.12 (linux-gnu)')
-
         );
         
         foreach ($agents as $agent) {
             $this->reset();
             $pattern = $agent[0];
             $_SERVER['HTTP_USER_AGENT'] = $agent[1];
-            $req = $this->newContext();
-            $this->assertSame($pattern, $req->isCrawler());
+            $context = $this->newContext();
+            $this->assertSame($pattern, $context->isCrawler());
         }
         
+        // test an added agent
+        $this->reset();
+        $_SERVER['HTTP_USER_AGENT'] = 'Foo/1.1';
+        $agents = array('crawler' => array('Foo'));
+        $context = $this->newContext(null, $agents);
+        $this->assertSame('Foo', $context->isCrawler());
+        
         // test an unknown agent
+        $this->reset();
         $_SERVER['HTTP_USER_AGENT'] = 'NoSuchAgent/1.0';
-        $req = $this->newContext();
-        $this->assertFalse($req->isCrawler());
+        $context = $this->newContext();
+        $this->assertFalse($context->isCrawler());
         
         // try to get it again, for code coverage
-        $this->assertFalse($req->isCrawler());
+        $this->assertFalse($context->isCrawler());
     }
 
     public function testGetQuery()
     {
         $this->reset();
         $_GET['foo'] = 'bar';
-        $req = $this->newContext();
+        $context = $this->newContext();
         
-        $actual = $req->getQuery('foo');
+        $actual = $context->getQuery('foo');
         $this->assertSame('bar', $actual);
         
-        $actual = $req->getQuery('baz');
+        $actual = $context->getQuery('baz');
         $this->assertNull($actual);
         
         // return alt
-        $actual = $req->getQuery('baz', 'dib');
+        $actual = $context->getQuery('baz', 'dib');
         $this->assertSame('dib', $actual);
         
         // return all
-        $actual = $req->getQuery();
+        $actual = $context->getQuery();
         $this->assertSame(array('foo' => 'bar'), $actual);
     }
     
@@ -365,17 +379,17 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         
         $this->reset();
         $_SERVER['CONTENT_TYPE']  = 'multipart/form-data';
-        $req = $this->newContext();
+        $context = $this->newContext();
         
         // if 'multipart/form-data' return null
-        $actual = $req->getInput();
+        $actual = $context->getInput();
         $this->assertNull($actual);
         
         $this->reset();
         $_SERVER['CONTENT_TYPE'] = 'text/text';
-        $req = $this->newContext();
+        $context = $this->newContext();
         
-        $actual = $req->getInput();
+        $actual = $context->getInput();
         $this->assertSame('Hello World', $actual);
         
         stream_wrapper_restore('php');
@@ -385,20 +399,20 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     {
         $this->reset();
         $_POST['foo'] = 'bar';
-        $req = $this->newContext();
+        $context = $this->newContext();
         
-        $actual = $req->getInput('foo');
+        $actual = $context->getInput('foo');
         $this->assertSame('bar', $actual);
         
-        $actual = $req->getInput('baz');
+        $actual = $context->getInput('baz');
         $this->assertNull($actual);
         
         // return alt
-        $actual = $req->getInput('baz', 'dib');
+        $actual = $context->getInput('baz', 'dib');
         $this->assertSame('dib', $actual);
         
         // return all
-        $actual = $req->getInput();
+        $actual = $context->getInput();
         $this->assertSame(array('foo' => 'bar'), $actual);
     }
 
@@ -406,20 +420,20 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     {
         $this->reset();
         $_COOKIE['foo'] = 'bar';
-        $req = $this->newContext();
+        $context = $this->newContext();
         
-        $actual = $req->getCookie('foo');
+        $actual = $context->getCookie('foo');
         $this->assertSame('bar', $actual);
         
-        $actual = $req->getCookie('baz');
+        $actual = $context->getCookie('baz');
         $this->assertNull($actual);
         
         // return alt
-        $actual = $req->getCookie('baz', 'dib');
+        $actual = $context->getCookie('baz', 'dib');
         $this->assertSame('dib', $actual);
         
         // return all
-        $actual = $req->getCookie();
+        $actual = $context->getCookie();
         $this->assertSame(array('foo' => 'bar'), $actual);
     }
 
@@ -427,20 +441,20 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     {
         $this->reset();
         $_ENV['foo'] = 'bar';
-        $req = $this->newContext();
+        $context = $this->newContext();
         
-        $actual = $req->getEnv('foo');
+        $actual = $context->getEnv('foo');
         $this->assertSame('bar', $actual);
         
-        $actual = $req->getEnv('baz');
+        $actual = $context->getEnv('baz');
         $this->assertNull($actual);
         
         // return alt
-        $actual = $req->getEnv('baz', 'dib');
+        $actual = $context->getEnv('baz', 'dib');
         $this->assertSame('dib', $actual);
         
         // return all
-        $actual = $req->getEnv();
+        $actual = $context->getEnv();
         $this->assertSame(array('foo' => 'bar'), $actual);
     }
 
@@ -448,20 +462,20 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     {
         $this->reset();
         $_SERVER['foo'] = 'bar';
-        $req = $this->newContext();
+        $context = $this->newContext();
         
-        $actual = $req->getServer('foo');
+        $actual = $context->getServer('foo');
         $this->assertSame('bar', $actual);
         
-        $actual = $req->getServer('baz');
+        $actual = $context->getServer('baz');
         $this->assertNull($actual);
         
         // return alt
-        $actual = $req->getServer('baz', 'dib');
+        $actual = $context->getServer('baz', 'dib');
         $this->assertSame('dib', $actual);
         
         // return all
-        $actual = $req->getServer();
+        $actual = $context->getServer();
         $this->assertSame(array('foo' => 'bar'), $actual);
     }
 
@@ -500,24 +514,24 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             'type'      => null,
         );
         
-        $req = $this->newContext();
+        $context = $this->newContext();
         
-        $actual = $req->getInput('foo');
+        $actual = $context->getInput('foo');
         $this->assertSame('bar', $actual['name']);
         
-        $actual = $req->getInput('bar');
+        $actual = $context->getInput('bar');
         $this->assertSame('foo',  $actual[0]['name']);
         $this->assertSame('fooz', $actual[1]['name']);
         
-        $actual = $req->getInput('upload');
+        $actual = $context->getInput('upload');
         $this->assertSame('file1.bar', $actual['file1']['name']);
         $this->assertSame('file2.bar', $actual['file2']['name']);
         
-        $actual = $req->getInput('baz');
+        $actual = $context->getInput('baz');
         $this->assertNull($actual);
         
         // return default
-        $actual = $req->getInput('baz', 'dib');
+        $actual = $context->getInput('baz', 'dib');
         $this->assertSame('dib', $actual);
         
         // return all
@@ -530,8 +544,8 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             'type'      => null,
         );
         
-        $req    = $this->newContext();
-        $actual = $req->getInput();
+        $context    = $this->newContext();
+        $actual = $context->getInput();
         $this->assertSame($_FILES, $actual);
     }
 
@@ -546,22 +560,22 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             'tmp_name'  => null,
             'type'      => null,
         );
-        $req = $this->newContext();
+        $context = $this->newContext();
         
         // match in post, not in files
-        $actual = $req->getInput('foo');
+        $actual = $context->getInput('foo');
         $this->assertSame('bar', $actual);
         
         // match in files, not in post
-        $actual = $req->getInput('baz');
+        $actual = $context->getInput('baz');
         $this->assertSame('dib', $actual['name']);
         
         // no matches returns null
-        $actual = $req->getInput('zim');
+        $actual = $context->getInput('zim');
         $this->assertNull($actual);
         
         // no matches returns alt
-        $actual = $req->getInput('zim', 'gir');
+        $actual = $context->getInput('zim', 'gir');
         $this->assertSame('gir', $actual);
     }
 
@@ -576,8 +590,8 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             'type'      => null,
         );
         $_POST['baz']  = 'foo';
-        $req                = $this->newContext();
-        $actual             = $req->getInput('baz');
+        $context                = $this->newContext();
+        $actual             = $context->getInput('baz');
         
         $this->assertSame('dib', $actual['name']);
         $this->assertSame('foo', $actual[0]);
@@ -598,8 +612,8 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             'name' => 'files-take-precedence',
             'var'  => 123,
             );
-        $req                = $this->newContext();
-        $actual             = $req->getInput('baz');
+        $context                = $this->newContext();
+        $actual             = $context->getInput('baz');
         
         $this->assertSame('dib', $actual['name']);
         $this->assertSame(123,   $actual['var']);
@@ -634,8 +648,8 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             'tmp_name'  => null,
             'type'      => null,
         );
-        $req    = $this->newContext();
-        $actual = $req->getInput('baz');
+        $context    = $this->newContext();
+        $actual = $context->getInput('baz');
         
         $this->assertSame('foo',  $actual[0]['name']);
         $this->assertSame('fooz', $actual[1]['name']);
@@ -644,7 +658,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('bars', $actual[0][0]);
         $this->assertSame('bars', $actual[1][0]);
         
-        $actual = $req->getInput('upload');
+        $actual = $context->getInput('upload');
         
         $this->assertSame('file1.bar', $actual['file1']['name']);
         $this->assertSame('file2.bar', $actual['file2']['name']);
@@ -694,8 +708,8 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             'type'      => null,
         );
         
-        $req    = $this->newContext();
-        $actual = $req->getInput('baz');
+        $context    = $this->newContext();
+        $actual = $context->getInput('baz');
         
         $this->assertSame('fooz', $actual[1]['name']);
         
@@ -703,7 +717,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('mars', $actual[0][0]);
         $this->assertSame('bars', $actual[1][0]);
         
-        $actual = $req->getInput('upload');
+        $actual = $context->getInput('upload');
         
         $this->assertSame('file2.bar', $actual['file2']['name']);
         
@@ -716,15 +730,15 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     {
         $this->reset();
         $_SERVER['HTTP_FOO'] = 'bar';
-        $req = $this->newContext();
+        $context = $this->newContext();
         
-        $actual = $req->getHeader('foo');
+        $actual = $context->getHeader('foo');
         $this->assertSame('bar', $actual);
         
-        $actual = $req->getHeader('baz');
+        $actual = $context->getHeader('baz');
         $this->assertNull($actual);
         
-        $actual = $req->getHeader('baz', 'dib');
+        $actual = $context->getHeader('baz', 'dib');
         $this->assertSame('dib', $actual);
     }
     
@@ -734,21 +748,21 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $_SERVER['HTTP_ACCEPT'] = 'text/*;q=0.9, text/html ,text/xhtml;q=0.8';
         $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en-US';
         
-        $req    = $this->newContext();
+        $context    = $this->newContext();
         $expect = array(
             'text/html'  => 1.0,
             'text/*'     => 0.9,
             'text/xhtml' => 0.8,
         );
-        $actual = $req->getAccept('type');
+        $actual = $context->getAccept('type');
         $this->assertSame($expect, $actual);
         
-        $actual = $req->getAccept('language');
+        $actual = $context->getAccept('language');
         $expect = array('en-US' => 1.0);
         
         $this->assertSame($expect, $actual);
         
-        $actual = $req->getAccept('charset', 'alt');
+        $actual = $context->getAccept('charset', 'alt');
         $this->assertSame('alt', $actual);
         
         $expect = array(
@@ -761,7 +775,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
                 'en-US' => 1.0,
             ),
         );
-        $actual = $req->getAccept();
+        $actual = $context->getAccept();
         $this->assertSame($expect, $actual);
     }
     
@@ -769,12 +783,24 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     {
         $this->reset();
         $_SERVER['HTTP_X_JSON'] = 'remove-me';
-        $req = $this->newContext();
+        $context = $this->newContext();
         
-        $actual = $req->getHeader('x-json');
+        $actual = $context->getHeader('x-json');
         $this->assertNull($actual);
         
-        $actual = $req->getServer('HTTP_X_JSON');
+        $actual = $context->getServer('HTTP_X_JSON');
         $this->assertNull($actual);
+    }
+    
+    public function testConstructorAgents()
+    {
+        $agents = array(
+            'mobile' => array('foo'),
+            'crawler' => array('bar'),
+        );
+        
+        $context = $this->newContext(null, $agents);
+        
+        
     }
 }
