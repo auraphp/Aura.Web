@@ -215,12 +215,12 @@ class Context
      */
     public function __construct(array $globals, Csrf $csrf = null, array $agents = null)
     {
-        $this->get    = empty($globals['_GET'])    ? array() : $globals['_GET'];
-        $this->post   = empty($globals['_POST'])   ? array() : $globals['_POST'];
-        $this->server = empty($globals['_SERVER']) ? array() : $globals['_SERVER'];
-        $this->cookie = empty($globals['_COOKIE']) ? array() : $globals['_COOKIE'];
-        $this->env    = empty($globals['_ENV'])    ? array() : $globals['_ENV'];
-        $files        = empty($globals['_FILES'])  ? array() : $globals['_FILES'];
+        $this->get    = ! isset($globals['_GET'])    ? array() : $globals['_GET'];
+        $this->post   = ! isset($globals['_POST'])   ? array() : $globals['_POST'];
+        $this->server = ! isset($globals['_SERVER']) ? array() : $globals['_SERVER'];
+        $this->cookie = ! isset($globals['_COOKIE']) ? array() : $globals['_COOKIE'];
+        $this->env    = ! isset($globals['_ENV'])    ? array() : $globals['_ENV'];
+        $files        = ! isset($globals['_FILES'])  ? array() : $globals['_FILES'];
         $this->csrf   = $csrf;
         
         if ($agents) {

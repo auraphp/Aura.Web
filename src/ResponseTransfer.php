@@ -857,6 +857,16 @@ class ResponseTransfer
         return $this->layout_paths;
     }
     
+    public function setLayoutContentVar($layout_content_var)
+    {
+        $this->layout_content_var = $layout_content_var;
+    }
+    
+    public function getLayoutContentVar()
+    {
+        return $this->layout_content_var;
+    }
+    
     /**
      * 
      * Sets the output format extension.

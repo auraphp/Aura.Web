@@ -83,7 +83,7 @@ class ControllerFactory
         } elseif ($this->not_found) {
             $class = $this->not_found;
         } else {
-            throw new Exception_NoClassForController($name);
+            throw new Exception_NoClassForController("'$name'");
         }
         
         return $this->forge->newInstance($class, array(
