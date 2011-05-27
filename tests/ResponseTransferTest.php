@@ -434,6 +434,14 @@ class ResponseTransferTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
 
+    public function testSetAndGetLayoutContentVar()
+    {
+        $expect = 'my_content_var';
+        $this->response->setLayoutContentVar($expect);
+        $actual = $this->response->getLayoutContentVar();
+        $this->assertSame($expect, $actual);
+    }
+
     /**
      * @todo Implement testSetFormat().
      */
