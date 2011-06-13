@@ -1,6 +1,6 @@
 <?php
 
-namespace aura\web;
+namespace Aura\Web;
 
 
 class CsrfTest extends \PHPUnit_Framework_TestCase
@@ -92,7 +92,7 @@ class CsrfTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($csrf->isValidToken($token));
         
         // invalid token format, should cause a exception
-        $this->setExpectedException('aura\web\Exception_MalformedToken');
+        $this->setExpectedException('Aura\Web\Exception\MalformedToken');
         $csrf->isValidToken('invalid-token');
     }
 }

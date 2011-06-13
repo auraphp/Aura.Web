@@ -6,7 +6,7 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace aura\web;
+namespace Aura\Web;
 
 /**
  * 
@@ -155,9 +155,9 @@ class Csrf
      * Test if a token is valid and has not timed out.
      * 
      * If the incoming token is not propertly formated the exception 
-     * aura\csrf\Exception_MalformedToken will be thrown.
+     * aura\csrf\Exception\MalformedToken will be thrown.
      * 
-     * @throws aura\web\Exception_MalformedToken
+     * @throws Aura\Web\Exception\MalformedToken
      * 
      * @param string $incoming_token
      * 
@@ -169,7 +169,7 @@ class Csrf
         $token = explode('|', $incoming_token);
         
         if (3 != count($token)) {
-            throw new Exception_MalformedToken();
+            throw new Exception\MalformedToken();
         }
         
         list($hashtoken, $time, $uid) = $token;

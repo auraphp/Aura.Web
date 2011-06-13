@@ -1,5 +1,5 @@
 <?php
-namespace aura\web;
+namespace Aura\Web;
 class MockController {
     public function __construct()
     {

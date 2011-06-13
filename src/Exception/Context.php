@@ -1,3 +1,3 @@
 <?php
-namespace aura\web;
-class Exception_Context extends Exception {}
+namespace Aura\Web\Exception;
+class Context extends \Aura\Web\Exception {}

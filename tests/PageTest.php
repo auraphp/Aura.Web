@@ -1,9 +1,9 @@
 <?php
-namespace aura\web;
-use aura\signal\Manager as SignalManager;
-use aura\signal\HandlerFactory;
-use aura\signal\ResultFactory;
-use aura\signal\ResultCollection;
+namespace Aura\Web;
+use Aura\Signal\Manager as SignalManager;
+use Aura\Signal\HandlerFactory;
+use Aura\Signal\ResultFactory;
+use Aura\Signal\ResultCollection;
 
 /**
  * Test class for Page.
@@ -55,12 +55,12 @@ class PageTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($page->_pre_action);
         $this->assertTrue($page->_post_action);
         $this->assertTrue($page->_post_exec);
-        $this->assertType('aura\web\ResponseTransfer', $transfer);
+        $this->assertType('Aura\Web\ResponseTransfer', $transfer);
         $this->assertSame('actionIndex', $transfer->view_data['action_method']);
     }
 
     /**
-     * @expectedException \aura\web\Exception_NoMethodForAction
+     * @expectedException \Aura\Web\Exception\NoMethodForAction
      */
     public function testExecNoMethodForAction()
     {
@@ -80,7 +80,7 @@ class PageTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($page->_pre_action);
         $this->assertFalse($page->_post_action);
         $this->assertTrue($page->_post_exec);
-        $this->assertType('aura\web\ResponseTransfer', $transfer);
+        $this->assertType('Aura\Web\ResponseTransfer', $transfer);
         $this->assertFalse(isset($transfer->view_data['action_method']));
     }
     

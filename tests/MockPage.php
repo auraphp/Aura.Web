@@ -1,5 +1,5 @@
 <?php
-namespace aura\web;
+namespace Aura\Web;
 class MockPage extends Page
 {
     private $_pre_action = false;

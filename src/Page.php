@@ -6,8 +6,8 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace aura\web;
-use aura\signal\Manager as SignalManager;
+namespace Aura\Web;
+use Aura\Signal\Manager as SignalManager;
 
 /**
  * 
@@ -56,7 +56,7 @@ abstract class Page
      * 
      * A signal manager.
      * 
-     * @var aura\signal\Manager
+     * @var Aura\Signal\Manager
      * 
      */
     protected $signal;
@@ -169,7 +169,7 @@ abstract class Page
         if (! $this->isSkipAction()) {
             $method = 'action' . ucfirst($this->action);
             if (! method_exists($this, $method)) {
-                throw new Exception_NoMethodForAction($this->action);
+                throw new Exception\NoMethodForAction($this->action);
             }
             $this->signal->send($this, 'pre_action', $this);
             $this->invokeMethod($method);

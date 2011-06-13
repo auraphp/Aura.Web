@@ -6,8 +6,8 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace aura\web;
-use aura\di\ForgeInterface as ForgeInterface;
+namespace Aura\Web;
+use Aura\Di\ForgeInterface as ForgeInterface;
 
 /**
  * 
@@ -50,7 +50,7 @@ class ControllerFactory
      * 
      * Constructor.
      * 
-     * @param aura\di\ForgeInterface $forge An object-creation Forge.
+     * @param Aura\Di\ForgeInterface $forge An object-creation Forge.
      * 
      * @param array $map A map of controller names to controller classes.
      * 
@@ -83,7 +83,7 @@ class ControllerFactory
         } elseif ($this->not_found) {
             $class = $this->not_found;
         } else {
-            throw new Exception_NoClassForController("'$name'");
+            throw new Exception\NoClassForController("'$name'");
         }
         
         return $this->forge->newInstance($class, array(

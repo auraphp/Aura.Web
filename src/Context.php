@@ -6,7 +6,7 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace aura\web;
+namespace Aura\Web;
 
 /**
  * 
@@ -414,7 +414,7 @@ class Context
      * 
      * Note: if the key does not exist this method will return true.
      * 
-     * @throws aura\web\Exception_Context If a CSRF library has not been provided.
+     * @throws Aura\Web\Exception\Context If a CSRF library has not been provided.
      * 
      * @param string $key The name of the $_POST key containing the CSRF token.
      * 
@@ -424,7 +424,7 @@ class Context
     public function isCsrf($key = '__csrf_token')
     {
         if (! $this->csrf) {
-            throw new Exception_Context('A CSRF library has not been provided');
+            throw new Exception\Context('A CSRF library has not been provided');
         }
         
         $token = $this->getValue('post', $key, 'invalid-token');
@@ -432,7 +432,7 @@ class Context
         try {
             // if the token is valid return false. This is not a csrf attack.
             return ! $this->csrf->isValidToken($token);
-        } catch (Exception_MalformedToken $e) {
+        } catch (Exception\MalformedToken $e) {
             return true;
         }
     }

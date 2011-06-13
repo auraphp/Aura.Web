@@ -1,6 +1,6 @@
 <?php
 
-namespace aura\web;
+namespace Aura\Web;
 
 require_once 'PhpStream.php';
 
@@ -212,7 +212,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->reset();
         $context = $this->newContext();
         
-        $this->setExpectedException('aura\web\Exception_Context');
+        $this->setExpectedException('Aura\Web\Exception\Context');
         $context->isCsrf();
     }
 
@@ -373,9 +373,9 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     
     public function testGetRawRequestBody()
     {
-        $GLOBALS['aura\web\PhpStream'] = 'Hello World';
+        $GLOBALS['Aura\Web\PhpStream'] = 'Hello World';
         stream_wrapper_unregister('php');
-        stream_wrapper_register('php', 'aura\web\PhpStream');
+        stream_wrapper_register('php', 'Aura\Web\PhpStream');
         
         $this->reset();
         $_SERVER['CONTENT_TYPE']  = 'multipart/form-data';

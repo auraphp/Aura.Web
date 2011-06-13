@@ -1,3 +1,3 @@
 <?php
-namespace aura\web;
-class Exception_NoAcceptableLayout extends Exception {}
+namespace Aura\Web\Exception;
+class NoAcceptableLayout extends \Aura\Web\Exception {}

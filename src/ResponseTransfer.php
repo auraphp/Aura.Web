@@ -6,7 +6,7 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace aura\web;
+namespace Aura\Web;
 
 /**
  * 
@@ -958,7 +958,7 @@ class ResponseTransfer
         if ($view !== false) {
             return $view;
         } else {
-            throw new Exception_NoAcceptableView($this->content_type);
+            throw new Exception\NoAcceptableView($this->content_type);
         }
     }
     
@@ -976,7 +976,7 @@ class ResponseTransfer
         if ($layout !== false) {
             return $layout;
         } else {
-            throw new Exception_NoAcceptableLayout($this->content_type);
+            throw new Exception\NoAcceptableLayout($this->content_type);
         }
     }
     

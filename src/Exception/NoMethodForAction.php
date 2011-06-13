@@ -1,3 +1,3 @@
 <?php
-namespace aura\web;
-class Exception_NoMethodForAction extends Exception {}
+namespace Aura\Web\Exception;
+class NoMethodForAction extends \Aura\Web\Exception {}

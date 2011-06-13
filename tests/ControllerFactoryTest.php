@@ -1,7 +1,7 @@
 <?php
-namespace aura\web;
-use aura\di\Config;
-use aura\di\Forge;
+namespace Aura\Web;
+use Aura\Di\Config;
+use Aura\Di\Forge;
 
 /**
  * Test class for ControllerFactory.
@@ -45,24 +45,24 @@ class ControllerFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testNewInstance()
     {
-        $factory = $this->newFactory(array('mock' => 'aura\web\MockController'));
+        $factory = $this->newFactory(array('mock' => 'Aura\Web\MockController'));
         $name = 'mock';
         $params = array();
         $controller = $factory->newInstance($name, $params);
-        $this->assertType('aura\web\MockController', $controller);
+        $this->assertType('Aura\Web\MockController', $controller);
     }
     
     public function testNewInstanceNotFound()
     {
-        $factory = $this->newFactory(array(), 'aura\web\MockController');
+        $factory = $this->newFactory(array(), 'Aura\Web\MockController');
         $name = 'no-such-name';
         $params = array();
         $controller = $factory->newInstance($name, $params);
-        $this->assertType('aura\web\MockController', $controller);
+        $this->assertType('Aura\Web\MockController', $controller);
     }
     
     /**
-     * @expectedException \aura\web\Exception_NoClassForController
+     * @expectedException \Aura\Web\Exception\NoClassForController
      */
     public function testNewInstanceException()
     {

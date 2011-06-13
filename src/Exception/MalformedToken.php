@@ -1,6 +1,6 @@
 <?php
-namespace aura\web;
-class Exception_MalformedToken extends Exception
+namespace Aura\Web\Exception;
+class MalformedToken extends \Aura\Web\Exception
 {
     public function __construct()
     {

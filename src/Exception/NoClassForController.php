@@ -1,3 +1,3 @@
 <?php
-namespace aura\web;
-class Exception_NoClassForController extends Exception {}
+namespace Aura\Web\Exception;
+class NoClassForController extends \Aura\Web\Exception {}

@@ -1,5 +1,5 @@
 <?php
-namespace aura\web;
+namespace Aura\Web;
 
 /**
  * Test class for ResponseTransfer.
@@ -45,7 +45,7 @@ class ResponseTransferTest extends \PHPUnit_Framework_TestCase
     
     public function test__getNoSuchKey()
     {
-        $this->setExpectedException('aura\web\Exception');
+        $this->setExpectedException('Aura\Web\Exception');
         $foo = $this->response->foo;
     }
     
@@ -328,7 +328,7 @@ class ResponseTransferTest extends \PHPUnit_Framework_TestCase
     
     public function testSetStatusCodeWrong()
     {
-        $this->setExpectedException('aura\web\Exception');
+        $this->setExpectedException('Aura\Web\Exception');
         $this->response->setStatusCode('88');
     }
     
@@ -356,7 +356,7 @@ class ResponseTransferTest extends \PHPUnit_Framework_TestCase
 
     public function testVersionWrong()
     {
-        $this->setExpectedException('aura\web\Exception');
+        $this->setExpectedException('Aura\Web\Exception');
         $this->response->setVersion('88');
     }
     
@@ -584,7 +584,7 @@ class ResponseTransferTest extends \PHPUnit_Framework_TestCase
 
     public function testMatchView_noAcceptableView()
     {
-        $this->setExpectedException('aura\web\Exception_NoAcceptableView');
+        $this->setExpectedException('Aura\Web\Exception\NoAcceptableView');
         
         $this->response->setContentType('application/xhtml+xml');
         
@@ -658,7 +658,7 @@ class ResponseTransferTest extends \PHPUnit_Framework_TestCase
 
     public function testMatchLayout_noAcceptableLayout()
     {
-        $this->setExpectedException('aura\web\Exception_NoAcceptableLayout');
+        $this->setExpectedException('Aura\Web\Exception\NoAcceptableLayout');
         
         $this->response->setContentType('application/xhtml+xml');
         

@@ -1,5 +1,5 @@
 <?php
-namespace aura\web;
+namespace Aura\Web;
 require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src.php';
 
 // better way?
