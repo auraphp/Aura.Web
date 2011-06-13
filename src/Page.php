@@ -118,6 +118,17 @@ abstract class Page
                 : null;
         $this->response->setFormat($format);
         
+        // add self and parents to the view/layout stacks
+        $class = get_class($this);
+        $stack = class_parents($class);
+        array_unshift($stack, $class);
+        foreach ($stack as $name) {
+            $pos  = strrpos($name, '\\');
+            $spec = substr($name, 0, $pos);
+            $this->response->addViewStack($spec);
+            $this->response->addLayoutStack($spec);
+        }
+        
         // add signals
         $this->signal->handler($this, 'pre_exec', array($this, 'preExec'));
         $this->signal->handler($this, 'pre_action', array($this, 'preAction'));

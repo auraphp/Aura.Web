@@ -384,16 +384,13 @@ class ResponseTransferTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
 
-    /**
-     * @todo Implement testSetViewPaths().
-     */
-    public function testSetAndGetViewPaths()
+    public function testAddAndGetViewStack()
     {
         $expect = array(
-            '/path/to/templates',
+            array('vendor\package', 'view'),
         );
-        $this->response->setViewPaths($expect);
-        $actual = $this->response->getViewPaths();
+        $this->response->addViewStack('vendor\package');
+        $actual = $this->response->getViewStack();
         $this->assertSame($expect, $actual);
     }
 
@@ -421,16 +418,13 @@ class ResponseTransferTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
 
-    /**
-     * @todo Implement testSetLayoutPaths().
-     */
-    public function testSetAndGetLayoutPaths()
+    public function testAddAndGetLayoutStack()
     {
         $expect = array(
-            '/path/to/templates',
+            array('vendor\package', 'layout'),
         );
-        $this->response->setLayoutPaths($expect);
-        $actual = $this->response->getLayoutPaths();
+        $this->response->addLayoutStack('vendor\package');
+        $actual = $this->response->getLayoutStack();
         $this->assertSame($expect, $actual);
     }
 

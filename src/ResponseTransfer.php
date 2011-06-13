@@ -163,12 +163,12 @@ class ResponseTransfer
     
     /**
      * 
-     * Paths to search for layout templates.
+     * Stack to search for layout templates.
      * 
-     * @var \ArrayObject
+     * @var array
      * 
      */
-    protected $layout_paths = array();
+    protected $layout_stack = array();
     
     /**
      * 
@@ -190,12 +190,12 @@ class ResponseTransfer
     
     /**
      * 
-     * Paths to search for view templates.
+     * Stack to search for view templates.
      * 
-     * @var \ArrayObject
+     * @var array
      * 
      */
-    protected $view_paths;
+    protected $view_stack = array();
     
     /**
      * 
@@ -295,7 +295,6 @@ class ResponseTransfer
      * 
      */
     public function getCache()
-    
     {
         return $this->cache;
     }
@@ -755,28 +754,29 @@ class ResponseTransfer
     
     /**
      * 
-     * Sets the finder paths for the inner view template.
+     * Adds a class name and subdirectory for the inner view template finder.
      * 
-     * @param array $view_paths The inner view template finder paths.
+     * @param array $view_stack The inner view template finder stack.
      * 
      * @return void
      * 
      */
-    public function setViewPaths(array $view_paths = array())
+    public function addViewStack($spec, $subdir = 'view')
     {
-        $this->view_paths = $view_paths;
+        $subdir = str_replace(array('\\', '/'), DIRECTORY_SEPARATOR, $subdir);
+        $this->view_stack[] = array($spec, $subdir);
     }
     
     /**
      * 
-     * Returns the finder paths for the inner view template.
+     * Returns the stack for the inner view template finder.
      * 
-     * @return array The inner view template finder paths.
+     * @return array The inner view template finder stack.
      * 
      */
-    public function getViewPaths()
+    public function getViewStack()
     {
-        return $this->view_paths;
+        return $this->view_stack;
     }
     
     /**
@@ -833,28 +833,29 @@ class ResponseTransfer
     
     /**
      * 
-     * Sets the finder paths for the outer layout template.
+     * Adds a class name and subdirectory for the outer layout template finder.
      * 
-     * @param array $layout_paths The outer layout template finder paths.
+     * @param array $layout_stack The outer layout template finder stack.
      * 
      * @return void
      * 
      */
-    public function setLayoutPaths(array $layout_paths = array())
+    public function addLayoutStack($spec, $subdir = 'layout')
     {
-        $this->layout_paths = $layout_paths;
+        $subdir = str_replace(array('\\', '/'), DIRECTORY_SEPARATOR, $subdir);
+        $this->layout_stack[] = array($spec, $subdir);
     }
     
     /**
      * 
-     * Returns the finder paths for the outer layout template.
+     * Returns the stack for the outer layout template finder.
      * 
-     * @return array The outer layout template finder paths.
+     * @return array The outer layout template finder stack.
      * 
      */
-    public function getLayoutPaths()
+    public function getLayoutStack()
     {
-        return $this->layout_paths;
+        return $this->layout_stack;
     }
     
     public function setLayoutContentVar($layout_content_var)
