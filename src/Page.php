@@ -29,7 +29,7 @@ use Aura\Signal\Manager as SignalManager;
  *          );
  *      }
  *     
- * @package aura.web
+ * @package Aura.Web
  * 
  */
 abstract class Page

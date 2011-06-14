@@ -13,7 +13,7 @@ namespace Aura\Web;
  * Retains information about the controller results for transfer to an actual
  * HTTP response object.
  * 
- * @package aura.web
+ * @package Aura.Web
  * 
  */
 class ResponseTransfer

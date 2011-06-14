@@ -12,7 +12,7 @@ namespace Aura\Web;
  * 
  * Collection point for information about the web environment.
  * 
- * @package aura.web
+ * @package Aura.Web
  * 
  */
 class Context

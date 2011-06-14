@@ -12,7 +12,7 @@ namespace Aura\Web;
  * 
  * Generate and validate CSRF tokens.
  * 
- * @package aura.web
+ * @package Aura.Web
  * 
  */
 class Csrf
