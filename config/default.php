@@ -1,5 +1,12 @@
 <?php
 /**
+ * 
+ * This file is part of the Aura project for PHP.
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
+/**
  * Constructor params.
  */
 $di->params['Aura\Web\Context']['globals'] = $GLOBALS;
