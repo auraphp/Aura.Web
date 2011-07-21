@@ -45,6 +45,15 @@ abstract class Page
     
     /**
      * 
+     * A router for generating URIs.
+     * 
+     * @var object
+     * 
+     */
+    protected $router;
+    
+    /**
+     * 
      * A data transfer object for the eventual HTTP response.
      * 
      * @var ResponseTransfer
@@ -134,6 +143,18 @@ abstract class Page
         $this->signal->handler($this, 'pre_action', array($this, 'preAction'));
         $this->signal->handler($this, 'post_action', array($this, 'postAction'));
         $this->signal->handler($this, 'post_exec', array($this, 'postExec'));
+    }
+    
+    /**
+     * 
+     * Sets the router object.
+     * 
+     * @param object $router The router object for generating URIs.
+     * 
+     */
+    public function setRouter($router)
+    {
+        $this->router = $router;
     }
     
     /**
