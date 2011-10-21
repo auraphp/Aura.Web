@@ -55,7 +55,7 @@ class PageTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($page->_pre_action);
         $this->assertTrue($page->_post_action);
         $this->assertTrue($page->_post_exec);
-        $this->assertType('Aura\Web\ResponseTransfer', $transfer);
+        $this->assertInstanceOf('Aura\Web\ResponseTransfer', $transfer);
         $this->assertSame('actionIndex', $transfer->view_data['action_method']);
     }
 
@@ -80,7 +80,7 @@ class PageTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($page->_pre_action);
         $this->assertFalse($page->_post_action);
         $this->assertTrue($page->_post_exec);
-        $this->assertType('Aura\Web\ResponseTransfer', $transfer);
+        $this->assertInstanceOf('Aura\Web\ResponseTransfer', $transfer);
         $this->assertFalse(isset($transfer->view_data['action_method']));
     }
     

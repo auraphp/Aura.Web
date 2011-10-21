@@ -49,7 +49,7 @@ class ControllerFactoryTest extends \PHPUnit_Framework_TestCase
         $name = 'mock';
         $params = array();
         $controller = $factory->newInstance($name, $params);
-        $this->assertType('Aura\Web\MockController', $controller);
+        $this->assertInstanceOf('Aura\Web\MockController', $controller);
     }
     
     public function testNewInstanceNotFound()
@@ -58,7 +58,7 @@ class ControllerFactoryTest extends \PHPUnit_Framework_TestCase
         $name = 'no-such-name';
         $params = array();
         $controller = $factory->newInstance($name, $params);
-        $this->assertType('Aura\Web\MockController', $controller);
+        $this->assertInstanceOf('Aura\Web\MockController', $controller);
     }
     
     /**
