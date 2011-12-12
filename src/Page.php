@@ -7,7 +7,6 @@
  * 
  */
 namespace Aura\Web;
-use Aura\Signal\Manager as SignalManager;
 
 /**
  * 
@@ -45,15 +44,6 @@ abstract class Page
     
     /**
      * 
-     * A router for generating URIs.
-     * 
-     * @var object
-     * 
-     */
-    protected $router;
-    
-    /**
-     * 
      * A data transfer object for the eventual HTTP response.
      * 
      * @var ResponseTransfer
@@ -63,18 +53,9 @@ abstract class Page
     
     /**
      * 
-     * A signal manager.
+     * Path-info parameters, typically from the route.
      * 
-     * @var Aura\Signal\Manager
-     * 
-     */
-    protected $signal;
-    
-    /**
-     * 
-     * Path-info parameters from the route.
-     * 
-     * @var \ArrayObject
+     * @var array
      * 
      */
     protected $params;
@@ -90,16 +71,6 @@ abstract class Page
     
     /**
      * 
-     * When set to `true` before `action()` is called, the `action()` will not
-     * be called after all.
-     * 
-     * @var bool
-     * 
-     */
-    protected $skip_action = false;
-    
-    /**
-     * 
      * Constructor.
      * 
      * @param Context $context The request environment.
@@ -107,27 +78,55 @@ abstract class Page
      */
     public function __construct(
         Context          $context,
-        SignalManager    $signal,
         ResponseTransfer $response,
         array            $params = array()
     ) {
         $this->context  = $context;
-        $this->signal   = $signal;
         $this->response = $response;
         $this->params   = $params;
-        
-        // get an action out of the params
+        $this->initAction();
+        $this->initResponseFormat();
+        $this->initResponseStacks();
+    }
+    
+    /**
+     * 
+     * Initialize the action name from the params.
+     * 
+     * @return void
+     * 
+     */
+    protected function initAction()
+    {
         $this->action = isset($this->params['action'])
                       ? $this->params['action']
                       : null;
-        
-        // get a format out of the params
+    }
+    
+    /**
+     * 
+     * Initialize the response format.
+     * 
+     * @return void
+     * 
+     */
+    protected function initResponseFormat()
+    {
         $format = isset($this->params['format'])
                 ? $this->params['format']
                 : null;
         $this->response->setFormat($format);
-        
-        // add self and parents to the view/layout stacks
+    }
+    
+    /**
+     * 
+     * Initialize the response view and layout stacks.
+     * 
+     * @return void
+     * 
+     */
+    protected function initResponseStacks()
+    {
         $class = get_class($this);
         $stack = class_parents($class);
         array_unshift($stack, $class);
@@ -137,100 +136,40 @@ abstract class Page
             $this->response->addViewStack($spec);
             $this->response->addLayoutStack($spec);
         }
-        
-        // add signals
-        $this->signal->handler($this, 'pre_exec', array($this, 'preExec'));
-        $this->signal->handler($this, 'pre_action', array($this, 'preAction'));
-        $this->signal->handler($this, 'post_action', array($this, 'postAction'));
-        $this->signal->handler($this, 'post_exec', array($this, 'postExec'));
     }
     
     /**
      * 
-     * Sets the router object.
+     * Executes the action and pre/post hooks.
      * 
-     * @param object $router The router object for generating URIs.
+     * - calls `preExec()`
      * 
-     */
-    public function setRouter($router)
-    {
-        $this->router = $router;
-    }
-    
-    /**
+     * - calls `preAction()`
      * 
-     * Executes the Page action.  In order, it does these things:
+     * - calls `action()` to find the action method to run, and runs it
      * 
-     * - signals `'pre_exec'`
+     * - calls `postAction()`
      * 
-     * - is the action is not to be skipped ...
+     * - calls `postExec()`
      * 
-     *     - signals `'pre_action'`
-     * 
-     *     - calls `invokeMethod()` to run the action
-     * 
-     *     - signals `'post_action'`
-     * 
-     * - signals `'post_exec'`
-     * 
-     * @signal 'pre_exec'
-     * 
-     * @signal 'pre_action'
-     * 
-     * @signal 'post_action'
-     * 
-     * @signal 'post_exec'
-     * 
-     * @return void
+     * @return ResponseTransfer
      * 
      */
     public function exec()
     {
-        $this->signal->send($this, 'pre_exec', $this);
-        if (! $this->isSkipAction()) {
-            $method = 'action' . ucfirst($this->action);
-            if (! method_exists($this, $method)) {
-                throw new Exception\NoMethodForAction($this->action);
-            }
-            $this->signal->send($this, 'pre_action', $this);
-            $this->invokeMethod($method);
-            $this->signal->send($this, 'post_action', $this);
-        }
-        $this->signal->send($this, 'post_exec', $this);
-        
-        // done, return the response transfer object
+        $this->preExec();
+        $this->preAction();
+        $this->action();
+        $this->postAction();
+        $this->postExec();
         return $this->response;
     }
     
     /**
      * 
-     * Stops `exec()` from calling `action()` if it has not already done so.
+     * Runs at the beginning of `exec()` before `preAction()`.
      * 
      * @return void
-     * 
-     */
-    public function skipAction()
-    {
-        $this->skip_action = true;
-    }
-    
-    /**
-     * 
-     * Should the call to `action()` be skipped?
-     * 
-     * @return bool
-     * 
-     */
-    public function isSkipAction()
-    {
-        return (bool) $this->skip_action;
-    }
-    
-    /**
-     * 
-     * Runs before `action()` as part of the `'pre_exec'` signal.
-     * 
-     * @return mixed
      * 
      */
     public function preExec()
@@ -239,9 +178,9 @@ abstract class Page
     
     /**
      * 
-     * Runs before `action()` as part of the `'pre_action'` signal.
+     * Runs after `preExec()` but before `action()`.
      * 
-     * @return mixed
+     * @return void
      * 
      */
     public function preAction()
@@ -250,7 +189,23 @@ abstract class Page
     
     /**
      * 
-     * Runs after `action()` as part of the `'post_action'` signal.
+     * Determines the action method, then invokes it.
+     * 
+     * @return void
+     * 
+     */
+    public function action()
+    {
+        $method = 'action' . ucfirst($this->action);
+        if (! method_exists($this, $method)) {
+            throw new Exception\NoMethodForAction($this->action);
+        }
+        $this->invokeMethod($method);
+    }
+    
+    /**
+     * 
+     * Runs after `action()` but before `postExec()`.
      * 
      * @return mixed
      * 
@@ -261,7 +216,7 @@ abstract class Page
     
     /**
      * 
-     * Runs after `action()` as part of the `'post_exec'` signal.
+     * Runs at the end of `exec()` after `postAction()`.
      * 
      * @return mixed
      * 

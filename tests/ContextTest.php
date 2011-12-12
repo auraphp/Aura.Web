@@ -6,14 +6,9 @@ require_once 'PhpStream.php';
 
 class ContextTest extends \PHPUnit_Framework_TestCase
 {
-    protected function newContext($csrf = null, $agents = null)
+    protected function newContext(array $agents = array())
     {
-        return new Context($GLOBALS, $csrf, $agents);
-    }
-    
-    protected function newCsrf()
-    {
-        return new Csrf('secret', 'usrid');
+        return new Context($GLOBALS, $agents);
     }
     
     protected function reset()
@@ -198,24 +193,6 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($context->isXhr());
     }
 
-    public function testIsCsrf()
-    {
-        $this->reset();
-        $csrf  = $this->newCsrf();
-        $_POST['__csrf_token'] = $csrf->generateToken();
-        $context   = $this->newContext($this->newCsrf());
-        
-        $this->assertFalse($context->isCsrf());
-        $this->assertTrue($context->isCsrf('invalid_key'));
-        
-        // if Csrf library is not provided an exception is thrown
-        $this->reset();
-        $context = $this->newContext();
-        
-        $this->setExpectedException('Aura\Web\Exception\Context');
-        $context->isCsrf();
-    }
-
     public function testIsSsl()
     {
         $this->reset();
@@ -278,7 +255,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->reset();
         $_SERVER['HTTP_USER_AGENT'] = 'Foo/1.1';
         $agents = array('mobile' => array('Foo'));
-        $context = $this->newContext(null, $agents);
+        $context = $this->newContext($agents);
         $this->assertSame('Foo', $context->isMobile());
         
         // test an unknown agent
@@ -337,7 +314,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->reset();
         $_SERVER['HTTP_USER_AGENT'] = 'Foo/1.1';
         $agents = array('crawler' => array('Foo'));
-        $context = $this->newContext(null, $agents);
+        $context = $this->newContext($agents);
         $this->assertSame('Foo', $context->isCrawler());
         
         // test an unknown agent
@@ -799,7 +776,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
             'crawler' => array('bar'),
         );
         
-        $context = $this->newContext(null, $agents);
+        $context = $this->newContext($agents);
         
         
     }

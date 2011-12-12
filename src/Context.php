@@ -104,19 +104,11 @@ class Context
     
     /**
      * 
-     * A cross-site request forgery object.
-     * 
-     * @var Csrf
-     * 
-     */
-    protected $csrf;
-    
-    /**
-     * 
      * An array of http user-agents used in matching 
      * mobile browsers and crawlers
      *
      * @see isMobile()
+     * 
      * @see isCrawler()
      * 
      * @var array
@@ -213,7 +205,7 @@ class Context
      * Constructor.
      * 
      */
-    public function __construct(array $globals, Csrf $csrf = null, array $agents = null)
+    public function __construct(array $globals, array $agents = array())
     {
         $this->get    = ! isset($globals['_GET'])    ? array() : $globals['_GET'];
         $this->post   = ! isset($globals['_POST'])   ? array() : $globals['_POST'];
@@ -221,7 +213,6 @@ class Context
         $this->cookie = ! isset($globals['_COOKIE']) ? array() : $globals['_COOKIE'];
         $this->env    = ! isset($globals['_ENV'])    ? array() : $globals['_ENV'];
         $files        = ! isset($globals['_FILES'])  ? array() : $globals['_FILES'];
-        $this->csrf   = $csrf;
         
         if ($agents) {
             $this->agents = array_merge_recursive($this->agents, $agents);
@@ -406,35 +397,6 @@ class Context
         
         // done!
         return $this->is_crawler;
-    }
-    
-    /**
-     * 
-     * Is the current request a cross-site forgery?
-     * 
-     * Note: if the key does not exist this method will return true.
-     * 
-     * @throws Aura\Web\Exception\Context If a CSRF library has not been provided.
-     * 
-     * @param string $key The name of the $_POST key containing the CSRF token.
-     * 
-     * @return bool
-     * 
-     */
-    public function isCsrf($key = '__csrf_token')
-    {
-        if (! $this->csrf) {
-            throw new Exception\Context('A CSRF library has not been provided');
-        }
-        
-        $token = $this->getValue('post', $key, 'invalid-token');
-        
-        try {
-            // if the token is valid return false. This is not a csrf attack.
-            return ! $this->csrf->isValidToken($token);
-        } catch (Exception\MalformedToken $e) {
-            return true;
-        }
     }
     
     /**

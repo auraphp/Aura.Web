@@ -1,9 +1,5 @@
 <?php
 namespace Aura\Web;
-use Aura\Signal\Manager as SignalManager;
-use Aura\Signal\HandlerFactory;
-use Aura\Signal\ResultFactory;
-use Aura\Signal\ResultCollection;
 
 /**
  * Test class for Page.
@@ -29,7 +25,6 @@ class PageTest extends \PHPUnit_Framework_TestCase
     {
         return new MockPage(
             new Context($GLOBALS),
-            new SignalManager(new HandlerFactory, new ResultFactory, new ResultCollection),
             new ResponseTransfer,
             $params
         );
@@ -68,22 +63,6 @@ class PageTest extends \PHPUnit_Framework_TestCase
         $transfer = $page->exec();
     }
 
-    /**
-     * @todo Implement testSkipAction().
-     */
-    public function testSkipAction()
-    {
-        $page = $this->newPage(array('action' => 'index'));
-        $page->skipAction();
-        $transfer = $page->exec();
-        $this->assertTrue($page->_pre_exec);
-        $this->assertFalse($page->_pre_action);
-        $this->assertFalse($page->_post_action);
-        $this->assertTrue($page->_post_exec);
-        $this->assertInstanceOf('Aura\Web\ResponseTransfer', $transfer);
-        $this->assertFalse(isset($transfer->view_data['action_method']));
-    }
-    
     public function testExecAndParams()
     {
         $page = $this->newPage(array(
