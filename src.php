@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . '/src/Context.php';
-require_once __DIR__ . '/src/Exception.php';
-require_once __DIR__ . '/src/Exception/Context.php';
-require_once __DIR__ . '/src/Exception/MalformedToken.php';
-require_once __DIR__ . '/src/Exception/NoClassForController.php';
-require_once __DIR__ . '/src/Exception/NoMethodForAction.php';
-require_once __DIR__ . '/src/Page.php';
-require_once __DIR__ . '/src/ResponseTransfer.php';
+require_once __DIR__ . '/src/Aura/Web/Context.php';
+require_once __DIR__ . '/src/Aura/Web/Exception.php';
+require_once __DIR__ . '/src/Aura/Web/Exception/Context.php';
+require_once __DIR__ . '/src/Aura/Web/Exception/MalformedToken.php';
+require_once __DIR__ . '/src/Aura/Web/Exception/NoClassForController.php';
+require_once __DIR__ . '/src/Aura/Web/Exception/NoMethodForAction.php';
+require_once __DIR__ . '/src/Aura/Web/Page.php';
+require_once __DIR__ . '/src/Aura/Web/ResponseTransfer.php';
