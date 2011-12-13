@@ -7,4 +7,12 @@
  * 
  */
 namespace Aura\Web\Exception;
+
+/**
+ * 
+ * Context Exception
+ * 
+ * @package Aura.Web
+ * 
+ */
 class Context extends \Aura\Web\Exception {}

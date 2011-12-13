@@ -7,4 +7,12 @@
  * 
  */
 namespace Aura\Web;
+
+/**
+ * 
+ * Package-specific exception.
+ * 
+ * @package Aura.Web
+ * 
+ */
 class Exception extends \Exception {}

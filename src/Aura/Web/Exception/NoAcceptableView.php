@@ -7,4 +7,12 @@
  * 
  */
 namespace Aura\Web\Exception;
+
+/**
+ * 
+ * No acceptable view exception
+ * 
+ * @package Aura.Web
+ * 
+ */
 class NoAcceptableView extends \Aura\Web\Exception {}

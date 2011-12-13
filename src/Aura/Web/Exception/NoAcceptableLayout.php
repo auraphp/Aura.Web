@@ -7,4 +7,12 @@
  * 
  */
 namespace Aura\Web\Exception;
+
+/**
+ * 
+ * No acceptable layout exception
+ * 
+ * @package Aura.Web
+ * 
+ */
 class NoAcceptableLayout extends \Aura\Web\Exception {}
