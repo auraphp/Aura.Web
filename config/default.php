@@ -24,5 +24,5 @@ $di->set('web_context', function() use ($di) {
 });
 
 $di->set('web_response_transfer', function() use ($di) {
-    return $di->newInstance('Aura\Web\ResponseTransfer');
+    return $di->newInstance('Aura\Web\Response');
 });

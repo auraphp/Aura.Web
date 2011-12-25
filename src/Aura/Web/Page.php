@@ -35,6 +35,15 @@ abstract class Page
 {
     /**
      * 
+     * The action to perform, typically discovered from the params.
+     * 
+     * @var string
+     * 
+     */
+    protected $action;
+    
+    /**
+     * 
      * The context of the request environment.
      * 
      * @var Context
@@ -44,12 +53,21 @@ abstract class Page
     
     /**
      * 
-     * A data transfer object for the eventual HTTP response.
+     * Collection point for data, typically for rendering the page.
      * 
-     * @var ResponseTransfer
+     * @var StdClass
      * 
      */
-    protected $response;
+    protected $data;
+    
+    /**
+     * 
+     * The page format to render, typically discovered from the params.
+     * 
+     * @var string
+     * 
+     */
+    protected $format;
     
     /**
      * 
@@ -62,12 +80,12 @@ abstract class Page
     
     /**
      * 
-     * The action to perform.
+     * A data transfer object for the eventual HTTP response.
      * 
-     * @var string
+     * @var Response
      * 
      */
-    protected $action;
+    protected $response;
     
     /**
      * 
@@ -78,89 +96,142 @@ abstract class Page
      */
     public function __construct(
         Context          $context,
-        ResponseTransfer $response,
+        Response $response,
         array            $params = array()
     ) {
         $this->context  = $context;
         $this->response = $response;
         $this->params   = $params;
-        $this->initAction();
-        $this->initResponseFormat();
-        $this->initResponseStacks();
+        $this->data     = new \StdClass;
+        $this->action   = isset($this->params['action'])
+                        ? $this->params['action']
+                        : null;
+        $this->format   = isset($this->params['format'])
+                        ? $this->params['format']
+                        : null;
     }
     
     /**
+     * Getters
+     * -------
+     */
+    
+    /**
      * 
-     * Initialize the action name from the params.
+     * Returns the action, typically discovered from the params.
      * 
-     * @return void
+     * @return string
      * 
      */
-    protected function initAction()
+    public function getAction()
     {
-        $this->action = isset($this->params['action'])
-                      ? $this->params['action']
-                      : null;
+        return $this->action;
     }
     
     /**
      * 
-     * Initialize the response format.
+     * Returns the Context object.
      * 
-     * @return void
+     * @return Context
      * 
      */
-    protected function initResponseFormat()
+    public function getContext()
     {
-        $format = isset($this->params['format'])
-                ? $this->params['format']
-                : null;
-        $this->response->setFormat($format);
+        return $this->context;
     }
     
     /**
      * 
-     * Initialize the response view and layout stacks.
+     * Returns the data collection object.
      * 
-     * @return void
+     * @return StdClass
      * 
      */
-    protected function initResponseStacks()
+    public function getData()
     {
-        $class = get_class($this);
-        $stack = class_parents($class);
-        array_unshift($stack, $class);
-        foreach ($stack as $name) {
-            $pos  = strrpos($name, '\\');
-            $spec = substr($name, 0, $pos);
-            $this->response->addViewStack($spec);
-            $this->response->addLayoutStack($spec);
-        }
+        return $this->data;
     }
     
     /**
      * 
-     * Executes the action and pre/post hooks.
+     * Returns the page format, typically discovered from the params.
+     * 
+     * @return StdClass
+     * 
+     */
+    public function getFormat()
+    {
+        return $this->format;
+    }
+    
+    /**
+     * 
+     * Returns the params.
+     * 
+     * @return array
+     * 
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
+    
+    /**
+     * 
+     * Returns the Response object.
+     * 
+     * @return Response
+     * 
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
+    
+    /**
+     * The Execution Cycle
+     * -------------------
+     */
+    
+    /**
+     * 
+     * Executes the action and pre/post hooks:
      * 
      * - calls `preExec()`
      * 
      * - calls `preAction()`
      * 
-     * - calls `action()` to find the action method to run, and runs it
+     * - calls `action()` to find and invoke the action method
      * 
      * - calls `postAction()`
      * 
-     * - calls `postExec()`
+     * - calls `preRender()`
      * 
-     * @return ResponseTransfer
+     * - calls `render()` to execute the RenderHandler for this page
+     * 
+     * - calls `postRender()`
+     * 
+     * - calls `postExec()` and then returns the Response object
+     * 
+     * @return Response
      * 
      */
     public function exec()
     {
+        // prep
         $this->preExec();
+        
+        // the action cycle
         $this->preAction();
         $this->action();
         $this->postAction();
+        
+        // the render cycle
+        $this->preRender();
+        $this->render();
+        $this->postRender();
+        
+        // done
         $this->postExec();
         return $this->response;
     }
@@ -178,7 +249,7 @@ abstract class Page
     
     /**
      * 
-     * Runs after `preExec()` but before `action()`.
+     * Runs after `preExec()` and before `action()`.
      * 
      * @return void
      * 
@@ -194,7 +265,7 @@ abstract class Page
      * @return void
      * 
      */
-    public function action()
+    protected function action()
     {
         $method = 'action' . ucfirst($this->action);
         if (! method_exists($this, $method)) {
@@ -205,33 +276,11 @@ abstract class Page
     
     /**
      * 
-     * Runs after `action()` but before `postExec()`.
-     * 
-     * @return mixed
-     * 
-     */
-    public function postAction()
-    {
-    }
-    
-    /**
-     * 
-     * Runs at the end of `exec()` after `postAction()`.
-     * 
-     * @return mixed
-     * 
-     */
-    public function postExec()
-    {
-    }
-    
-    /**
-     * 
      * Invokes a method by name, matching method params to `$this->params`.
      * 
      * @param string $name The method name to execute, typcially an action.
      * 
-     * @return mixed The return from the executed method.
+     * @return void
      * 
      */
     protected function invokeMethod($name)
@@ -247,6 +296,61 @@ abstract class Page
                 $args[] = null;
             }
         }
-        return $method->invokeArgs($this, $args);
+        $method->invokeArgs($this, $args);
+    }
+    
+    /**
+     * 
+     * Runs after `action()` and before `preRender()`.
+     * 
+     * @return void
+     * 
+     */
+    public function postAction()
+    {
+    }
+    
+    /**
+     * 
+     * Runs after `postAction()` and before `render()`.
+     * 
+     * @return void
+     * 
+     */
+    public function preRender()
+    {
+    }
+    
+    /**
+     * 
+     * Renders the page into the response object.
+     * 
+     * @return void
+     * 
+     */
+    protected function render()
+    {
+    }
+    
+    /**
+     * 
+     * Runs after `render()` and before `postExec()`.
+     * 
+     * @return void
+     * 
+     */
+    public function postRender()
+    {
+    }
+    
+    /**
+     * 
+     * Runs at the end of `exec()` after `postRender()`.
+     * 
+     * @return mixed
+     * 
+     */
+    public function postExec()
+    {
     }
 }
