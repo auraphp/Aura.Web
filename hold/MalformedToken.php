@@ -7,6 +7,16 @@
  * 
  */
 namespace Aura\Web\Exception;
+
+/**
+ * 
+ * Malformed CSRF Token Exception
+ * 
+ * @package Aura.Web
+ * 
+ * @todo Seems we want to move from here, as this parts are on hold
+ * 
+ */
 class MalformedToken extends \Aura\Web\Exception
 {
     public function __construct()

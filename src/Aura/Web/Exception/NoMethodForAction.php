@@ -7,4 +7,12 @@
  * 
  */
 namespace Aura\Web\Exception;
+
+/**
+ * 
+ * No method for action exception
+ * 
+ * @package Aura.Web
+ * 
+ */
 class NoMethodForAction extends \Aura\Web\Exception {}
