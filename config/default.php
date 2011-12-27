@@ -11,7 +11,7 @@ $di->params['Aura\Web\Context']['globals'] = $GLOBALS;
 
 $di->params['Aura\Web\Context']['globals']['server'] = $_SERVER;
 
-$di->params['Aura\Web\Page'] = array(
+$di->params['Aura\Web\AbstractPage'] = array(
     'context'  => $di->lazyGet('web_context'),
     'response' => $di->lazyGet('web_response_transfer'),
 );
