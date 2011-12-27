@@ -1,6 +1,6 @@
 <?php
 namespace Aura\Web;
-class MockPage extends Page
+class MockPage extends AbstractPage
 {
     public function actionIndex()
     {

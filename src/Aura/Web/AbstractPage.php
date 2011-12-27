@@ -31,7 +31,7 @@ namespace Aura\Web;
  * @package Aura.Web
  * 
  */
-abstract class Page
+abstract class AbstractPage
 {
     /**
      * 
