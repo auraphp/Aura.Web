@@ -77,6 +77,8 @@ abstract class AbstractPage
      * 
      * @param Context $context The request environment.
      * 
+     * @param Response $response A response transfer object.
+     * 
      */
     public function __construct(
         Context  $context,

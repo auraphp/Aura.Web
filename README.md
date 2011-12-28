@@ -47,15 +47,15 @@ The heart of the page controller is its execution cycle.  You invoke the page co
     use Aura\Web\Context;
     use Aura\Web\Response;
     
-    $page = new Page(new Context, new Response);
-    
     $params = array(
         'action' => 'hello',
         'format' => '.html',
         'noun'   => 'world',
     );
     
-    $response = $page->exec($params);
+    $page = new Page(new Context, new Response, $params);
+    
+    $response = $page->exec();
 
 The parameters are generally retrieved from a routing mechanism of some sort, such as the one provided by the [Aura.Router][] package.
 
@@ -91,14 +91,12 @@ At this point, calling `exec()` on the page controller will do nothing, because 
         }
     }
     
-Now when you call `$page->exec($params)` as above, you will find that the `Response` transfer object has some content in it.
+Now when you call `$page->exec()` as above, you will find that the `Response` transfer object has some content in it.
 
     <?php
     use Vendor\Package\Web\Page;
     use Aura\Web\Context;
     use Aura\Web\Response;
-    
-    $page = new Page(new Context, new Response);
     
     $params = array(
         'action' => 'hello',
@@ -106,7 +104,9 @@ Now when you call `$page->exec($params)` as above, you will find that the `Respo
         'noun'   => 'world',
     );
     
-    $response = $page->exec($params);
+    $page = new Page(new Context, new Response, $params);
+    
+    $response = $page->exec();
     echo $response->getContent(); // "Hello, world!"
 
 
