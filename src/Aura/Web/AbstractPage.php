@@ -12,22 +12,6 @@ namespace Aura\Web;
  * 
  * A page controller.
  * 
- *      public function actionBrowse()
- *      {
- *          // blah blah blah
- *          
- *          // now set the view
- *          $this->response->view = array(
- *              'text/html' => 'index',
- *              // closure always takes one param, the response transfer object
- *              'application/json' => function($response) {
- *                  $response->layout = null;
- *                  return json_encode($response->view_data->list);
- *              },
- *              'application/xml' => 'default.xml',
- *          );
- *      }
- *     
  * @package Aura.Web
  * 
  */
