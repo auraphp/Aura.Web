@@ -4,15 +4,17 @@ namespace Aura\Web;
 class PhpStream
 {
     protected $pos = 0;
-
+    
+    static public $content = '';
+    
     public function stream_open($path, $mode, $options, &$opened_path)
     {
-        return isset($GLOBALS['Aura\Web\PhpStream']);
+        return isset(self::$content);
     }
 
     public function stream_read($count)
     {
-        $return = substr($GLOBALS['Aura\Web\PhpStream'], $this->pos, $count);
+        $return = substr(self::$content, $this->pos, $count);
         $this->pos += strlen($return);
         
         return $return;
@@ -20,7 +22,7 @@ class PhpStream
 
     public function stream_eof()
     {
-        return 0 == strlen($GLOBALS['Aura\Web\PhpStream']);
+        return 0 == strlen(self::$content);
     }
     
     public function stream_stat()

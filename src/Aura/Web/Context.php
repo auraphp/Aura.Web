@@ -100,7 +100,7 @@ class Context
      * @var string
      * 
      */
-    protected $raw_input = false;
+    protected $input = false;
     
     /**
      * 
@@ -207,6 +207,7 @@ class Context
      */
     public function __construct(array $globals, array $agents = array())
     {
+        $this->input  = file_get_contents('php://input');
         $this->get    = ! isset($globals['_GET'])    ? array() : $globals['_GET'];
         $this->post   = ! isset($globals['_POST'])   ? array() : $globals['_POST'];
         $this->server = ! isset($globals['_SERVER']) ? array() : $globals['_SERVER'];
@@ -326,7 +327,7 @@ class Context
      */
     public function isXhr()
     {
-        return 'xmlhttprequest' == strtolower($this->getServer('HTTP_X_REQUESTED_WITH'));
+        return 'xmlhttprequest' == strtolower($this->getHeader('X-Requested-With'));
     }
     
     /**
@@ -432,6 +433,42 @@ class Context
     
     /**
      * 
+     * Retrieves an **unfiltered** value by key from the `$post` property,
+     * or an alternate default value if that key does not exist.
+     * 
+     * @param string $key The $post key to retrieve the value of.
+     * 
+     * @param string $alt The value to return if the key does not exist.
+     * 
+     * @return mixed The value of $post[$key], or the alternate default
+     * value.
+     * 
+     */
+    public function getPost($key = null, $alt = null)
+    {
+        return $this->getValue('post', $key, $alt);
+    }
+    
+    /**
+     * 
+     * Retrieves an **unfiltered** value by key from the `$files` property,
+     * or an alternate default value if that key does not exist.
+     * 
+     * @param string $key The $files key to retrieve the value of.
+     * 
+     * @param string $alt The value to return if the key does not exist.
+     * 
+     * @return mixed The value of $files[$key], or the alternate default
+     * value.
+     * 
+     */
+    public function getFiles($key = null, $alt = null)
+    {
+        return $this->getValue('files', $key, $alt);
+    }
+    
+    /**
+     * 
      * Retrieves an **unfiltered** value by key from the `$cookie` property,
      * or an alternate default value if that key does not exist.
      * 
@@ -486,95 +523,35 @@ class Context
     
     /**
      * 
-     * Retrieves an **unfiltered** value from a user input.
+     * Retrieves the unfiltered `$input` property.
      * 
-     * A value by key from the `$post` *and* `$files` properties, or an 
-     * alternate default value if that key does not exist in either location.
-     * Files takes precedence over post.
-     * 
-     * If the key is null and the content type isn't `multipart/form-data` and 
-     * `$post` and `$files` are empty, the raw data from the request body 
-     * is returned. 
-     * 
-     * @param string $key The $post and $files key to retrieve the value of.
-     * 
-     * @param string $alt The value to return if the key does not exist in
-     * either $post or $files.
-     * 
-     * @return mixed The value of $post[$key] combined with $files[$key], or the
-     * raw request body, or the alternate default value.
+     * @return string The value of $input.
      * 
      */
-    public function getInput($key = null, $alt = null)
+    public function getInput()
     {
-        $post  = $this->getValue('post',  $key, false);
-        $files = $this->getValue('files', $key, false);
-        
-        $parts = explode(';', $this->getServer('CONTENT_TYPE'), 2);
-        $ctype = trim(array_shift($parts));
-        
-        // POST or PUT data. It could be anything, a urlencoded string, xml, json, etc
-        // So it is returned the way PHP received it.
-        $use_raw = null === $key
-                && 'multipart/form-data' != $ctype
-                && empty($post)
-                && empty($files);
-                
-        if ($use_raw) {
-            // in some cases php://input can only be read once
-            if (false === $this->raw_input) {
-                $this->raw_input = file_get_contents('php://input');
-            }
-            
-            return $this->raw_input;
-        }
-
-        // no matches in post or files
-        if (! $post && ! $files) {
-            return $alt;
-        }
-        
-        // match in post, not in files
-        if ($post && ! $files) {
-            return $post;
-        }
-        
-        // match in files, not in post
-        if (! $post && $files) {
-            return $files;
-        }
-        
-        // are either or both arrays?
-        $post_array  = is_array($post);
-        
-        // files is always an array so we test for a multidimensional array
-        $files_array = is_array($files[key($files)]);
-        
-        // neither are arrays, append to files
-        if (! $post_array && ! $files_array) {
-            array_push($files, $post);
-            return $files;
-        }
-        
-        // files array single/array post, append to files
-        if ($files_array) {
-            foreach ($files as $key => $file) {
-                if ($post_array) {
-                    if (isset($post[$key])) {
-                        $files[$key] = array_merge((array) $post[$key], $files[$key]);
-                        unset($post[$key]);
-                    }
-                } else {
-                    $files[$key][] = $post;
-                }
-            }
-            // merge the remaining post values
-            return ($post_array && ! empty($post)) ?
-                        array_merge((array) $post, $files) : $files;
-        }
-        
-        // post array but single files, append to post
-        return array_merge($post, $files);
+        return $this->input;
+    }
+    
+    /**
+     * 
+     * Retrieves the `$input` property after applying `json_decode()`.
+     * 
+     * @param bool $assoc When true, returned objects will be converted into 
+     * associative arrays.
+     * 
+     * @param int $depth Recursion depth.
+     * 
+     * @param int $options Bitmask of JSON decode options. Currently only 
+     * JSON_BIGINT_AS_STRING is supported (default is to cast large integers 
+     * as floats).
+     * 
+     * @return object The `json_decode()` results.
+     * 
+     */
+    public function getJsonInput($assoc = false, $depth = 512)
+    {
+        return json_decode($this->input, $assoc, $depth);
     }
     
     /**

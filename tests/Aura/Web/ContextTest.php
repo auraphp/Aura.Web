@@ -6,6 +6,17 @@ require_once 'PhpStream.php';
 
 class ContextTest extends \PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+        stream_wrapper_unregister('php');
+        stream_wrapper_register('php', 'Aura\Web\PhpStream');
+    }
+    
+    public function tearDown()
+    {
+        stream_wrapper_restore('php');
+    }
+    
     protected function newContext(array $agents = array())
     {
         return new Context($GLOBALS, $agents);
@@ -19,6 +30,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $GLOBALS['_FILES']  = array();
         $GLOBALS['_ENV']    = array();
         $GLOBALS['_FILES']  = array();
+        PhpStream::$content = '';
     }
 
     public function testHttpMethodOverload()
@@ -348,48 +360,24 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array('foo' => 'bar'), $actual);
     }
     
-    public function testGetRawRequestBody()
-    {
-        $GLOBALS['Aura\Web\PhpStream'] = 'Hello World';
-        stream_wrapper_unregister('php');
-        stream_wrapper_register('php', 'Aura\Web\PhpStream');
-        
-        $this->reset();
-        $_SERVER['CONTENT_TYPE']  = 'multipart/form-data';
-        $context = $this->newContext();
-        
-        // if 'multipart/form-data' return null
-        $actual = $context->getInput();
-        $this->assertNull($actual);
-        
-        $this->reset();
-        $_SERVER['CONTENT_TYPE'] = 'text/text';
-        $context = $this->newContext();
-        
-        $actual = $context->getInput();
-        $this->assertSame('Hello World', $actual);
-        
-        stream_wrapper_restore('php');
-    }
-
-    public function testPost()
+    public function testGetPost()
     {
         $this->reset();
         $_POST['foo'] = 'bar';
         $context = $this->newContext();
         
-        $actual = $context->getInput('foo');
+        $actual = $context->getPost('foo');
         $this->assertSame('bar', $actual);
         
-        $actual = $context->getInput('baz');
+        $actual = $context->getPost('baz');
         $this->assertNull($actual);
         
         // return alt
-        $actual = $context->getInput('baz', 'dib');
+        $actual = $context->getPost('baz', 'dib');
         $this->assertSame('dib', $actual);
         
         // return all
-        $actual = $context->getInput();
+        $actual = $context->getPost();
         $this->assertSame(array('foo' => 'bar'), $actual);
     }
 
@@ -456,7 +444,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array('foo' => 'bar'), $actual);
     }
 
-    public function testFiles()
+    public function testGetFiles()
     {
         $this->reset();
         // single file
@@ -493,22 +481,22 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         
         $context = $this->newContext();
         
-        $actual = $context->getInput('foo');
+        $actual = $context->getFiles('foo');
         $this->assertSame('bar', $actual['name']);
         
-        $actual = $context->getInput('bar');
+        $actual = $context->getFiles('bar');
         $this->assertSame('foo',  $actual[0]['name']);
         $this->assertSame('fooz', $actual[1]['name']);
         
-        $actual = $context->getInput('upload');
+        $actual = $context->getFiles('upload');
         $this->assertSame('file1.bar', $actual['file1']['name']);
         $this->assertSame('file2.bar', $actual['file2']['name']);
         
-        $actual = $context->getInput('baz');
+        $actual = $context->getFiles('baz');
         $this->assertNull($actual);
         
         // return default
-        $actual = $context->getInput('baz', 'dib');
+        $actual = $context->getFiles('baz', 'dib');
         $this->assertSame('dib', $actual);
         
         // return all
@@ -522,187 +510,10 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         );
         
         $context    = $this->newContext();
-        $actual = $context->getInput();
+        $actual = $context->getFiles();
         $this->assertSame($_FILES, $actual);
     }
 
-    public function testGetInput()
-    {
-        $this->reset();
-        $_POST['foo']  = 'bar';
-        $_FILES['baz'] = array(
-            'error'     => null,
-            'name'      => 'dib',
-            'size'      => null,
-            'tmp_name'  => null,
-            'type'      => null,
-        );
-        $context = $this->newContext();
-        
-        // match in post, not in files
-        $actual = $context->getInput('foo');
-        $this->assertSame('bar', $actual);
-        
-        // match in files, not in post
-        $actual = $context->getInput('baz');
-        $this->assertSame('dib', $actual['name']);
-        
-        // no matches returns null
-        $actual = $context->getInput('zim');
-        $this->assertNull($actual);
-        
-        // no matches returns alt
-        $actual = $context->getInput('zim', 'gir');
-        $this->assertSame('gir', $actual);
-    }
-
-    public function testgetInputWithPostAndFile()
-    {
-        $this->reset();
-        $_FILES['baz'] = array(
-            'error'     => null,
-            'name'      => 'dib',
-            'size'      => null,
-            'tmp_name'  => null,
-            'type'      => null,
-        );
-        $_POST['baz']  = 'foo';
-        $context                = $this->newContext();
-        $actual             = $context->getInput('baz');
-        
-        $this->assertSame('dib', $actual['name']);
-        $this->assertSame('foo', $actual[0]);
-    }
-
-    public function testgetInputWithMultiplePostsAndFile()
-    {
-        $this->reset();
-        $_FILES['baz'] = array(
-            'error'     => null,
-            'name'      => 'dib',
-            'size'      => null,
-            'tmp_name'  => null,
-            'type'      => null,
-        );
-        $_POST['baz']  = array(
-            'foo', 
-            'name' => 'files-take-precedence',
-            'var'  => 123,
-            );
-        $context                = $this->newContext();
-        $actual             = $context->getInput('baz');
-        
-        $this->assertSame('dib', $actual['name']);
-        $this->assertSame(123,   $actual['var']);
-        $this->assertSame('foo', $actual[0]);
-    }
-
-    public function testgetInputWithPostAndMultipleFiles()
-    {
-        $this->reset();
-        // baz[]
-        $_POST['baz']  = 'bars';
-        $_FILES['baz'] = array(
-            'error'     => array(null, null),
-            'name'      => array('foo', 'fooz'),
-            'size'      => array(null, null),
-            'tmp_name'  => array(null, null),
-            'type'      => array(null, null),
-        );
-        // upload[file1]
-        $_POST['upload']  = 'bars';
-        $_FILES['upload']['file1'] = array(
-            'error'     => null,
-            'name'      => 'file1.bar',
-            'size'      => null,
-            'tmp_name'  => null,
-            'type'      => null,
-        );
-        $_FILES['upload']['file2'] = array(
-            'error'     => null,
-            'name'      => 'file2.bar',
-            'size'      => null,
-            'tmp_name'  => null,
-            'type'      => null,
-        );
-        $context    = $this->newContext();
-        $actual = $context->getInput('baz');
-        
-        $this->assertSame('foo',  $actual[0]['name']);
-        $this->assertSame('fooz', $actual[1]['name']);
-        
-        // post value is inserted into each file
-        $this->assertSame('bars', $actual[0][0]);
-        $this->assertSame('bars', $actual[1][0]);
-        
-        $actual = $context->getInput('upload');
-        
-        $this->assertSame('file1.bar', $actual['file1']['name']);
-        $this->assertSame('file2.bar', $actual['file2']['name']);
-        
-        // post value is inserted into each file
-        $this->assertSame('bars', $actual['file1'][0]);
-        $this->assertSame('bars', $actual['file2'][0]);
-    }
-
-    public function testgetInputWithMultiplePostsAndMultipleFiles()
-    {
-        $this->reset();
-        // baz[]
-        $_POST['baz']  = array(
-            'mars', 
-            array(
-                0      => 'bars',
-                'name' => 'files-take-precedence',
-        ));
-        $_FILES['baz'] = array(
-            'error'     => array(null, null),
-            'name'      => array('foo', 'fooz'),
-            'size'      => array(null, null),
-            'tmp_name'  => array(null, null),
-            'type'      => array(null, null),
-        );
-        
-        // upload[file1]
-        $_POST['upload']  = array(
-            'file1' => 'mars', 
-            'file2' => array(
-                0      => 'bars',
-                'name' => 'files-take-precedence'
-        ));
-        $_FILES['upload']['file1'] = array(
-            'error'     => null,
-            'name'      => 'file1.bar',
-            'size'      => null,
-            'tmp_name'  => null,
-            'type'      => null,
-        );
-        $_FILES['upload']['file2'] = array(
-            'error'     => null,
-            'name'      => 'file2.bar',
-            'size'      => null,
-            'tmp_name'  => null,
-            'type'      => null,
-        );
-        
-        $context    = $this->newContext();
-        $actual = $context->getInput('baz');
-        
-        $this->assertSame('fooz', $actual[1]['name']);
-        
-        // post values is inserted
-        $this->assertSame('mars', $actual[0][0]);
-        $this->assertSame('bars', $actual[1][0]);
-        
-        $actual = $context->getInput('upload');
-        
-        $this->assertSame('file2.bar', $actual['file2']['name']);
-        
-        // post value is inserted
-        $this->assertSame('mars', $actual['file1'][0]);
-        $this->assertSame('bars', $actual['file2'][0]);
-    }
-    
     public function testGetHeader()
     {
         $this->reset();
@@ -777,7 +588,43 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         );
         
         $context = $this->newContext($agents);
+    }
+    
+    public function testGetInput()
+    {
+        $this->reset();
         
+        $object = (object) array(
+            'foo' => 'bar',
+            'baz' => 'dib',
+            'zim' => 'gir',
+        );
         
+        $encode = json_encode($object);
+        
+        PhpStream::$content = $encode;
+        
+        $context = $this->newContext();
+        
+        $this->assertSame($encode, $context->getInput());
+    }
+    
+    public function testGetJsonInput()
+    {
+        $this->reset();
+        
+        $object = (object) array(
+            'foo' => 'bar',
+            'baz' => 'dib',
+            'zim' => 'gir',
+        );
+        
+        $encode = json_encode($object);
+        
+        PhpStream::$content = $encode;
+        
+        $context = $this->newContext();
+        
+        $this->assertEquals($object, $context->getJsonInput());
     }
 }
