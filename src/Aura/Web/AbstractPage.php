@@ -79,6 +79,8 @@ abstract class AbstractPage
      * 
      * @param Response $response A response transfer object.
      * 
+     * @param array $params The path-info parameters.
+     * 
      */
     public function __construct(
         Context  $context,
