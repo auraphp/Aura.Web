@@ -121,7 +121,7 @@ To manipulate the response description, use the `$this->response` transfer objec
 - `setRedirect()`: sets a `Location:` header for redirect, with an optional status code and message (default is `'302 Found'`.)
 - `setStatusCode()` and `setStatusText()`: sets the HTTP status code and message
 
-For more information, please review the `Response` class.
+For more information, please review the [Response][] class.
 
 
 The Context Object
@@ -137,7 +137,7 @@ You can discover the web request environment using the `$this->context` object. 
 - `getAccept()`: gets the Accept headers, ordered by weight
 - `isGet()`, `isPut()`, `isXhr()`, etc.: Tells if the request method was `GET`, `PUT`, an `Xml-HTTP-Request`, etc.
 
-For more information, please review the `Context` class.
+For more information, please review the [Context][] class.
 
 An example "search" action using a "terms" query string parameter might look like this:
 
@@ -208,7 +208,9 @@ The `render()` method is empty by default.  This allows you to add in whatever p
 
 * * *
 
-[Aura.Di]:        https://github.com/auraphp/Aura.Di
-[Aura.Router]:    https://github.com/auraphp/Aura.Router 
-[Aura.Http]:      https://github.com/auraphp/Aura.Http 
-[Aura.View]:      https://github.com/auraphp/Aura.View 
+[Aura.Di]:      https://github.com/auraphp/Aura.Di
+[Aura.Router]:  https://github.com/auraphp/Aura.Router 
+[Aura.Http]:    https://github.com/auraphp/Aura.Http 
+[Aura.View]:    https://github.com/auraphp/Aura.View 
+[Response]:     https://github.com/auraphp/Aura.Web/blob/master/src/Aura/Web/Response.php
+[Context]:      https://github.com/auraphp/Aura.Web/blob/master/src/Aura/Web/Context.php
