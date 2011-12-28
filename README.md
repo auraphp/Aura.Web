@@ -193,6 +193,7 @@ The `AbstractPage` provides a `$data` property and a `render()` method for just 
             
             // convert to a JSON response?
             if ($this->getFormat() == '.json') {
+                $this->response->setContentType('application/json');
                 $content = json_encode(array(
                     'success' => $success,
                     'content' => $content,
