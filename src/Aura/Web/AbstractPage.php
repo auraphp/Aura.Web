@@ -95,9 +95,9 @@ abstract class AbstractPage
      * 
      */
     public function __construct(
-        Context          $context,
+        Context  $context,
         Response $response,
-        array            $params = array()
+        array    $params = array()
     ) {
         $this->context  = $context;
         $this->response = $response;
@@ -195,7 +195,7 @@ abstract class AbstractPage
     
     /**
      * 
-     * Executes the action and pre/post hooks:
+     * Executes the action and all hooks:
      * 
      * - calls `preExec()`
      * 
@@ -207,11 +207,11 @@ abstract class AbstractPage
      * 
      * - calls `preRender()`
      * 
-     * - calls `render()` to execute the RenderHandler for this page
+     * - calls `render()` to generate a presentation (does nothing by default)
      * 
      * - calls `postRender()`
      * 
-     * - calls `postExec()` and then returns the Response object
+     * - calls `postExec()` and then returns the Response transfer object
      * 
      * @return Response
      * 

@@ -202,7 +202,7 @@ The `AbstractPage` provides a `$data` property and a `render()` method for just 
         }
     }
 
-The `render()` method is empty by default.  This allows you to add in whatever presentation logic you want, from simply `json_encode()`-ing `$this->data`, to using a complex two-step or transform view.  The [Aura.View][] package provides a powerful TwoStepView system suitable for use here.
+The `render()` method is empty by default.  This allows you to add in whatever presentation logic you want, from simply `json_encode()`-ing `$this->data`, to using a complex two-step or transform view.  The [Aura.View][] package provides a powerful view system suitable for use here.
 
 * * *
 
