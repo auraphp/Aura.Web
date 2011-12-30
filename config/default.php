@@ -2,7 +2,7 @@
 /**
  * Package prefix for autoloader.
  */
-$loader->addPrefix('Aura\Web\\', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src');
+$loader->add('Aura\Web\\', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src');
 
 /**
  * Constructor params.
