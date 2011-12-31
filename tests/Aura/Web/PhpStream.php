@@ -27,6 +27,6 @@ class PhpStream
     
     public function stream_stat()
     {
-        return array();
+        return [];
     }
 }

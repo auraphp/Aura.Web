@@ -17,19 +17,19 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         stream_wrapper_restore('php');
     }
     
-    protected function newContext(array $agents = array())
+    protected function newContext(array $agents = [])
     {
         return new Context($GLOBALS, $agents);
     }
     
     protected function reset()
     {
-        $GLOBALS['_GET']    = array();
-        $GLOBALS['_POST']   = array();
-        $GLOBALS['_SERVER'] = array();
-        $GLOBALS['_FILES']  = array();
-        $GLOBALS['_ENV']    = array();
-        $GLOBALS['_FILES']  = array();
+        $GLOBALS['_GET']    = [];
+        $GLOBALS['_POST']   = [];
+        $GLOBALS['_SERVER'] = [];
+        $GLOBALS['_FILES']  = [];
+        $GLOBALS['_ENV']    = [];
+        $GLOBALS['_FILES']  = [];
         PhpStream::$content = '';
     }
 
@@ -226,33 +226,33 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     
     public function testIsMobile()
     {
-        $agents = array(
-            array('Android', 'Mozilla/5.0 (Linux; U; Android 2.1; en-us; Nexus One Build/ERD62) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17 –Nexus'),
-            array('BlackBerry', 'BlackBerry8330/4.3.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/105'),
-            array('iPhone', 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us) AppleWebKit/528.18 (KHTML, like Gecko) Version/4.0 Mobile/7A341 Safari/528.16'),
-            array('iPad', 'Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; es-es) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405'),
-            array('Blazer', 'Mozilla/4.0 (compatible; MSIE 6.0; Windows 98; PalmSource/Palm-D062; Blazer/4.5) 16;320x320'),
-            array('Brew', 'Mozilla/5.0 (compatible; Teleca Q7; Brew 3.1.5; U; en) 240X400 LGE VX9700'),
-            array('IEMobile', 'LG-CT810/V10x IEMobile/7.11 Profile/MIDP-2.0 Configuration/CLDC-1.1 Mozilla/4.0 (compatible; MSIE 6.0; Windows CE; IEMobile 7.11)'),
-            array('iPod', 'Mozilla/5.0 (iPod; U; CPU like Mac OS X; en) AppleWebKit/420.1 (KHTML, like Gecko) Version/3.0 Mobile/3A100a Safari/419.3 '),
-            array('KDDI', 'KDDI-KC31 UP.Browser/6.2.0.5 (GUI) MMP/2.0'),
-            array('Kindle', 'Mozilla/4.0 (compatible; Linux 2.6.22) NetFront/3.4 Kindle/2.0 (screen 600x800)'),
-            array('Maemo', 'Mozilla/4.0 (compatible; MSIE 6.0; ; Linux armv5tejl; U) Opera 8.02 [en_US] Maemo browser 0.4.31 N770/SU-18'),
-            array('MOT-' ,'MOT-L6/0A.52.45R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1'),
-            array('Nokia', 'Mozilla/4.0 (compatible; MSIE 5.0; Series80/2.0 Nokia9300/05.22 Profile/MIDP-2.0 Configuration/CLDC-1.1)'),
-            array('SymbianOS', 'Mozilla/5.0 (SymbianOS/9.1; U; en-us) AppleWebKit/413 (KHTML, like Gecko) Safari/413 es61i'),
-            array('UP.Browser', 'OPWV-SDK UP.Browser/7.0.2.3.119 (GUI) MMP/2.0 Push/PO'),
-            array('UP.Link', 'HTC-ST7377/1.59.502.3 (67150) Opera/9.50 (Windows NT 5.1; U; en) UP.Link/6.3.1.17.0'),
-            array('Opera Mobi', 'Opera/9.80 (S60; SymbOS; Opera Mobi/499; U; en-GB) Presto/2.4.18 Version/10.00'),
-            array('Opera Mini', 'Opera/9.60 (J2ME/MIDP; Opera Mini/4.2.13918/488; U; en) Presto/2.2.0'),
-            array('webOS', 'Mozilla/5.0 (webOS/1.0; U; en-US) AppleWebKit/525.27.1 (KHTML, like Gecko) Version/1.0 Safari/525.27.1 Pre/1.0'),
-            array('Playstation', 'Mozilla/5.0 (PLAYSTATION 3; 1.00)'),
-            array('Windows CE', 'Mozilla/4.0 (compatible; MSIE 4.01; Windows CE; Sprint:PPC-6700; PPC; 240x320)'),
-            array('Polaris', 'LG-LX600 Polaris/6.0 MMP/2.0 Profile/MIDP-2.1 Configuration/CLDC-1.1'),
-            array('SEMC', 'SonyEricssonK608i/R2L/SN356841000828910 Browser/SEMC-Browser/4.2 Profile/MIDP-2.0 Configuration/CLDC-1.1'),
-            array('NetFront', 'Mozilla/4.0 (compatible;MSIE 6.0;Windows95;PalmSource) Netfront/3.0;8;320x320'),
-            array('Fennec', 'Mozilla/5.0 (X11; U; Linux armv61; en-US; rv:1.9.1b2pre) Gecko/20081015 Fennec/1.0a1'),
-        );
+        $agents = [
+            ['Android', 'Mozilla/5.0 (Linux; U; Android 2.1; en-us; Nexus One Build/ERD62) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17 –Nexus'],
+            ['BlackBerry', 'BlackBerry8330/4.3.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/105'],
+            ['iPhone', 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us) AppleWebKit/528.18 (KHTML, like Gecko) Version/4.0 Mobile/7A341 Safari/528.16'],
+            ['iPad', 'Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; es-es) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405'],
+            ['Blazer', 'Mozilla/4.0 (compatible; MSIE 6.0; Windows 98; PalmSource/Palm-D062; Blazer/4.5) 16;320x320'],
+            ['Brew', 'Mozilla/5.0 (compatible; Teleca Q7; Brew 3.1.5; U; en) 240X400 LGE VX9700'],
+            ['IEMobile', 'LG-CT810/V10x IEMobile/7.11 Profile/MIDP-2.0 Configuration/CLDC-1.1 Mozilla/4.0 (compatible; MSIE 6.0; Windows CE; IEMobile 7.11)'],
+            ['iPod', 'Mozilla/5.0 (iPod; U; CPU like Mac OS X; en) AppleWebKit/420.1 (KHTML, like Gecko) Version/3.0 Mobile/3A100a Safari/419.3 '],
+            ['KDDI', 'KDDI-KC31 UP.Browser/6.2.0.5 (GUI) MMP/2.0'],
+            ['Kindle', 'Mozilla/4.0 (compatible; Linux 2.6.22) NetFront/3.4 Kindle/2.0 (screen 600x800)'],
+            ['Maemo', 'Mozilla/4.0 (compatible; MSIE 6.0; ; Linux armv5tejl; U) Opera 8.02 [en_US] Maemo browser 0.4.31 N770/SU-18'],
+            ['MOT-' ,'MOT-L6/0A.52.45R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1'],
+            ['Nokia', 'Mozilla/4.0 (compatible; MSIE 5.0; Series80/2.0 Nokia9300/05.22 Profile/MIDP-2.0 Configuration/CLDC-1.1)'],
+            ['SymbianOS', 'Mozilla/5.0 (SymbianOS/9.1; U; en-us) AppleWebKit/413 (KHTML, like Gecko) Safari/413 es61i'],
+            ['UP.Browser', 'OPWV-SDK UP.Browser/7.0.2.3.119 (GUI) MMP/2.0 Push/PO'],
+            ['UP.Link', 'HTC-ST7377/1.59.502.3 (67150) Opera/9.50 (Windows NT 5.1; U; en) UP.Link/6.3.1.17.0'],
+            ['Opera Mobi', 'Opera/9.80 (S60; SymbOS; Opera Mobi/499; U; en-GB) Presto/2.4.18 Version/10.00'],
+            ['Opera Mini', 'Opera/9.60 (J2ME/MIDP; Opera Mini/4.2.13918/488; U; en) Presto/2.2.0'],
+            ['webOS', 'Mozilla/5.0 (webOS/1.0; U; en-US) AppleWebKit/525.27.1 (KHTML, like Gecko) Version/1.0 Safari/525.27.1 Pre/1.0'],
+            ['Playstation', 'Mozilla/5.0 (PLAYSTATION 3; 1.00)'],
+            ['Windows CE', 'Mozilla/4.0 (compatible; MSIE 4.01; Windows CE; Sprint:PPC-6700; PPC; 240x320)'],
+            ['Polaris', 'LG-LX600 Polaris/6.0 MMP/2.0 Profile/MIDP-2.1 Configuration/CLDC-1.1'],
+            ['SEMC', 'SonyEricssonK608i/R2L/SN356841000828910 Browser/SEMC-Browser/4.2 Profile/MIDP-2.0 Configuration/CLDC-1.1'],
+            ['NetFront', 'Mozilla/4.0 (compatible;MSIE 6.0;Windows95;PalmSource) Netfront/3.0;8;320x320'],
+            ['Fennec', 'Mozilla/5.0 (X11; U; Linux armv61; en-US; rv:1.9.1b2pre) Gecko/20081015 Fennec/1.0a1'],
+        ];
         
         // test each of the known agents
         foreach ($agents as $agent) {
@@ -266,7 +266,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         // test an added agent
         $this->reset();
         $_SERVER['HTTP_USER_AGENT'] = 'Foo/1.1';
-        $agents = array('mobile' => array('Foo'));
+        $agents = ['mobile' => ['Foo']];
         $context = $this->newContext($agents);
         $this->assertSame('Foo', $context->isMobile());
         
@@ -282,37 +282,37 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     
     public function testIsCrawler()
     {
-        $agents = array(
-            array('Google', 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'),
-            array('Google', 'Mozilla/5.0 (compatible) Feedfetcher-Google; (+http://www.google.com/feedfetcher.html)'),
-            array('Ask', 'Mozilla/5.0 (compatible; Ask Jeeves/Teoma; +http://about.ask.com/en/docs/about/webmasters.shtml)'),
-            array('Baidu', 'Baiduspider+(+http://www.baidu.com/search/spider.htm)'),
-            array('Yahoo', 'Mozilla/5.0 (compatible; Yahoo! Slurp/3.0; http://help.yahoo.com/help/us/ysearch/slurp)'),
-            array('Nutch', 'GeoHasher/Nutch-1.0 (GeoHasher Web Search Engine; geohasher.gotdns.org;'),
-            array('Y!J', 'Y!J-BRI/0.0.1 crawler ( http://help.yahoo.co.jp/help/jp/search/indexing/indexing-15.html)'),
-            array('Danger hiptop', 'Mozilla/5.0 (Danger hiptop 3.3; U; AvantGo 3.2)'),
-            array('MSR-ISRCCrawler', 'MSR-ISRCCrawler'),
-            array('Y!OASIS', 'Y!OASIS/TEST no-ad Mozilla/4.08 [en] (X11; I; FreeBSD 2.2.8-STABLE i386)'),
-            array('gsa-crawler', 'gsa-crawler (Enterprise; GID-01422; me@company.com)'),
-            array('librabot' ,'librabot/1.0 (+http://search.msn.com/msnbot.htm)'),
-            array('llssbot', 'llssbot/1.0(+http://labs.live.com;llssbot@microsoft.com)'),
-            array('bingbot', 'Mozilla/5.0 (compatible; bingbot/2.0 +http://www.bing.com/bingbot.htm)'),
-            array('MSMOBOT', 'msmobot/1.1 (+http://search.msn.com/msnbot.htm)'),
-            array('MSNBot', 'msnbot-207-46-194-100.search.msn.com'),
-            array('MSRBOT', 'MSRBOT (http://research.microsoft.com/research/sv/msrbot/)'),
-            array('slurp', 'Slurp/2.0-condor_hourly (slurp@inktomi.com; http://www.inktomi.com/slurp.html)'),
-            array('Scooter', 'Scooter/2.0 G.R.A.B. X2.0'),
-            array('Yandex', 'Yandex/1.01.001 (compatible; Win16; I)'),
-            array('Fast', 'FAST-WebCrawler/3.8 (atw-crawler at fast dot no; http://fast.no/support/crawler.asp)'),
-            array('heritrix', 'Mozilla/5.0 (compatible; heritrix/1.12.1 +http://www.page-store.com) [email:paul@page-store.com]'),
-            array('ia_archiver', 'ia_archiver/8.8 (Windows XP 7.2; en-US;)'),
-            array('InternetArchive', 'internetarchive/0.8-dev (Nutch; http://lucene.apache.org/nutch/bot.html; nutch-agent@lucene.apache.org)'),
-            array('archive.org_bot', 'Mozilla/5.0 (compatible; archive.org_bot/1.13.1x +http://crawler.archive.org)'),
-            array('WordPress', 'wordpress/2.1.3'),
-            array('Mp3Bot', 'Mozilla/5.0 (compatible; Mp3Bot/0.4; +http://mp3realm.org/mp3bot/)'),
-            array('mp3Spider', 'mp3spider cn-search-devel'),
-            array('Wget', 'Wget/1.12 (linux-gnu)')
-        );
+        $agents = [
+            ['Google', 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'],
+            ['Google', 'Mozilla/5.0 (compatible) Feedfetcher-Google; (+http://www.google.com/feedfetcher.html)'],
+            ['Ask', 'Mozilla/5.0 (compatible; Ask Jeeves/Teoma; +http://about.ask.com/en/docs/about/webmasters.shtml)'],
+            ['Baidu', 'Baiduspider+(+http://www.baidu.com/search/spider.htm)'],
+            ['Yahoo', 'Mozilla/5.0 (compatible; Yahoo! Slurp/3.0; http://help.yahoo.com/help/us/ysearch/slurp)'],
+            ['Nutch', 'GeoHasher/Nutch-1.0 (GeoHasher Web Search Engine; geohasher.gotdns.org;'],
+            ['Y!J', 'Y!J-BRI/0.0.1 crawler ( http://help.yahoo.co.jp/help/jp/search/indexing/indexing-15.html)'],
+            ['Danger hiptop', 'Mozilla/5.0 (Danger hiptop 3.3; U; AvantGo 3.2)'],
+            ['MSR-ISRCCrawler', 'MSR-ISRCCrawler'],
+            ['Y!OASIS', 'Y!OASIS/TEST no-ad Mozilla/4.08 [en] (X11; I; FreeBSD 2.2.8-STABLE i386)'],
+            ['gsa-crawler', 'gsa-crawler (Enterprise; GID-01422; me@company.com)'],
+            ['librabot' ,'librabot/1.0 (+http://search.msn.com/msnbot.htm)'],
+            ['llssbot', 'llssbot/1.0(+http://labs.live.com;llssbot@microsoft.com)'],
+            ['bingbot', 'Mozilla/5.0 (compatible; bingbot/2.0 +http://www.bing.com/bingbot.htm)'],
+            ['MSMOBOT', 'msmobot/1.1 (+http://search.msn.com/msnbot.htm)'],
+            ['MSNBot', 'msnbot-207-46-194-100.search.msn.com'],
+            ['MSRBOT', 'MSRBOT (http://research.microsoft.com/research/sv/msrbot/)'],
+            ['slurp', 'Slurp/2.0-condor_hourly (slurp@inktomi.com; http://www.inktomi.com/slurp.html)'],
+            ['Scooter', 'Scooter/2.0 G.R.A.B. X2.0'],
+            ['Yandex', 'Yandex/1.01.001 (compatible; Win16; I)'],
+            ['Fast', 'FAST-WebCrawler/3.8 (atw-crawler at fast dot no; http://fast.no/support/crawler.asp)'],
+            ['heritrix', 'Mozilla/5.0 (compatible; heritrix/1.12.1 +http://www.page-store.com) [email:paul@page-store.com]'],
+            ['ia_archiver', 'ia_archiver/8.8 (Windows XP 7.2; en-US;)'],
+            ['InternetArchive', 'internetarchive/0.8-dev (Nutch; http://lucene.apache.org/nutch/bot.html; nutch-agent@lucene.apache.org)'],
+            ['archive.org_bot', 'Mozilla/5.0 (compatible; archive.org_bot/1.13.1x +http://crawler.archive.org)'],
+            ['WordPress', 'wordpress/2.1.3'],
+            ['Mp3Bot', 'Mozilla/5.0 (compatible; Mp3Bot/0.4; +http://mp3realm.org/mp3bot/)'],
+            ['mp3Spider', 'mp3spider cn-search-devel'],
+            ['Wget', 'Wget/1.12 (linux-gnu)'],
+        ];
         
         foreach ($agents as $agent) {
             $this->reset();
@@ -325,7 +325,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         // test an added agent
         $this->reset();
         $_SERVER['HTTP_USER_AGENT'] = 'Foo/1.1';
-        $agents = array('crawler' => array('Foo'));
+        $agents = ['crawler' => ['Foo']];
         $context = $this->newContext($agents);
         $this->assertSame('Foo', $context->isCrawler());
         
@@ -357,7 +357,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         
         // return all
         $actual = $context->getQuery();
-        $this->assertSame(array('foo' => 'bar'), $actual);
+        $this->assertSame(['foo' => 'bar'], $actual);
     }
     
     public function testGetPost()
@@ -378,7 +378,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         
         // return all
         $actual = $context->getPost();
-        $this->assertSame(array('foo' => 'bar'), $actual);
+        $this->assertSame(['foo' => 'bar'], $actual);
     }
 
     public function testGetCookie()
@@ -399,7 +399,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         
         // return all
         $actual = $context->getCookie();
-        $this->assertSame(array('foo' => 'bar'), $actual);
+        $this->assertSame(['foo' => 'bar'], $actual);
     }
 
     public function testGetEnv()
@@ -420,7 +420,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         
         // return all
         $actual = $context->getEnv();
-        $this->assertSame(array('foo' => 'bar'), $actual);
+        $this->assertSame(['foo' => 'bar'], $actual);
     }
 
     public function testGetServer()
@@ -441,43 +441,43 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         
         // return all
         $actual = $context->getServer();
-        $this->assertSame(array('foo' => 'bar'), $actual);
+        $this->assertSame(['foo' => 'bar'], $actual);
     }
 
     public function testGetFiles()
     {
         $this->reset();
         // single file
-        $_FILES['foo'] = array(
+        $_FILES['foo'] = [
             'error'     => null,
             'name'      => 'bar',
             'size'      => null,
             'tmp_name'  => null,
             'type'      => null,
-        );
+        ];
         // bar[]
-        $_FILES['bar'] = array(
-            'error'     => array(null, null),
-            'name'      => array('foo', 'fooz'),
-            'size'      => array(null, null),
-            'tmp_name'  => array(null, null),
-            'type'      => array(null, null),
-        );
+        $_FILES['bar'] = [
+            'error'     => [null, null],
+            'name'      => ['foo', 'fooz'],
+            'size'      => [null, null],
+            'tmp_name'  => [null, null],
+            'type'      => [null, null],
+        ];
         // upload[file1]
-        $_FILES['upload']['file1'] = array(
+        $_FILES['upload']['file1'] = [
             'error'     => null,
             'name'      => 'file1.bar',
             'size'      => null,
             'tmp_name'  => null,
             'type'      => null,
-        );
-        $_FILES['upload']['file2'] = array(
+        ];
+        $_FILES['upload']['file2'] = [
             'error'     => null,
             'name'      => 'file2.bar',
             'size'      => null,
             'tmp_name'  => null,
             'type'      => null,
-        );
+        ];
         
         $context = $this->newContext();
         
@@ -501,13 +501,13 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         
         // return all
         $this->reset();
-        $_FILES['foo'] = array(
+        $_FILES['foo'] = [
             'error'     => null,
             'name'      => 'bar',
             'size'      => null,
             'tmp_name'  => null,
             'type'      => null,
-        );
+        ];
         
         $context    = $this->newContext();
         $actual = $context->getFiles();
@@ -537,32 +537,33 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en-US';
         
         $context    = $this->newContext();
-        $expect = array(
+        $expect = [
             'text/html'  => 1.0,
             'text/*'     => 0.9,
             'text/xhtml' => 0.8,
-        );
+        ];
         $actual = $context->getAccept('type');
         $this->assertSame($expect, $actual);
         
         $actual = $context->getAccept('language');
-        $expect = array('en-US' => 1.0);
+        $expect = ['en-US' => 1.0];
         
         $this->assertSame($expect, $actual);
         
         $actual = $context->getAccept('charset', 'alt');
         $this->assertSame('alt', $actual);
         
-        $expect = array(
-            'type' => array(
+        $expect = [
+            'type' => [
                 'text/html'  => 1.0,
                 'text/*'     => 0.9,
                 'text/xhtml' => 0.8,
-            ),
-            'language' => array(
+            ],
+            'language' => [
                 'en-US' => 1.0,
-            ),
-        );
+            ],
+        ];
+        
         $actual = $context->getAccept();
         $this->assertSame($expect, $actual);
     }
@@ -582,10 +583,10 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     
     public function testConstructorAgents()
     {
-        $agents = array(
-            'mobile' => array('foo'),
-            'crawler' => array('bar'),
-        );
+        $agents = [
+            'mobile' => ['foo'],
+            'crawler' => ['bar'],
+        ];
         
         $context = $this->newContext($agents);
     }
@@ -594,11 +595,11 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     {
         $this->reset();
         
-        $object = (object) array(
+        $object = (object) [
             'foo' => 'bar',
             'baz' => 'dib',
             'zim' => 'gir',
-        );
+        ];
         
         $encode = json_encode($object);
         
@@ -613,11 +614,11 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     {
         $this->reset();
         
-        $object = (object) array(
+        $object = (object) [
             'foo' => 'bar',
             'baz' => 'dib',
             'zim' => 'gir',
-        );
+        ];
         
         $encode = json_encode($object);
         

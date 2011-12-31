@@ -69,7 +69,7 @@ class Response
      * @var array
      * 
      */
-    protected $cookies = array();
+    protected $cookies = [];
     
     /**
      * 
@@ -87,7 +87,7 @@ class Response
      * @var array
      * 
      */
-    protected $headers = array();
+    protected $headers = [];
     
     /**
      * 
@@ -247,14 +247,14 @@ class Response
     public function setCookie($name, $value = '', $expire = 0,
         $path = '', $domain = '', $secure = false, $httponly = null)
     {
-        $this->cookies[$name] = array(
+        $this->cookies[$name] = [
             'value'    => $value,
             'expire'   => $expire,
             'path'     => $path,
             'domain'   => $domain,
             'secure'   => $secure,
             'httponly' => $httponly,
-        );
+        ];
     }
     
     /**
@@ -295,7 +295,7 @@ class Response
      */
     public function getCookies()
     {
-        $cookies = array();
+        $cookies = [];
         foreach ($this->cookies as $name => $cookie) {
             $cookies[$name] = $this->getCookie($name);
         }
@@ -393,10 +393,10 @@ class Response
         
         if ($this->cache === false) {
             $headers['Pragma'] = 'no-cache';
-            $headers['Cache-Control'] = array(
+            $headers['Cache-Control'] = [
                 'no-store, no-cache, must-revalidate',
                 'post-check=0, pre-check=0',
-            );
+            ];
             $headers['Expires'] = '1';
         }
         
@@ -518,7 +518,7 @@ class Response
     public function setStatusText($text)
     {
         // trim and remove newlines
-        $text = trim(str_replace(array("\r", "\n"), '', $text));
+        $text = trim(str_replace(["\r", "\n"], '', $text));
         $this->status_text = $text;
     }
     
@@ -593,6 +593,6 @@ class Response
      */
     protected function headerValue($value)
     {
-        return str_replace(array("\r", "\n"), '', $value);
+        return str_replace(["\r", "\n"], '', $value);
     }
 }

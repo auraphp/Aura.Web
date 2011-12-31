@@ -47,11 +47,11 @@ The heart of the page controller is its execution cycle.  You invoke the page co
     use Aura\Web\Context;
     use Aura\Web\Response;
     
-    $params = array(
+    $params = [
         'action' => 'hello',
         'format' => '.html',
         'noun'   => 'world',
-    );
+    ];
     
     $page = new Page(new Context, new Response, $params);
     
@@ -98,11 +98,11 @@ Now when you call `$page->exec()` as above, you will find that the `Response` tr
     use Aura\Web\Context;
     use Aura\Web\Response;
     
-    $params = array(
+    $params = [
         'action' => 'hello',
         'format' => '.html',
         'noun'   => 'world',
-    );
+    ];
     
     $page = new Page(new Context, new Response, $params);
     
@@ -173,7 +173,7 @@ The `AbstractPage` provides a `$data` property and a `render()` method for just 
         protected function render()
         {
             // escape all data
-            $data = array();
+            $data = [];
             foreach ((array) $this->data as $key => $val) {
                 $data[$key] = htmlspecialchars($val, ENT_QUOTES, 'UTF-8');
             }
@@ -194,10 +194,10 @@ The `AbstractPage` provides a `$data` property and a `render()` method for just 
             // convert to a JSON response?
             if ($this->getFormat() == '.json') {
                 $this->response->setContentType('application/json');
-                $content = json_encode(array(
+                $content = json_encode([
                     'success' => $success,
                     'content' => $content,
-                ));
+                ]);
             }
             
             $this->response->setContent($content);

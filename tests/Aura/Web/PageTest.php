@@ -26,7 +26,7 @@ class PageTest extends \PHPUnit_Framework_TestCase
     
     public function testGetters()
     {
-        $params = array('action' => 'test', 'format' => '.test');
+        $params = ['action' => 'test', 'format' => '.test'];
         $page = $this->newPage($params);
         $this->assertInstanceOf('Aura\Web\Context', $page->getContext());
         $this->assertInstanceOf('Aura\Web\Response', $page->getResponse());
@@ -38,7 +38,7 @@ class PageTest extends \PHPUnit_Framework_TestCase
     
     public function testExecAndHooks()
     {
-        $page = $this->newPage(array('action' => 'index'));
+        $page = $this->newPage(['action' => 'index']);
         $response = $page->exec();
         $this->assertInstanceOf('Aura\Web\Response', $response);
         
@@ -48,25 +48,25 @@ class PageTest extends \PHPUnit_Framework_TestCase
 
     public function testExecNoMethodForAction()
     {
-        $page = $this->newPage(array('action' => 'noSuchAction'));
+        $page = $this->newPage(['action' => 'noSuchAction']);
         $this->setExpectedException('Aura\Web\Exception\NoMethodForAction');
         $response = $page->exec();
     }
 
     public function testExecAndParams()
     {
-        $page = $this->newPage(array(
+        $page = $this->newPage([
             'action' => 'params',
             'foo' => 'zim',
-        ));
+        ]);
         
         $response = $page->exec();
         
-        $expect = array (
+        $expect = [
           'foo' => 'zim',
           'bar' => NULL,
           'baz' => 'dib',
-        );
+        ];
         
         $actual = (array) $page->getData();
         

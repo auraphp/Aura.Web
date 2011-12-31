@@ -85,7 +85,7 @@ abstract class AbstractPage
     public function __construct(
         Context  $context,
         Response $response,
-        array    $params = array()
+        array    $params = []
     ) {
         $this->context  = $context;
         $this->response = $response;
@@ -273,7 +273,7 @@ abstract class AbstractPage
      */
     protected function invokeMethod($name)
     {
-        $args = array();
+        $args = [];
         $method = new \ReflectionMethod($this, $name);
         foreach ($method->getParameters() as $param) {
             if (isset($this->params[$param->name])) {

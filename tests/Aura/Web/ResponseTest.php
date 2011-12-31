@@ -39,28 +39,28 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         // "add headers to turn off caching"
         $this->response->setCache(false);
         $this->assertFalse($this->response->getCache());
-        $expect = array (
+        $expect = [
           'Pragma' => 'no-cache',
-          'Cache-Control' => array (
+          'Cache-Control' => [
             'no-store, no-cache, must-revalidate',
             'post-check=0, pre-check=0',
-          ),
+          ],
           'Expires' => '1',
-        );
+        ];
         $actual = $this->response->getHeaders();
         $this->assertSame($expect, $actual);
         
         // "do not add cache-related headers"
         $this->response->setCache(null);
         $this->assertNull($this->response->getCache());
-        $expect = array();
+        $expect = [];
         $actual = $this->response->getHeaders();
         $this->assertSame($expect, $actual);
         
         // "undefined"
         $this->response->setCache(true);
         $this->assertTrue($this->response->getCache());
-        $expect = array();
+        $expect = [];
         $actual = $this->response->getHeaders();
         $this->assertSame($expect, $actual);
     }
@@ -86,9 +86,9 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $actual = $this->response->getContentType();
         $this->assertSame($expect, $actual);
         
-        $expect = array (
+        $expect = [
           'Content-Type' => 'application/json',
-        );
+        ];
         $actual = $this->response->getHeaders();
         $this->assertSame($expect, $actual);
     }
@@ -101,14 +101,14 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $expire = time() + 3600;
         $this->response->setCookie('foo', 'bar', $expire, '/path', 'example.com');
         
-        $expect = array (
+        $expect = [
           'value' => 'bar',
           'expire' => $expire,
           'path' => '/path',
           'domain' => 'example.com',
           'secure' => false,
           'httponly' => true,
-        );
+        ];
 
         $actual = $this->response->getCookie('foo');
         
@@ -124,24 +124,24 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->response->setCookie('foo', 'bar', $expire, '/path', 'example.com');
         $this->response->setCookie('baz', 'dib', date('Y-m-d H:i:s', $expire), '/path', 'example.com');
         
-        $expect = array (
-            'foo' => array(
+        $expect = [
+            'foo' => [
               'value' => 'bar',
               'expire' => $expire,
               'path' => '/path',
               'domain' => 'example.com',
               'secure' => false,
               'httponly' => true,
-            ),
-            'baz' => array(
+            ],
+            'baz' => [
               'value' => 'dib',
               'expire' => $expire,
               'path' => '/path',
               'domain' => 'example.com',
               'secure' => false,
               'httponly' => true,
-            ),
-        );
+            ],
+        ];
 
         $actual = $this->response->getCookies();
         
@@ -158,14 +158,14 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $expire = time() + 3600;
         $this->response->setCookie('foo', 'bar', $expire, '/path', 'example.com');
         
-        $expect = array (
+        $expect = [
           'value' => 'bar',
           'expire' => $expire,
           'path' => '/path',
           'domain' => 'example.com',
           'secure' => false,
           'httponly' => false,
-        );
+        ];
 
         $actual = $this->response->getCookie('foo');
         
@@ -180,10 +180,10 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->response->setHeader('foo-bar', 'baz');
         $this->response->setHeader('dib', 'zim');
         
-        $expect = array(
+        $expect = [
             'Foo-Bar' => 'baz',
             'Dib' => 'zim',
-        );
+        ];
         
         $actual = $this->response->getHeaders();
         
@@ -199,9 +199,9 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->response->addHeader('foo', 'baz');
         $this->response->addHeader('foo', 'dib');
         
-        $expect = array(
-            'Foo' => array('bar', 'baz', 'dib'),
-        );
+        $expect = [
+            'Foo' => ['bar', 'baz', 'dib'],
+        ];
         
         $actual = $this->response->getHeaders();
         
@@ -221,7 +221,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $actual = $this->response->getHeader('foo-bar');
         $this->assertSame($expect, $actual);
         
-        $expect = array('zim', 'gir');
+        $expect = ['zim', 'gir'];
         $actual = $this->response->getHeader('dib');
         $this->assertSame($expect, $actual);
         
@@ -238,14 +238,13 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->response->addHeader('dib', 'zim');
         $this->response->addHeader('dib', 'gir');
         
-        $expect = array (
+        $expect = [
           'Foo-Bar' => 'baz',
-          'Dib' => 
-          array (
+          'Dib' => [
             0 => 'zim',
             1 => 'gir',
-          ),
-        );
+          ],
+        ];
         $actual = $this->response->getHeaders();
         $this->assertSame($expect, $actual);
     }
@@ -263,9 +262,9 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $actual = $this->response->getRedirect();
         $this->assertSame($expect, $actual);
         
-        $expect = array (
+        $expect = [
           'Location' => 'http://example.com',
-        );
+        ];
         $actual = $this->response->getHeaders();
         $this->assertSame($expect, $actual);
     }
@@ -283,16 +282,16 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $actual = $this->response->getRedirect();
         $this->assertSame($expect, $actual);
         
-        $expect = array (
+        $expect = [
           'Pragma' => 'no-cache',
           'Cache-Control' => 
-          array (
+          [
             0 => 'no-store, no-cache, must-revalidate',
             1 => 'post-check=0, pre-check=0',
-          ),
+          ],
           'Expires' => '1',
           'Location' => 'http://example.com',
-        );
+        ];
         $actual = $this->response->getHeaders();
         $this->assertSame($expect, $actual);
     }

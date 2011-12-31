@@ -114,8 +114,8 @@ class Context
      * @var array
      * 
      */
-    protected $agents = array(
-        'mobile'=>array(
+    protected $agents = [
+        'mobile' => [
             'Android',
             'BlackBerry',
             'Blazer',
@@ -142,8 +142,8 @@ class Context
             'SEMC',
             'NetFront',
             'Fennec'
-        ),
-        'crawler'=>array(
+        ],
+        'crawler' => [
             'Ask',
             'Baidu',
             'Google',        
@@ -177,8 +177,8 @@ class Context
             'Nutch',
             'WordPress',
             'Wget'
-        )
-    );
+        ],
+    ];
     
     /**
      * 
@@ -205,15 +205,15 @@ class Context
      * Constructor.
      * 
      */
-    public function __construct(array $globals, array $agents = array())
+    public function __construct(array $globals, array $agents = [])
     {
         $this->input  = file_get_contents('php://input');
-        $this->get    = ! isset($globals['_GET'])    ? array() : $globals['_GET'];
-        $this->post   = ! isset($globals['_POST'])   ? array() : $globals['_POST'];
-        $this->server = ! isset($globals['_SERVER']) ? array() : $globals['_SERVER'];
-        $this->cookie = ! isset($globals['_COOKIE']) ? array() : $globals['_COOKIE'];
-        $this->env    = ! isset($globals['_ENV'])    ? array() : $globals['_ENV'];
-        $files        = ! isset($globals['_FILES'])  ? array() : $globals['_FILES'];
+        $this->get    = ! isset($globals['_GET'])    ? [] : $globals['_GET'];
+        $this->post   = ! isset($globals['_POST'])   ? [] : $globals['_POST'];
+        $this->server = ! isset($globals['_SERVER']) ? [] : $globals['_SERVER'];
+        $this->cookie = ! isset($globals['_COOKIE']) ? [] : $globals['_COOKIE'];
+        $this->env    = ! isset($globals['_ENV'])    ? [] : $globals['_ENV'];
+        $files        = ! isset($globals['_FILES'])  ? [] : $globals['_FILES'];
         
         if ($agents) {
             $this->agents = array_merge_recursive($this->agents, $agents);
@@ -235,9 +235,7 @@ class Context
      */
     public function __get($key)
     {
-        $valid = array(
-            'get', 'post', 'server', 'cookie', 'env', 'files', 'header',
-        );
+        $valid = ['get', 'post', 'server', 'cookie', 'env', 'files', 'header'];
         
         if (in_array($key, $valid)) {
             return $this->{$key};
@@ -589,7 +587,7 @@ class Context
     protected function parseAccept($accept, $alt = null)
     {
         $accept = explode(',', $accept);
-        $sorted = array();
+        $sorted = [];
         
         foreach ((array) $accept as $key => $value) {
             $value = trim($value);
@@ -626,7 +624,7 @@ class Context
         // do we have an $accept property yet?
         if (null === $this->accept) {
             // create the $accept property
-            $this->accept = array();
+            $this->accept = [];
             // go through each header ...
             foreach ($this->header as $label => $value) {
                 
@@ -667,7 +665,7 @@ class Context
     protected function setHeader()
     {
         // load the "fake" header var
-        $this->header = array();
+        $this->header = [];
         
         foreach ($this->server as $key => $val) {
             
@@ -742,12 +740,12 @@ class Context
     protected function rebuildFiles($src, &$tgt)
     {
         if (! $src) {
-            $tgt = array();
+            $tgt = [];
             return;
         }
         
         // an array with these keys is a "target" for us (pre-sorted)
-        $tgtkeys = array('error', 'name', 'size', 'tmp_name', 'type');
+        $tgtkeys = ['error', 'name', 'size', 'tmp_name', 'type'];
         
         // the keys of the source array (sorted so that comparisons work
         // regardless of original order)
@@ -772,7 +770,7 @@ class Context
         } else {
             // not a target, create sub-elements and rebuild them too
             foreach ($src as $key => $val) {
-                $tgt[$key] = array();
+                $tgt[$key] = [];
                 $this->rebuildFiles($val, $tgt[$key]);
             }
         }
