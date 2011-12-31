@@ -1,9 +1,9 @@
-Aura.Web
+Aura Web
 ========
 
-The `Aura.Web` package provides tools to build web page controllers, including an `AbstractPage` for action methods, a `Context` class for disovering the request environment, and a `Response` transfer object that describes the eventual HTTP response. (Note that the `Response` transfer object is not itself an HTTP response.)
+The Aura Web package provides tools to build web page controllers, including an `AbstractPage` for action methods, a `Context` class for disovering the request environment, and a `Response` transfer object that describes the eventual HTTP response. (Note that the `Response` transfer object is not itself an HTTP response.)
 
-The `Aura.Web` package has no dependencies, and does not impose any particular routing or rendering system on the developer.
+The Aura Web package has no dependencies, and does not impose any particular routing or rendering system on the developer.
 
 
 Getting Started
@@ -12,7 +12,7 @@ Getting Started
 Instantiation
 -------------
 
-Most Aura packages allow you to instantiate an object by including a particular file. This is not the case with `Aura.Web`.  Because page controllers are so specific to the logic of your particular needs, you will have to extend the `AbstractPage` class yourself and add action methods for your own purposes.
+Most Aura packages allow you to instantiate an object by including a particular file. This is not the case with Aura Web.  Because page controllers are so specific to the logic of your particular needs, you will have to extend the `AbstractPage` class yourself and add action methods for your own purposes.
 
 First, either include the the `Aura.Web/src.php` file to load the package classes, or add the `Aura.Web/src/` directory to your autoloader.
 
