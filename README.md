@@ -83,7 +83,7 @@ At this point, calling `exec()` on the page controller will do nothing, because 
     use Aura\Web\AbstractPage;
     class Page extends AbstractPage
     {
-        protected function actionHello($noun = null)
+        public function actionHello($noun = null)
         {
             $noun = htmlspecialchars($noun, ENT_QUOTES, 'UTF-8');
             $content = "Hello, {$noun}!";
@@ -104,7 +104,7 @@ Now when you call `$page->exec()` as above, you will find that the `Response` tr
         'noun'   => 'world',
     ];
     
-    $page = new Page(new Context, new Response, $params);
+    $page = new Page(new Context($GLOBALS), new Response, $params);
     
     $response = $page->exec();
     echo $response->getContent(); // "Hello, world!"
@@ -142,7 +142,7 @@ For more information, please review the [Context][] class.
 An example "search" action using a "terms" query string parameter might look like this:
 
     <?php
-    protected function actionSearch()
+    public function actionSearch()
     {
         $terms = $this->context->getQuery('terms');
         if ($terms) {
@@ -165,12 +165,12 @@ The `AbstractPage` provides a `$data` property and a `render()` method for just 
     use Aura\Web\AbstractPage;
     class Page extends AbstractPage
     {
-        protected function actionHello($noun = null)
+        public function actionHello($noun = null)
         {
             $this->data->noun = $noun;
         }
         
-        protected function render()
+        public function render()
         {
             // escape all data
             $data = [];
