@@ -104,7 +104,7 @@ Now when you call `$page->exec()` as above, you will find that the `Response` tr
         'noun'   => 'world',
     ];
     
-    $page = new Page(new Context, new Response, $params);
+    $page = new Page(new Context($GLOBALS), new Response, $params);
     
     $response = $page->exec();
     echo $response->getContent(); // "Hello, world!"
