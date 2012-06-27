@@ -102,7 +102,7 @@ parameters it needs:
     use Aura\Web\AbstractPage;
     class Page extends AbstractPage
     {
-        protected function actionHello($noun = null)
+        public function actionHello($noun = null)
         {
             $noun = htmlspecialchars($noun, ENT_QUOTES, 'UTF-8');
             $content = "Hello, {$noun}!";
@@ -124,7 +124,7 @@ transfer object has some content in it.
         'noun'   => 'world',
     ];
     
-    $page = new Page(new Context, new Response, $params);
+    $page = new Page(new Context($GLOBALS), new Response, $params);
     
     $response = $page->exec();
     echo $response->getContent(); // "Hello, world!"
@@ -165,7 +165,7 @@ An example "search" action using a "terms" query string parameter might look
 like this:
 
     <?php
-    protected function actionSearch()
+    public function actionSearch()
     {
         $terms = $this->context->getQuery('terms');
         if ($terms) {
@@ -194,12 +194,12 @@ just that purpose. Here is a naive example of how to use them:
     use Aura\Web\AbstractPage;
     class Page extends AbstractPage
     {
-        protected function actionHello($noun = null)
+        public function actionHello($noun = null)
         {
             $this->data->noun = $noun;
         }
         
-        protected function render()
+        public function render()
         {
             // escape all data
             $data = [];
