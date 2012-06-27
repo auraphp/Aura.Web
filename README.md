@@ -1,9 +1,14 @@
 Aura Web
 ========
 
-The Aura Web package provides tools to build web page controllers, including an `AbstractPage` for action methods, a `Context` class for disovering the request environment, and a `Response` transfer object that describes the eventual HTTP response. (Note that the `Response` transfer object is not itself an HTTP response.)
+The Aura Web package provides tools to build web page controllers, including
+an `AbstractPage` for action methods, a `Context` class for discovering the
+request environment, and a `Response` transfer object that describes the
+eventual HTTP response. (Note that the `Response` transfer object is not
+itself an HTTP response.)
 
-The Aura Web package has no dependencies, and does not impose any particular routing or rendering system on the developer.
+The Aura Web package has no dependencies, and does not impose any particular
+routing or rendering system on the developer.
 
 
 Getting Started
@@ -12,11 +17,17 @@ Getting Started
 Instantiation
 -------------
 
-Most Aura packages allow you to instantiate an object by including a particular file. This is not the case with Aura Web.  Because page controllers are so specific to the logic of your particular needs, you will have to extend the `AbstractPage` class yourself and add action methods for your own purposes.
+Most Aura packages allow you to instantiate an object by including a
+particular file. This is not the case with Aura Web. Because page controllers
+are so specific to the logic of your particular needs, you will have to extend
+the `AbstractPage` class yourself and add action methods for your own
+purposes.
 
-First, either include the the `Aura.Web/src.php` file to load the package classes, or add the `Aura.Web/src/` directory to your autoloader.
+First, either include the the `Aura.Web/src.php` file to load the package
+classes, or add the `Aura.Web/src/` directory to your autoloader.
 
-Next, create a page controller class of your own, extending the `AbstractPage` class:
+Next, create a page controller class of your own, extending the `AbstractPage`
+class:
 
     <?php
     namespace Vendor\Package\Web;
@@ -26,13 +37,14 @@ Next, create a page controller class of your own, extending the `AbstractPage` c
         
     }
 
-To instantiate the page controller class, you will need to pass it a `Context`  and a `Response` transfer object as dependencies.
+To instantiate the page controller class, you will need to pass it a `Context`
+and a `Response` transfer object as dependencies.
 
     <?php
     use Vendor\Package\Web\Page;
     use Aura\Web\Context;
     use Aura\Web\Response;
-    $page = new Page(new Context, new Response);
+    $page = new Page(new Context($GLOBALS), new Response);
     
 If you have a dependency injection mechanism, you can automate the the creation and injection of the dependency objects.  The [Aura.Di][] package is one such system.
 
@@ -40,7 +52,11 @@ If you have a dependency injection mechanism, you can automate the the creation 
 The Execution Cycle
 -------------------
 
-The heart of the page controller is its execution cycle.  You invoke the page controller by calling `exec()` and passing it an array of parameters.  These will determine what action method is called, what the parameters for that method will be, and what rendering format is expected.  The return value is a `Response` transfer object describing how to build your HTTP response.
+The heart of the page controller is its execution cycle. You invoke the page
+controller by calling `exec()` and passing it an array of parameters. These
+will determine what action method is called, what the parameters for that
+method will be, and what rendering format is expected. The return value is a
+`Response` transfer object describing how to build your HTTP response.
 
     <?php
     use Vendor\Package\Web\Page;
@@ -76,7 +92,10 @@ At the end of this, the `exec()` method returns a `Response` transfer object.  N
 Action Methods
 --------------
 
-At this point, calling `exec()` on the page controller will do nothing, because there are no corresponding action methods.  To add an action method to the page controller, create it as a method named `action*()` with any parameters it needs:
+At this point, calling `exec()` on the page controller will do nothing,
+because there are no corresponding action methods. To add an action method to
+the page controller, create it as a method named `action*()` with any
+parameters it needs:
 
     <?php
     namespace Vendor\Package\Web;
@@ -91,7 +110,8 @@ At this point, calling `exec()` on the page controller will do nothing, because 
         }
     }
     
-Now when you call `$page->exec()` as above, you will find that the `Response` transfer object has some content in it.
+Now when you call `$page->exec()` as above, you will find that the `Response`
+transfer object has some content in it.
 
     <?php
     use Vendor\Package\Web\Page;
@@ -113,7 +133,8 @@ Now when you call `$page->exec()` as above, you will find that the `Response` tr
 The Response Transfer Object
 ----------------------------
 
-To manipulate the response description, use the `$this->response` transfer object.  Some of the important methods are:
+To manipulate the response description, use the `$this->response` transfer
+object. Some of the important methods are:
 
 - `setContent()`: sets the body content
 - `setHeader()`: sets a single header value
@@ -127,7 +148,8 @@ For more information, please review the [Response][] class.
 The Context Object
 ------------------
 
-You can discover the web request environment using the `$this->context` object.  Some of the important methods are:
+You can discover the web request environment using the `$this->context`
+object. Some of the important methods are:
 
 - `getQuery()`: gets a $_GET value
 - `getPost()`: gets a $_POST value
@@ -139,7 +161,8 @@ You can discover the web request environment using the `$this->context` object. 
 
 For more information, please review the [Context][] class.
 
-An example "search" action using a "terms" query string parameter might look like this:
+An example "search" action using a "terms" query string parameter might look
+like this:
 
     <?php
     protected function actionSearch()
@@ -150,15 +173,21 @@ An example "search" action using a "terms" query string parameter might look lik
         }
     }
 
-Given a URI with the query string `'?terms=foo+bar+baz'`, the `$terms` variable would be `'foo bar baz'`.  If there was no `'terms'` item in the query string, `$terms` would be null.
+Given a URI with the query string `'?terms=foo+bar+baz'`, the `$terms`
+variable would be `'foo bar baz'`. If there was no `'terms'` item in the query
+string, `$terms` would be null.
 
 
 Data and Rendering
 ------------------
 
-Usually, you will not want to manipulate the `Response` content directly in the action method. It is almost always the case that you will collect data inside the action method, then hand off to a rendering system to present that data.
+Usually, you will not want to manipulate the `Response` content directly in
+the action method. It is almost always the case that you will collect data
+inside the action method, then hand off to a rendering system to present that
+data.
 
-The `AbstractPage` provides a `$data` property and a `render()` method for just that purpose.  Here is a naive example of how to use them:
+The `AbstractPage` provides a `$data` property and a `render()` method for
+just that purpose. Here is a naive example of how to use them:
 
     <?php
     namespace Vendor\Package\Web;
@@ -204,7 +233,10 @@ The `AbstractPage` provides a `$data` property and a `render()` method for just 
         }
     }
 
-The `render()` method is empty by default.  This allows you to add in whatever presentation logic you want, from simply `json_encode()`-ing `$this->data`, to using a complex two-step or transform view.  The [Aura.View][] package provides a powerful view system suitable for use here.
+The `render()` method is empty by default. This allows you to add in whatever
+presentation logic you want, from simply `json_encode()`-ing `$this->data`, to
+using a complex two-step or transform view. The [Aura.View][] package provides
+a powerful view system suitable for use here.
 
 * * *
 
