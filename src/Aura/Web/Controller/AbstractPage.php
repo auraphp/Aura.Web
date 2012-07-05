@@ -6,7 +6,9 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace Aura\Web;
+namespace Aura\Web\Controller;
+
+use Aura\Web\Renderer\RendererInterface;
 
 /**
  * 
@@ -15,7 +17,7 @@ namespace Aura\Web;
  * @package Aura.Web
  * 
  */
-abstract class AbstractPage
+abstract class AbstractPage extends AbstractController
 {
     /**
      * 
@@ -28,24 +30,6 @@ abstract class AbstractPage
     
     /**
      * 
-     * The context of the request environment.
-     * 
-     * @var Context
-     * 
-     */
-    protected $context;
-    
-    /**
-     * 
-     * Collection point for data, typically for rendering the page.
-     * 
-     * @var StdClass
-     * 
-     */
-    protected $data;
-    
-    /**
-     * 
      * The page format to render, typically discovered from the params.
      * 
      * @var string
@@ -55,54 +39,23 @@ abstract class AbstractPage
     
     /**
      * 
-     * Path-info parameters, typically from the route.
+     * Initialize after construction.
      * 
-     * @var array
-     * 
-     */
-    protected $params;
-    
-    /**
-     * 
-     * A data transfer object for the eventual HTTP response.
-     * 
-     * @var Response
+     * @return void
      * 
      */
-    protected $response;
-    
-    /**
-     * 
-     * Constructor.
-     * 
-     * @param Context $context The request environment.
-     * 
-     * @param Response $response A response transfer object.
-     * 
-     * @param array $params The path-info parameters.
-     * 
-     */
-    public function __construct(
-        Context  $context,
-        Response $response,
-        array    $params = []
-    ) {
-        $this->context  = $context;
-        $this->response = $response;
-        $this->params   = $params;
-        $this->data     = new \StdClass;
-        $this->action   = isset($this->params['action'])
-                        ? $this->params['action']
-                        : null;
-        $this->format   = isset($this->params['format'])
-                        ? $this->params['format']
-                        : null;
+    public function init()
+    {
+        // set the action
+        $this->action = isset($this->params['action'])
+                      ? $this->params['action']
+                      : null;
+        
+        // set the format
+        $this->format = isset($this->params['format'])
+                      ? $this->params['format']
+                      : null;
     }
-    
-    /**
-     * Getters
-     * -------
-     */
     
     /**
      * 
@@ -118,30 +71,6 @@ abstract class AbstractPage
     
     /**
      * 
-     * Returns the Context object.
-     * 
-     * @return Context
-     * 
-     */
-    public function getContext()
-    {
-        return $this->context;
-    }
-    
-    /**
-     * 
-     * Returns the data collection object.
-     * 
-     * @return StdClass
-     * 
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-    
-    /**
-     * 
      * Returns the page format, typically discovered from the params.
      * 
      * @return StdClass
@@ -150,30 +79,6 @@ abstract class AbstractPage
     public function getFormat()
     {
         return $this->format;
-    }
-    
-    /**
-     * 
-     * Returns the params.
-     * 
-     * @return array
-     * 
-     */
-    public function getParams()
-    {
-        return $this->params;
-    }
-    
-    /**
-     * 
-     * Returns the Response object.
-     * 
-     * @return Response
-     * 
-     */
-    public function getResponse()
-    {
-        return $this->response;
     }
     
     /**
@@ -206,7 +111,7 @@ abstract class AbstractPage
      */
     public function exec()
     {
-        // prep
+        // pre-exec hook
         $this->preExec();
         
         // the action cycle
@@ -219,9 +124,11 @@ abstract class AbstractPage
         $this->render();
         $this->postRender();
         
-        // done
+        // post-exec hook
         $this->postExec();
-        return $this->response;
+        
+        // done!
+        return $this->getResponse();
     }
     
     /**
@@ -318,6 +225,7 @@ abstract class AbstractPage
      */
     protected function render()
     {
+        $this->renderer->exec();
     }
     
     /**

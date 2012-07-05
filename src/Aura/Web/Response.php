@@ -328,7 +328,7 @@ class Response
      * @return void
      * 
      */
-    public function setHeader($key, $val, $replace = true)
+    public function setHeader($key, $val)
     {
         $key = $this->headerLabel($key);
         $val = $this->headerValue($val);

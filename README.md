@@ -44,7 +44,8 @@ and a `Response` transfer object as dependencies.
     use Vendor\Package\Web\Page;
     use Aura\Web\Context;
     use Aura\Web\Response;
-    $page = new Page(new Context($GLOBALS), new Response);
+    use Aura\Web\Renderer\None as Renderer;
+    $page = new Page(new Context($GLOBALS), new Response, new Renderer);
     
 If you have a dependency injection mechanism, you can automate the the creation and injection of the dependency objects.  The [Aura.Di][] package is one such system.
 
