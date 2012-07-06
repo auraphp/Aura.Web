@@ -52,6 +52,7 @@ dependency objects:
 
 - a `Renderer` strategy (the default is "none")
 
+
     <?php
     use Vendor\Package\Web\Page;
     use Aura\Web\Context;
