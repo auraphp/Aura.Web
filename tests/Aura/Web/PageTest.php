@@ -15,6 +15,8 @@ class PageTest extends \PHPUnit_Framework_TestCase
         return new MockPage(
             new Context($GLOBALS),
             new Response,
+            new Signal,
+            new Renderer\None,
             $params
         );
     }
@@ -30,6 +32,7 @@ class PageTest extends \PHPUnit_Framework_TestCase
         $page = $this->newPage($params);
         $this->assertInstanceOf('Aura\Web\Context', $page->getContext());
         $this->assertInstanceOf('Aura\Web\Response', $page->getResponse());
+        $this->assertInstanceOf('Aura\Web\Signal', $page->getSignal());
         $this->assertSame($params, $page->getParams());
         $this->assertSame('test', $page->getAction());
         $this->assertSame('.test', $page->getFormat());
@@ -44,6 +47,17 @@ class PageTest extends \PHPUnit_Framework_TestCase
         
         $data = $page->getData();
         $this->assertSame('actionIndex', $data->action_method);
+        
+        $expect = [
+            'preExec' => true,
+            'preAction' => true,
+            'postAction' => true,
+            'preRender' => true,
+            'postRender' => true,
+            'postExec' => true,
+        ];
+        
+        $this->assertSame($expect, $page->hooks);
     }
 
     public function testExecNoMethodForAction()

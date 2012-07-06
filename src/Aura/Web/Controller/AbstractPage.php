@@ -9,6 +9,7 @@
 namespace Aura\Web\Controller;
 
 use Aura\Web\Renderer\RendererInterface;
+use Aura\Web\Exception;
 
 /**
  * 
@@ -44,8 +45,11 @@ abstract class AbstractPage extends AbstractController
      * @return void
      * 
      */
-    public function init()
+    protected function init()
     {
+        // call the parent
+        parent::init();
+        
         // set the action
         $this->action = isset($this->params['action'])
                       ? $this->params['action']

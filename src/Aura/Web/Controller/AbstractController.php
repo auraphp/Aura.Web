@@ -95,7 +95,7 @@ abstract class AbstractController implements ControllerInterface
         $this->init();
     }
     
-    public function init()
+    protected function init()
     {
         // do nothing
     }
