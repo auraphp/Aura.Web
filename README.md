@@ -262,7 +262,7 @@ Here is a naive example of how to use the `$data` property:
     <?php
     namespace Vendor\Package\Web;
     
-    use Aura\Web\AbstractPage;
+    use Aura\Web\Controller\AbstractPage;
     
     class Page extends AbstractPage
     {
