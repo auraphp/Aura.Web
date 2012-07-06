@@ -11,9 +11,11 @@ $di->params['Aura\Web\Context']['globals'] = $GLOBALS;
 
 $di->params['Aura\Web\Context']['globals']['server'] = $_SERVER;
 
-$di->params['Aura\Web\AbstractPage'] = [
+$di->params['Aura\Web\Controller\AbstractPage'] = [
     'context'  => $di->lazyGet('web_context'),
     'response' => $di->lazyGet('web_response'),
+    'signal'   => $di->lazyGet('signal_manager'),
+    'renderer' => $di->lazyNew('Aura\Framework\Web\Renderer\AuraViewTwoStep'),
 ];
 
 /**

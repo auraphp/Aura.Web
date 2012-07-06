@@ -13,7 +13,7 @@ abstract class AbstractRenderer implements RendererInterface
         $this->prep();
     }
     
-    abstract public function prep();
+    abstract protected function prep();
     
     abstract public function exec();
 }

@@ -11,6 +11,7 @@ namespace Aura\Web\Controller;
 use Aura\Web\Context;
 use Aura\Web\Renderer\RendererInterface;
 use Aura\Web\Response;
+use Aura\Web\SignalInterface;
 
 /**
  * 
@@ -80,11 +81,13 @@ abstract class AbstractController implements ControllerInterface
     public function __construct(
         Context           $context,
         Response          $response,
+        SignalInterface   $signal,
         RendererInterface $renderer,
         array             $params = []
     ) {
         $this->context  = $context;
         $this->response = $response;
+        $this->signal   = $signal;
         $this->renderer = $renderer;
         $this->params   = $params;
         $this->data     = new \StdClass;
@@ -143,6 +146,11 @@ abstract class AbstractController implements ControllerInterface
     public function getResponse()
     {
         return $this->response;
+    }
+    
+    public function getSignal()
+    {
+        return $this->signal;
     }
     
     /**

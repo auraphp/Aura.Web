@@ -11,7 +11,7 @@ interface ControllerInterface
     
     public function getResponse();
     
-    public function exec();
+    public function getSignal();
     
-    public function render();
+    public function exec();
 }

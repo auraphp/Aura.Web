@@ -31,7 +31,9 @@ class:
 
     <?php
     namespace Vendor\Package\Web;
-    use Aura\Web\AbstractPage;
+    
+    use Aura\Web\Controller\AbstractPage;
+    
     class Page extends AbstractPage
     {
         
@@ -44,8 +46,15 @@ and a `Response` transfer object as dependencies.
     use Vendor\Package\Web\Page;
     use Aura\Web\Context;
     use Aura\Web\Response;
+    use Aura\Web\Signal;
     use Aura\Web\Renderer\None as Renderer;
-    $page = new Page(new Context($GLOBALS), new Response, new Renderer);
+    
+    $page = new Page(
+        new Context($GLOBALS),
+        new Response,
+        new Signal,
+        new Renderer
+    );
     
 If you have a dependency injection mechanism, you can automate the the creation and injection of the dependency objects.  The [Aura.Di][] package is one such system.
 
@@ -63,6 +72,8 @@ method will be, and what rendering format is expected. The return value is a
     use Vendor\Package\Web\Page;
     use Aura\Web\Context;
     use Aura\Web\Response;
+    use Aura\Web\Renderer\None as Renderer;
+    use Aura\Web\Signal;
     
     $params = [
         'action' => 'hello',
@@ -70,7 +81,13 @@ method will be, and what rendering format is expected. The return value is a
         'noun'   => 'world',
     ];
     
-    $page = new Page(new Context, new Response, $params);
+    $page = new Page(
+        new Context($GLOBALS),
+        new Response,
+        new Signal,
+        new Renderer,
+        $params
+    );
     
     $response = $page->exec();
 
@@ -78,14 +95,23 @@ The parameters are generally retrieved from a routing mechanism of some sort, su
 
 Internally, the `exec()` cycle runs ...
 
-- A `preExec()` hook to let you set up the object,
-- A `preAction()` hook to prepare for the action,
-- The `action()` method to invoke the method determined by the `'action'` param value
-- A `postAction()` hook,
-- A `preRender()` hook to prepare for rendering,
-- The `render()` method to render a presentation (this is up to the developer to create),
-- A `postRender()` hook, and
-- A `postExec()` hook.
+- the `preExec()` hook to let you set up before execution begins,
+
+- the `preAction()` hook to prepare for the action,
+
+- the `action()` method to invoke the method determined by the `'action'`
+  param value
+
+- the `postAction()` hook,
+
+- the `preRender()` hook to prepare for rendering,
+
+- the `render()` method to render a presentation (this is up to the developer
+  to create),
+
+- the `postRender()` hook, and
+
+- the `postExec()` hook to do work after execution ends.
 
 At the end of this, the `exec()` method returns a `Response` transfer object.  Note that the `Response` object is not an HTTP response proper; it is a data transfer object that has information on how to build an HTTP response.  You would need to inspect the `Response` object and use that information to build an HTTP response of your own.  (The [Aura.Http][] package provides an HTTP response object proper.)
 

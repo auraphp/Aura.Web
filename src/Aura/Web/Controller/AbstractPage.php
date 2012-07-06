@@ -55,6 +55,14 @@ abstract class AbstractPage extends AbstractController
         $this->format = isset($this->params['format'])
                       ? $this->params['format']
                       : null;
+        
+        // set the signal handlers
+        $this->signal->handler($this, 'pre_exec',    [$this, 'preExec']);
+        $this->signal->handler($this, 'pre_action',  [$this, 'preAction']);
+        $this->signal->handler($this, 'post_action', [$this, 'postAction']);
+        $this->signal->handler($this, 'pre_render',  [$this, 'preRender']);
+        $this->signal->handler($this, 'post_render', [$this, 'postRender']);
+        $this->signal->handler($this, 'post_exec',   [$this, 'postExec']);
     }
     
     /**
@@ -82,75 +90,50 @@ abstract class AbstractPage extends AbstractController
     }
     
     /**
-     * The Execution Cycle
-     * -------------------
-     */
-    
-    /**
      * 
      * Executes the action and all hooks:
      * 
-     * - calls `preExec()`
+     * - signals `pre_exec`, thereby calling `preExec()`
      * 
-     * - calls `preAction()`
+     * - signals `pre_action`, thereby calling `preAction()`
      * 
      * - calls `action()` to find and invoke the action method
      * 
-     * - calls `postAction()`
+     * - signals `post_action`, thereby calling `postAction()`
      * 
-     * - calls `preRender()`
+     * - signals `pre_render`, thereby calling `preRender()`
      * 
-     * - calls `render()` to generate a presentation (does nothing by default)
+     * - calls `render()` to render a view (does nothing by default)
      * 
-     * - calls `postRender()`
+     * - signals `post_render`, thereby calling `postRender()`
      * 
-     * - calls `postExec()` and then returns the Response transfer object
+     * - signals `post_exec`, thereby calling `postExec()`
+     * 
+     * - returns the Response transfer object
      * 
      * @return Response
      * 
      */
     public function exec()
     {
-        // pre-exec hook
-        $this->preExec();
+        // pre-exec signal
+        $this->signal->send($this, 'pre_exec', $this);
         
         // the action cycle
-        $this->preAction();
+        $this->signal->send($this, 'pre_action', $this);
         $this->action();
-        $this->postAction();
+        $this->signal->send($this, 'post_action', $this);
         
         // the render cycle
-        $this->preRender();
+        $this->signal->send($this, 'pre_render', $this);
         $this->render();
-        $this->postRender();
+        $this->signal->send($this, 'post_render', $this);
         
-        // post-exec hook
-        $this->postExec();
+        // post-exec signal
+        $this->signal->send($this, 'post_exec', $this);
         
         // done!
         return $this->getResponse();
-    }
-    
-    /**
-     * 
-     * Runs at the beginning of `exec()` before `preAction()`.
-     * 
-     * @return void
-     * 
-     */
-    public function preExec()
-    {
-    }
-    
-    /**
-     * 
-     * Runs after `preExec()` and before `action()`.
-     * 
-     * @return void
-     * 
-     */
-    public function preAction()
-    {
     }
     
     /**
@@ -196,6 +179,40 @@ abstract class AbstractPage extends AbstractController
     
     /**
      * 
+     * Renders the page into the response object.
+     * 
+     * @return void
+     * 
+     */
+    protected function render()
+    {
+        $this->renderer->exec();
+    }
+    
+    /**
+     * 
+     * Runs at the beginning of `exec()` before `preAction()`.
+     * 
+     * @return void
+     * 
+     */
+    public function preExec()
+    {
+    }
+    
+    /**
+     * 
+     * Runs after `preExec()` and before `action()`.
+     * 
+     * @return void
+     * 
+     */
+    public function preAction()
+    {
+    }
+    
+    /**
+     * 
      * Runs after `action()` and before `preRender()`.
      * 
      * @return void
@@ -214,18 +231,6 @@ abstract class AbstractPage extends AbstractController
      */
     public function preRender()
     {
-    }
-    
-    /**
-     * 
-     * Renders the page into the response object.
-     * 
-     * @return void
-     * 
-     */
-    protected function render()
-    {
-        $this->renderer->exec();
     }
     
     /**
