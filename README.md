@@ -5,10 +5,12 @@ The Aura Web package provides tools to build web page controllers, including
 an `AbstractPage` for action methods, a `Context` class for discovering the
 request environment, and a `Response` transfer object that describes the
 eventual HTTP response. (Note that the `Response` transfer object is not
-itself an HTTP response.)
+itself an HTTP response.) It also includes a `Signal` interface to handle
+calls to controller hooks, as well as a `Renderer` interface to allow for
+different rendering strategies.
 
 The Aura Web package has no dependencies, and does not impose any particular
-routing or rendering system on the developer.
+routing, signalling, or rendering system on the developer.
 
 
 Getting Started
@@ -18,10 +20,10 @@ Instantiation
 -------------
 
 Most Aura packages allow you to instantiate an object by including a
-particular file. This is not the case with Aura Web. Because page controllers
-are so specific to the logic of your particular needs, you will have to extend
-the `AbstractPage` class yourself and add action methods for your own
-purposes.
+particular file. This is not the case with `Aura.Web`. Because page
+controllers are so specific to the logic of your particular needs, you will
+have to extend the `AbstractPage` class yourself and add action methods for
+your own purposes.
 
 First, either include the the `Aura.Web/src.php` file to load the package
 classes, or add the `Aura.Web/src/` directory to your autoloader.
@@ -39,8 +41,16 @@ class:
         
     }
 
-To instantiate the page controller class, you will need to pass it a `Context`
-and a `Response` transfer object as dependencies.
+To instantiate the page controller class, you will need to pass it some
+dependency objects:
+
+- a `Context` to represent the execution environment,
+
+- a `Response` transfer object to return the results,
+
+- a `Signal` manager to handle execution hooks, and
+
+- a `Renderer` strategy (the default is "none")
 
     <?php
     use Vendor\Package\Web\Page;
@@ -56,7 +66,9 @@ and a `Response` transfer object as dependencies.
         new Renderer
     );
     
-If you have a dependency injection mechanism, you can automate the the creation and injection of the dependency objects.  The [Aura.Di][] package is one such system.
+If you have a dependency injection mechanism, you can automate the the
+creation and injection of the dependency objects. The [Aura.Di][] package is
+one such system.
 
 
 The Execution Cycle
@@ -72,8 +84,8 @@ method will be, and what rendering format is expected. The return value is a
     use Vendor\Package\Web\Page;
     use Aura\Web\Context;
     use Aura\Web\Response;
-    use Aura\Web\Renderer\None as Renderer;
     use Aura\Web\Signal;
+    use Aura\Web\Renderer\None as Renderer;
     
     $params = [
         'action' => 'hello',
@@ -91,11 +103,12 @@ method will be, and what rendering format is expected. The return value is a
     
     $response = $page->exec();
 
-The parameters are generally retrieved from a routing mechanism of some sort, such as the one provided by the [Aura.Router][] package.
+The parameters are generally retrieved from a routing mechanism of some sort,
+such as the one provided by the [Aura.Router][] package.
 
-Internally, the `exec()` cycle runs ...
+The `exec()` cycle runs ...
 
-- the `preExec()` hook to let you set up before execution begins,
+- the `preExec()` hook to prepare for overall execution,
 
 - the `preAction()` hook to prepare for the action,
 
@@ -111,9 +124,14 @@ Internally, the `exec()` cycle runs ...
 
 - the `postRender()` hook, and
 
-- the `postExec()` hook to do work after execution ends.
+- the `postExec()` hook to do work after overall execution.
 
-At the end of this, the `exec()` method returns a `Response` transfer object.  Note that the `Response` object is not an HTTP response proper; it is a data transfer object that has information on how to build an HTTP response.  You would need to inspect the `Response` object and use that information to build an HTTP response of your own.  (The [Aura.Http][] package provides an HTTP response object proper.)
+At the end of this, the `exec()` method returns a `Response` transfer object.
+Note that the `Response` object is not an HTTP response proper; it is a data
+transfer object that has information on how to build an HTTP response. You
+would need to inspect the `Response` object and use that information to build
+an HTTP response of your own. (The [Aura.Http][] package provides an HTTP
+response object proper.)
 
 
 Action Methods
@@ -126,7 +144,9 @@ parameters it needs:
 
     <?php
     namespace Vendor\Package\Web;
-    use Aura\Web\AbstractPage;
+    
+    use Aura\Web\Controller\AbstractPage;
+    
     class Page extends AbstractPage
     {
         public function actionHello($noun = null)
@@ -144,6 +164,8 @@ transfer object has some content in it.
     use Vendor\Package\Web\Page;
     use Aura\Web\Context;
     use Aura\Web\Response;
+    use Aura\Web\Signal;
+    use Aura\Web\Renderer\None as Renderer;
     
     $params = [
         'action' => 'hello',
@@ -151,7 +173,13 @@ transfer object has some content in it.
         'noun'   => 'world',
     ];
     
-    $page = new Page(new Context($GLOBALS), new Response, $params);
+    $page = new Page(
+        new Context($GLOBALS),
+        new Response,
+        new Signal,
+        new Renderer,
+        $params
+    );
     
     $response = $page->exec();
     echo $response->getContent(); // "Hello, world!"
@@ -164,10 +192,16 @@ To manipulate the response description, use the `$this->response` transfer
 object. Some of the important methods are:
 
 - `setContent()`: sets the body content
+
 - `setHeader()`: sets a single header value
+
 - `setCookie()`: sets a single cookie
-- `setRedirect()`: sets a `Location:` header for redirect, with an optional status code and message (default is `'302 Found'`.)
-- `setStatusCode()` and `setStatusText()`: sets the HTTP status code and message
+
+- `setRedirect()`: sets a `Location:` header for redirect, with an optional
+  status code and message (default is `'302 Found'`.)
+
+- `setStatusCode()` and `setStatusText()`: sets the HTTP status code and
+  message
 
 For more information, please review the [Response][] class.
 
@@ -179,12 +213,19 @@ You can discover the web request environment using the `$this->context`
 object. Some of the important methods are:
 
 - `getQuery()`: gets a $_GET value
+
 - `getPost()`: gets a $_POST value
+
 - `getFiles()`: gets a $_FILES value
+
 - `getInput()`: gets the raw `php://input` value
+
 - `getJsonInput()`: gets the raw `php://input` value and `json_decode()` it
+
 - `getAccept()`: gets the Accept headers, ordered by weight
-- `isGet()`, `isPut()`, `isXhr()`, etc.: Tells if the request method was `GET`, `PUT`, an `Xml-HTTP-Request`, etc.
+
+- `isGet()`, `isPut()`, `isXhr()`, etc.: Tells if the request method was
+  `GET`, `PUT`, an `Xml-HTTP-Request`, etc.
 
 For more information, please review the [Context][] class.
 
@@ -211,65 +252,165 @@ Data and Rendering
 Usually, you will not want to manipulate the `Response` content directly in
 the action method. It is almost always the case that you will collect data
 inside the action method, then hand off to a rendering system to present that
-data.
+data. The `AbstractPage` provides a `$data` property and a `Renderer` strategy
+system for just that purpose.
 
-The `AbstractPage` provides a `$data` property and a `render()` method for
-just that purpose. Here is a naive example of how to use them:
+Here is a naive example of how to use the `$data` property:
 
     <?php
     namespace Vendor\Package\Web;
+    
     use Aura\Web\AbstractPage;
+    
     class Page extends AbstractPage
     {
         public function actionHello($noun = null)
         {
             $this->data->noun = $noun;
         }
-        
-        public function render()
-        {
-            // escape all data
-            $data = [];
-            foreach ((array) $this->data as $key => $val) {
-                $data[$key] = htmlspecialchars($val, ENT_QUOTES, 'UTF-8');
-            }
-            
-            // switch between actions
-            switch ($this->getAction()) {
+    }
+
+To render the data into the response, you can override the `render()` method
+...
+    
+    <?php
+    public function render()
+    {
+        // get the response object
+        $response = $this->getResponse();
+    
+        // escape all data
+        $data = [];
+        foreach ((array) $this->data as $key => $val) {
+            $data[$key] = htmlspecialchars($val, ENT_QUOTES, 'UTF-8');
+        }
+    
+        // switch between actions
+        switch ($this->getAction()) {
             case 'hello':
                 $success = true;
                 $content = "Hello, {$data['noun']}!";
                 break;
             default:
-                $this->response->setStatusCode('404');
+                $response->setStatusCode('404');
                 $success = false;
                 $content = 'Action not found.';
                 break;
-            }
+        }
+    
+        // convert to a JSON response?
+        if ($this->getFormat() == '.json') {
+            $response->setContentType('application/json');
+            $content = json_encode([
+                'success' => $success,
+                'content' => $content,
+            ]);
+        }
+    
+        $response->setContent($content);
+    }
+    
+... or you can create a `Renderer` strategy of your own. (This is the
+preferred approach.)
+
+To create a `Renderer` strategy, extend from `AbstractRenderer`, then use the
+provided `$controller` property to inspect the controller and render its data
+into the response. The following example is identical in effect to the above
+`render()` method override, except that it uses `$this->controller` instead of
+`$this`.
+
+    <?php
+    namespace Vendor\Package\Web\Renderer;
+    
+    use Aura\Web\Renderer\AbstractRenderer;
+    
+    class Naive extends AbstractRenderer
+    {
+        public function exec()
+        {
+            // get the response object
+            $response = $this->controller->getResponse();
             
+            // escape all data
+            $data = [];
+            foreach ((array) $this->controller->getData() as $key => $val) {
+                $data[$key] = htmlspecialchars($val, ENT_QUOTES, 'UTF-8');
+            }
+        
+            // switch between actions
+            switch ($this->controller->getAction()) {
+                case 'hello':
+                    $success = true;
+                    $content = "Hello, {$data['noun']}!";
+                    break;
+                default:
+                    $response->setStatusCode('404');
+                    $success = false;
+                    $content = 'Action not found.';
+                    break;
+            }
+        
             // convert to a JSON response?
-            if ($this->getFormat() == '.json') {
-                $this->response->setContentType('application/json');
+            if ($this->controller->getFormat() == '.json') {
+                $response->setContentType('application/json');
                 $content = json_encode([
                     'success' => $success,
                     'content' => $content,
                 ]);
             }
-            
-            $this->response->setContent($content);
+        
+            $response->setContent($content);
         }
     }
 
-The `render()` method is empty by default. This allows you to add in whatever
-presentation logic you want, from simply `json_encode()`-ing `$this->data`, to
-using a complex two-step or transform view. The [Aura.View][] package provides
-a powerful view system suitable for use here.
+You can then pass the naive renderer strategy to the page controller
+constructor, and it will be used automatically at `render()` time:
+
+    <?php
+    use Vendor\Package\Web\Page;
+    use Aura\Web\Context;
+    use Aura\Web\Response;
+    use Aura\Web\Signal;
+    use Vendor\Package\Web\Renderer\Naive as NaiveRenderer; // <-- strategy
+    
+    $params = [
+        'action' => 'hello',
+        'format' => '.html',
+        'noun'   => 'world',
+    ];
+    
+    $page = new Page(
+        new Context($GLOBALS),
+        new Response,
+        new Signal,
+        new NaiveRenderer, // <-- strategy
+        $params
+    );
+
+    $response = $page->exec();
+    echo $response->getContent(); // "Hello, world!"
+
+You could write a `Renderer` strategy that uses [Aura.View][], [Mustache][],
+or some other templating or view system.
+
+
+Signal Interface
+----------------
+
+The `Aura.Web` package comes with a signal slots interface and a stub signal
+manager implementation. These are fine for standalone use, but really they are
+provided so that you can implement the interface in your own signal slots (or
+observer/listener/notification) system.  One such signal slots approach is
+the [Aura.Signal][] package.
+
 
 * * *
 
 [Aura.Di]:      https://github.com/auraphp/Aura.Di
-[Aura.Router]:  https://github.com/auraphp/Aura.Router 
 [Aura.Http]:    https://github.com/auraphp/Aura.Http 
+[Aura.Router]:  https://github.com/auraphp/Aura.Router 
+[Aura.Signal]:  https://github.com/auraphp/Aura.Signal 
 [Aura.View]:    https://github.com/auraphp/Aura.View 
-[Response]:     https://github.com/auraphp/Aura.Web/blob/master/src/Aura/Web/Response.php
 [Context]:      https://github.com/auraphp/Aura.Web/blob/master/src/Aura/Web/Context.php
+[Mustache]:     https://github.com/bobthecow/mustache.php
+[Response]:     https://github.com/auraphp/Aura.Web/blob/master/src/Aura/Web/Response.php
