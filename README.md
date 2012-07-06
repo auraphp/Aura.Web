@@ -52,6 +52,7 @@ dependency objects:
 
 - a `Renderer` strategy (the default is "none")
 
+The code would look like this:
 
     <?php
     use Vendor\Package\Web\Page;
