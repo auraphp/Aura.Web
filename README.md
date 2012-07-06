@@ -414,5 +414,5 @@ the [Aura.Signal][] package.
 [Aura.Signal]:  https://github.com/auraphp/Aura.Signal 
 [Aura.View]:    https://github.com/auraphp/Aura.View 
 [Context]:      https://github.com/auraphp/Aura.Web/blob/master/src/Aura/Web/Context.php
-[Mustache]:     https://github.com/bobthecow/mustache.php
+[Mustache]:     https://github.com/weierophinney/phly_mustache
 [Response]:     https://github.com/auraphp/Aura.Web/blob/master/src/Aura/Web/Response.php
