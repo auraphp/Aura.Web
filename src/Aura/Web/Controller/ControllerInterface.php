@@ -1,6 +1,22 @@
 <?php
+/**
+ * 
+ * This file is part of the Aura project for PHP.
+ * 
+ * @package Aura.Web
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 namespace Aura\Web\Controller;
 
+/**
+ * 
+ * Controller Interface
+ * 
+ * @package Aura.Web
+ * 
+ */
 interface ControllerInterface
 {
     public function getContext();
