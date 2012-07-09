@@ -10,6 +10,7 @@
  */
 namespace Aura\Web\Exception;
 
+use Aura\Web\Exception as Exception;
 /**
  * 
  * Context Exception
@@ -17,4 +18,7 @@ namespace Aura\Web\Exception;
  * @package Aura.Web
  * 
  */
-class Context extends \Aura\Web\Exception {}
+class Context extends Exception
+{
+}
+ 

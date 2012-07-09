@@ -17,4 +17,7 @@ namespace Aura\Web;
  * @package Aura.Web
  * 
  */
-class Exception extends \Exception {}
+class Exception extends \Exception
+{
+}
+ 
