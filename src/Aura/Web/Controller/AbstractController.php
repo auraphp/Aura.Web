@@ -32,7 +32,7 @@ abstract class AbstractController implements ControllerInterface
      * 
      */
     protected $context;
-    
+
     /**
      * 
      * Collection point for data, typically for rendering the page.
@@ -41,7 +41,7 @@ abstract class AbstractController implements ControllerInterface
      * 
      */
     protected $data;
-    
+
     /**
      * 
      * Path-info parameters, typically from the route.
@@ -50,7 +50,7 @@ abstract class AbstractController implements ControllerInterface
      * 
      */
     protected $params;
-    
+
     /**
      * 
      * A rendering strategy object.
@@ -59,7 +59,7 @@ abstract class AbstractController implements ControllerInterface
      * 
      */
     protected $renderer;
-    
+
     /**
      * 
      * A data transfer object for the eventual HTTP response.
@@ -68,7 +68,7 @@ abstract class AbstractController implements ControllerInterface
      * 
      */
     protected $response;
-    
+
     /**
      * 
      * Constructor.
@@ -100,7 +100,7 @@ abstract class AbstractController implements ControllerInterface
         $this->renderer->setController($this);
         $this->init();
     }
-    
+
     /**
      * 
      * Post-constructor initialization.
@@ -112,7 +112,7 @@ abstract class AbstractController implements ControllerInterface
     {
         // do nothing
     }
-    
+
     /**
      * 
      * Returns the Context object.
@@ -124,7 +124,7 @@ abstract class AbstractController implements ControllerInterface
     {
         return $this->context;
     }
-    
+
     /**
      * 
      * Returns the data collection object.
@@ -136,7 +136,7 @@ abstract class AbstractController implements ControllerInterface
     {
         return $this->data;
     }
-    
+
     /**
      * 
      * Returns the params.
@@ -148,7 +148,7 @@ abstract class AbstractController implements ControllerInterface
     {
         return $this->params;
     }
-    
+
     /**
      * 
      * Returns the Response object.
@@ -160,7 +160,7 @@ abstract class AbstractController implements ControllerInterface
     {
         return $this->response;
     }
-    
+
     /**
      * 
      * Returns the SignalInterface object.
@@ -172,7 +172,7 @@ abstract class AbstractController implements ControllerInterface
     {
         return $this->signal;
     }
-    
+
     /**
      * 
      * Executes the controller.
@@ -181,7 +181,7 @@ abstract class AbstractController implements ControllerInterface
      * 
      */
     abstract public function exec();
-    
+
     /**
      * 
      * Renders the controller output, generally into the Response object.
@@ -191,3 +191,4 @@ abstract class AbstractController implements ControllerInterface
      */
     abstract protected function render();
 }
+ 

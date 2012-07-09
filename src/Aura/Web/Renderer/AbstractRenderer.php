@@ -29,7 +29,7 @@ abstract class AbstractRenderer implements RendererInterface
      * 
      */
     protected $controller;
-    
+
     /**
      * 
      * Sets the controller to be rendered.
@@ -44,7 +44,7 @@ abstract class AbstractRenderer implements RendererInterface
         $this->controller = $controller;
         $this->prep();
     }
-    
+
     /**
      * 
      * A helper method to prepare the renderer after setController().
@@ -53,7 +53,7 @@ abstract class AbstractRenderer implements RendererInterface
      * 
      */
     abstract protected function prep();
-    
+
     /**
      * 
      * Executes the renderer.
@@ -63,3 +63,4 @@ abstract class AbstractRenderer implements RendererInterface
      */
     abstract public function exec();
 }
+ 

@@ -27,7 +27,7 @@ interface ControllerInterface
      * 
      */
     public function getContext();
-    
+
     /**
      * 
      * Returns the data collection object.
@@ -36,7 +36,7 @@ interface ControllerInterface
      * 
      */
     public function getData();
-    
+
     /**
      * 
      * Returns the params.
@@ -45,7 +45,7 @@ interface ControllerInterface
      * 
      */
     public function getParams();
-    
+
     /**
      * 
      * Returns the Response object.
@@ -54,7 +54,7 @@ interface ControllerInterface
      * 
      */
     public function getResponse();
-    
+
     /**
      * 
      * Returns the SignalInterface object.
@@ -63,7 +63,7 @@ interface ControllerInterface
      * 
      */
     public function getSignal();
-    
+
     /**
      * 
      * Executes the controller.
@@ -73,3 +73,4 @@ interface ControllerInterface
      */
     public function exec();
 }
+ 
