@@ -31,7 +31,7 @@ interface RendererInterface
      * 
      */
     public function setController(ControllerInterface $controller);
-    
+
     /**
      * 
      * Executes the renderer.
@@ -41,3 +41,4 @@ interface RendererInterface
      */
     public function exec();
 }
+ 
