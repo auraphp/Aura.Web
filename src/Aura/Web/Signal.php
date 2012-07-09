@@ -27,7 +27,7 @@ class Signal implements SignalInterface
      * 
      */
     protected $handlers = [];
-    
+
     /**
      * 
      * Adds a handler to the list.
@@ -46,7 +46,7 @@ class Signal implements SignalInterface
     {
         $this->handlers[$signal] = $callback;
     }
-    
+
     /**
      * 
      * Sends a signal to the handlers.
@@ -67,3 +67,4 @@ class Signal implements SignalInterface
         call_user_func_array($func, $args);
     }
 }
+ 

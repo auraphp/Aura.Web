@@ -30,7 +30,7 @@ class None extends AbstractRenderer
     {
         // do nothing
     }
-    
+
     /**
      * 
      * Executes the renderer.
@@ -43,3 +43,4 @@ class None extends AbstractRenderer
         // do nothing
     }
 }
+ 

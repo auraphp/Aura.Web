@@ -34,7 +34,7 @@ interface SignalInterface
      * 
      */
     public function handler($origin, $signal, $callback);
-    
+
     /**
      * 
      * Sends a signal to the handlers.
@@ -48,3 +48,4 @@ interface SignalInterface
      */
     public function send($origin, $signal);
 }
+ 
