@@ -3,6 +3,8 @@
  * 
  * This file is part of the Aura project for PHP.
  * 
+ * @package Aura.Web
+ * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
@@ -203,6 +205,10 @@ class Context
     /**
      * 
      * Constructor.
+     * 
+     * @param array $globals An array of global variables, typically $GLOBALS.
+     * 
+     * @param array $agents An array of override agent values.
      * 
      */
     public function __construct(array $globals, array $agents = [])
@@ -474,7 +480,7 @@ class Context
      * 
      * @param string $alt The value to return if the key does not exist.
      * 
-     * @param bool The value of $cookie[$key], or the alternate default
+     * @return mixed The value of $cookie[$key], or the alternate default
      * value.
      * 
      */
@@ -540,10 +546,6 @@ class Context
      * 
      * @param int $depth Recursion depth.
      * 
-     * @param int $options Bitmask of JSON decode options. Currently only 
-     * JSON_BIGINT_AS_STRING is supported (default is to cast large integers 
-     * as floats).
-     * 
      * @return object The `json_decode()` results.
      * 
      */
@@ -577,7 +579,7 @@ class Context
      * highest being first in the returned array. The returned data is 
      * unfiltered.
      * 
-     * @param string $header The name of the accept header to parse.
+     * @param string $accept The name of the accept header to parse.
      * 
      * @param mixed $alt The value to return if the key does not exist.
      * 
