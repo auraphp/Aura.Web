@@ -207,6 +207,10 @@ class Context
      */
     public function __construct(array $globals, array $agents = [])
     {
+        // make sure these are loaded, in case auto_globals_jit = on
+        $_SERVER;
+        $_ENV;
+
         $this->input  = file_get_contents('php://input');
         $this->get    = ! isset($globals['_GET'])    ? [] : $globals['_GET'];
         $this->post   = ! isset($globals['_POST'])   ? [] : $globals['_POST'];
