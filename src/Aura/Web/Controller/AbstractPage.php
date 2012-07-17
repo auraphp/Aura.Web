@@ -3,6 +3,8 @@
  * 
  * This file is part of the Aura project for PHP.
  * 
+ * @package Aura.Web
+ * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
@@ -28,7 +30,7 @@ abstract class AbstractPage extends AbstractController
      * 
      */
     protected $action;
-    
+
     /**
      * 
      * The page format to render, typically discovered from the params.
@@ -37,7 +39,7 @@ abstract class AbstractPage extends AbstractController
      * 
      */
     protected $format;
-    
+
     /**
      * 
      * Initialize after construction.
@@ -49,17 +51,17 @@ abstract class AbstractPage extends AbstractController
     {
         // call the parent
         parent::init();
-        
+
         // set the action
         $this->action = isset($this->params['action'])
                       ? $this->params['action']
                       : null;
-        
+
         // set the format
         $this->format = isset($this->params['format'])
                       ? $this->params['format']
                       : null;
-        
+
         // set the signal handlers
         $this->signal->handler($this, 'pre_exec',    [$this, 'preExec']);
         $this->signal->handler($this, 'pre_action',  [$this, 'preAction']);
@@ -68,7 +70,7 @@ abstract class AbstractPage extends AbstractController
         $this->signal->handler($this, 'post_render', [$this, 'postRender']);
         $this->signal->handler($this, 'post_exec',   [$this, 'postExec']);
     }
-    
+
     /**
      * 
      * Returns the action, typically discovered from the params.
@@ -80,7 +82,7 @@ abstract class AbstractPage extends AbstractController
     {
         return $this->action;
     }
-    
+
     /**
      * 
      * Returns the page format, typically discovered from the params.
@@ -92,7 +94,7 @@ abstract class AbstractPage extends AbstractController
     {
         return $this->format;
     }
-    
+
     /**
      * 
      * Executes the action and all hooks:
@@ -122,24 +124,24 @@ abstract class AbstractPage extends AbstractController
     {
         // pre-exec signal
         $this->signal->send($this, 'pre_exec', $this);
-        
+
         // the action cycle
         $this->signal->send($this, 'pre_action', $this);
         $this->action();
         $this->signal->send($this, 'post_action', $this);
-        
+
         // the render cycle
         $this->signal->send($this, 'pre_render', $this);
         $this->render();
         $this->signal->send($this, 'post_render', $this);
-        
+
         // post-exec signal
         $this->signal->send($this, 'post_exec', $this);
-        
+
         // done!
         return $this->getResponse();
     }
-    
+
     /**
      * 
      * Determines the action method, then invokes it.
@@ -155,7 +157,7 @@ abstract class AbstractPage extends AbstractController
         }
         $this->invokeMethod($method);
     }
-    
+
     /**
      * 
      * Invokes a method by name, matching method params to `$this->params`.
@@ -180,7 +182,7 @@ abstract class AbstractPage extends AbstractController
         }
         $method->invokeArgs($this, $args);
     }
-    
+
     /**
      * 
      * Renders the page into the response object.
@@ -192,7 +194,7 @@ abstract class AbstractPage extends AbstractController
     {
         $this->renderer->exec();
     }
-    
+
     /**
      * 
      * Runs at the beginning of `exec()` before `preAction()`.
@@ -203,7 +205,7 @@ abstract class AbstractPage extends AbstractController
     public function preExec()
     {
     }
-    
+
     /**
      * 
      * Runs after `preExec()` and before `action()`.
@@ -214,7 +216,7 @@ abstract class AbstractPage extends AbstractController
     public function preAction()
     {
     }
-    
+
     /**
      * 
      * Runs after `action()` and before `preRender()`.
@@ -225,7 +227,7 @@ abstract class AbstractPage extends AbstractController
     public function postAction()
     {
     }
-    
+
     /**
      * 
      * Runs after `postAction()` and before `render()`.
@@ -236,7 +238,7 @@ abstract class AbstractPage extends AbstractController
     public function preRender()
     {
     }
-    
+
     /**
      * 
      * Runs after `render()` and before `postExec()`.
@@ -247,7 +249,7 @@ abstract class AbstractPage extends AbstractController
     public function postRender()
     {
     }
-    
+
     /**
      * 
      * Runs at the end of `exec()` after `postRender()`.
@@ -259,3 +261,4 @@ abstract class AbstractPage extends AbstractController
     {
     }
 }
+ 

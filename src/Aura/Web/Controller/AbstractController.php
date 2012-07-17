@@ -3,6 +3,8 @@
  * 
  * This file is part of the Aura project for PHP.
  * 
+ * @package Aura.Web
+ * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
@@ -30,7 +32,7 @@ abstract class AbstractController implements ControllerInterface
      * 
      */
     protected $context;
-    
+
     /**
      * 
      * Collection point for data, typically for rendering the page.
@@ -39,7 +41,7 @@ abstract class AbstractController implements ControllerInterface
      * 
      */
     protected $data;
-    
+
     /**
      * 
      * Path-info parameters, typically from the route.
@@ -48,7 +50,7 @@ abstract class AbstractController implements ControllerInterface
      * 
      */
     protected $params;
-    
+
     /**
      * 
      * A rendering strategy object.
@@ -57,7 +59,7 @@ abstract class AbstractController implements ControllerInterface
      * 
      */
     protected $renderer;
-    
+
     /**
      * 
      * A data transfer object for the eventual HTTP response.
@@ -66,7 +68,7 @@ abstract class AbstractController implements ControllerInterface
      * 
      */
     protected $response;
-    
+
     /**
      * 
      * Constructor.
@@ -74,6 +76,10 @@ abstract class AbstractController implements ControllerInterface
      * @param Context $context The request environment.
      * 
      * @param Response $response A response transfer object.
+     * 
+     * @param SignalInterface $signal A signal manager.
+     * 
+     * @param RendererInterface $renderer A renderer strategy object.
      * 
      * @param array $params The path-info parameters.
      * 
@@ -94,12 +100,19 @@ abstract class AbstractController implements ControllerInterface
         $this->renderer->setController($this);
         $this->init();
     }
-    
+
+    /**
+     * 
+     * Post-constructor initialization.
+     * 
+     * @return void
+     * 
+     */
     protected function init()
     {
         // do nothing
     }
-    
+
     /**
      * 
      * Returns the Context object.
@@ -111,19 +124,19 @@ abstract class AbstractController implements ControllerInterface
     {
         return $this->context;
     }
-    
+
     /**
      * 
      * Returns the data collection object.
      * 
-     * @return StdClass
+     * @return object
      * 
      */
     public function getData()
     {
         return $this->data;
     }
-    
+
     /**
      * 
      * Returns the params.
@@ -135,7 +148,7 @@ abstract class AbstractController implements ControllerInterface
     {
         return $this->params;
     }
-    
+
     /**
      * 
      * Returns the Response object.
@@ -147,12 +160,19 @@ abstract class AbstractController implements ControllerInterface
     {
         return $this->response;
     }
-    
+
+    /**
+     * 
+     * Returns the SignalInterface object.
+     * 
+     * @return SignalInterface
+     * 
+     */
     public function getSignal()
     {
         return $this->signal;
     }
-    
+
     /**
      * 
      * Executes the controller.
@@ -161,7 +181,7 @@ abstract class AbstractController implements ControllerInterface
      * 
      */
     abstract public function exec();
-    
+
     /**
      * 
      * Renders the controller output, generally into the Response object.
@@ -171,3 +191,4 @@ abstract class AbstractController implements ControllerInterface
      */
     abstract protected function render();
 }
+ 
