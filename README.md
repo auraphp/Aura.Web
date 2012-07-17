@@ -52,6 +52,8 @@ dependency objects:
 
 - a `Renderer` strategy (the default is "none")
 
+The code would look like this:
+
     <?php
     use Vendor\Package\Web\Page;
     use Aura\Web\Context;
@@ -260,7 +262,7 @@ Here is a naive example of how to use the `$data` property:
     <?php
     namespace Vendor\Package\Web;
     
-    use Aura\Web\AbstractPage;
+    use Aura\Web\Controller\AbstractPage;
     
     class Page extends AbstractPage
     {
@@ -412,5 +414,5 @@ the [Aura.Signal][] package.
 [Aura.Signal]:  https://github.com/auraphp/Aura.Signal 
 [Aura.View]:    https://github.com/auraphp/Aura.View 
 [Context]:      https://github.com/auraphp/Aura.Web/blob/master/src/Aura/Web/Context.php
-[Mustache]:     https://github.com/bobthecow/mustache.php
+[Mustache]:     https://github.com/weierophinney/phly_mustache
 [Response]:     https://github.com/auraphp/Aura.Web/blob/master/src/Aura/Web/Response.php

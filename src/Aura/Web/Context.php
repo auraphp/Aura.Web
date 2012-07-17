@@ -810,5 +810,26 @@ class Context
             return $alt;
         }
     }
+
+    /**
+     *
+     * Get the context URL.
+     *
+     * @return string
+     *
+     */
+    public function getUrl()
+    {
+        // build a default scheme (with '://' in it)
+        $url = $this->isSsl() ? 'https://' : 'http://';
+
+        // add the current host
+        $url .= $this->getServer('HTTP_HOST');
+
+        // add the URI
+        $url .= $this->getServer('REQUEST_URI');
+
+        return $url;
+    }
 }
  
