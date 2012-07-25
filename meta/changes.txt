@@ -9,3 +9,6 @@
   of "None." Rendering now happens through strategies instead of directly in
   render(). Must be passed in AbstractPage constructor.
 
+- [CHG] PSR-1/2 compliance.
+
+- [NEW] Method Context::getUrl()
