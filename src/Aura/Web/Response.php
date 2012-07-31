@@ -3,6 +3,8 @@
  * 
  * This file is part of the Aura project for PHP.
  * 
+ * @package Aura.Web
+ * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
@@ -43,7 +45,7 @@ class Response
      * 
      */
     protected $cache = null;
-    
+
     /**
      * 
      * The response body content.
@@ -52,7 +54,7 @@ class Response
      * 
      */
     protected $content = null;
-    
+
     /**
      * 
      * The Content-Type of the response.
@@ -61,7 +63,7 @@ class Response
      * 
      */
     protected $content_type = null;
-    
+
     /**
      * 
      * The response cookies.
@@ -70,7 +72,7 @@ class Response
      * 
      */
     protected $cookies = [];
-    
+
     /**
      * 
      * Whether or not cookies should default to being sent by HTTP only.
@@ -79,7 +81,7 @@ class Response
      * 
      */
     protected $cookies_httponly = true;
-    
+
     /**
      * 
      * The response headers (less the cookies).
@@ -88,7 +90,7 @@ class Response
      * 
      */
     protected $headers = [];
-    
+
     /**
      * 
      * Redirect to this location.
@@ -97,7 +99,7 @@ class Response
      * 
      */
     protected $redirect = '';
-    
+
     /**
      * 
      * The response status code.
@@ -106,7 +108,7 @@ class Response
      * 
      */
     protected $status_code = 200;
-    
+
     /**
      * 
      * The response status text.
@@ -115,7 +117,7 @@ class Response
      * 
      */
     protected $status_text = null;
-    
+
     /**
      * 
      * The HTTP version to send as.
@@ -124,7 +126,7 @@ class Response
      * 
      */
     protected $version = '1.1';
-    
+
     /**
      * 
      * Should the response disable HTTP caching?
@@ -151,7 +153,7 @@ class Response
             $this->cache = (bool) $flag;
         }
     }
-    
+
     /**
      * 
      * Is caching turned off?
@@ -163,7 +165,7 @@ class Response
     {
         return $this->cache;
     }
-    
+
     /**
      * 
      * Sets the content of the response.
@@ -177,7 +179,7 @@ class Response
     {
         $this->content = $content;
     }
-    
+
     /**
      * 
      * Gets the content of the response.
@@ -189,7 +191,7 @@ class Response
     {
         return $this->content;
     }
-    
+
     /**
      * 
      * Sets the Content-Type of the response.
@@ -205,7 +207,7 @@ class Response
     {
         $this->content_type = $type;
     }
-    
+
     /**
      * 
      * Gets the Content-Type of the response.
@@ -217,7 +219,7 @@ class Response
     {
         return $this->content_type;
     }
-    
+
     /**
      * 
      * Sets a cookie value in `$cookies`.
@@ -244,9 +246,15 @@ class Response
      * @return void
      * 
      */
-    public function setCookie($name, $value = '', $expire = 0,
-        $path = '', $domain = '', $secure = false, $httponly = null)
-    {
+    public function setCookie(
+        $name,
+        $value = '',
+        $expire = 0,
+        $path = '',
+        $domain = '',
+        $secure = false,
+        $httponly = null
+    ) {
         $this->cookies[$name] = [
             'value'    => $value,
             'expire'   => $expire,
@@ -256,7 +264,7 @@ class Response
             'httponly' => $httponly,
         ];
     }
-    
+
     /**
      * 
      * Gets one cookie for the response.
@@ -269,23 +277,23 @@ class Response
     public function getCookie($name)
     {
         $cookie = $this->cookies[$name];
-        
+
         // was httponly set for this cookie?  if not,
         // use the default.
         $cookie['httponly'] = ($cookie['httponly'] === null)
                             ? $this->cookies_httponly
                             : (bool) $cookie['httponly'];
-        
+
         // try to allow for times not in unix-timestamp format
         if (! is_numeric($cookie['expire'])) {
             $cookie['expire'] = strtotime($cookie['expire']);
         }
-        
+
         $cookie['expire'] = (int) $cookie['expire'];
         $cookie['secure']  = (bool) $cookie['secure'];
         return $cookie;
     }
-    
+
     /**
      * 
      * Gets all cookies for the response.
@@ -301,7 +309,7 @@ class Response
         }
         return $cookies;
     }
-    
+
     /**
      * 
      * By default, should cookies be sent by HTTP only?
@@ -316,7 +324,7 @@ class Response
     {
         $this->cookies_httponly = (bool) $flag;
     }
-    
+
     /**
      * 
      * Sets a header value in `$headers`.
@@ -334,7 +342,7 @@ class Response
         $val = $this->headerValue($val);
         $this->headers[$key] = $val;
     }
-    
+
     /**
      * 
      * Adds to a header value in $this->headers.
@@ -353,7 +361,7 @@ class Response
         settype($this->headers[$key], 'array');
         $this->headers[$key][] = $val;
     }
-    
+
     /**
      * 
      * Returns the value of a single header.
@@ -373,7 +381,7 @@ class Response
             return $headers[$key];
         }
     }
-    
+
     /**
      * 
      * Returns the array of all headers to be sent with the response.
@@ -386,11 +394,11 @@ class Response
     public function getHeaders()
     {
         $headers = $this->headers;
-        
+
         if ($this->content_type) {
             $headers['Content-Type'] = $this->headerValue($this->content_type);
         }
-        
+
         if ($this->cache === false) {
             $headers['Pragma'] = 'no-cache';
             $headers['Cache-Control'] = [
@@ -399,14 +407,14 @@ class Response
             ];
             $headers['Expires'] = '1';
         }
-        
+
         if ($this->redirect) {
             $headers['Location'] = $this->headerValue($this->redirect);
         }
-        
+
         return $headers;
     }
-    
+
     /**
      * 
      * Set a location that the response should redirect to, along with a
@@ -428,7 +436,7 @@ class Response
         $this->setStatusCode($code);
         $this->setStatusText($text);
     }
-    
+
     /**
      * 
      * Set a location that the response should redirect to, along with a
@@ -449,7 +457,7 @@ class Response
         $this->setRedirect($uri, $code, $text);
         $this->setCache(false);
     }
-    
+
     /**
      * 
      * Is the response set to issue a redirect?
@@ -461,7 +469,7 @@ class Response
     {
         return (bool) $this->redirect;
     }
-    
+
     /**
      * 
      * Returns the redirect location, if any.
@@ -473,7 +481,7 @@ class Response
     {
         return $this->redirect;
     }
-    
+
     /**
      * 
      * Sets the HTTP status code to for the response.
@@ -489,11 +497,11 @@ class Response
         if ($code < 100 || $code > 599) {
             throw new Exception("Status code $code not recognized.");
         }
-        
+
         $this->status_code = $code;
         $this->setStatusText(null);
     }
-    
+
     /**
      * 
      * Returns the HTTP status code for the response.
@@ -505,7 +513,7 @@ class Response
     {
         return $this->status_code;
     }
-    
+
     /**
      * 
      * Sets the HTTP status text for the response.
@@ -521,7 +529,7 @@ class Response
         $text = trim(str_replace(["\r", "\n"], '', $text));
         $this->status_text = $text;
     }
-    
+
     /**
      * 
      * Returns the HTTP status text for the response.
@@ -533,7 +541,7 @@ class Response
     {
         return $this->status_text;
     }
-    
+
     /**
      * 
      * Sets the HTTP version for the response to '1.0' or '1.1'.
@@ -552,7 +560,7 @@ class Response
             $this->version = $version;
         }
     }
-    
+
     /**
      * 
      * Returns the HTTP version for the response.
@@ -564,7 +572,7 @@ class Response
     {
         return $this->version;
     }
-    
+
     /**
      * 
      * Normalizes and sanitizes a header label.
@@ -581,12 +589,12 @@ class Response
         $label = str_replace(' ', '-', $label);
         return $label;
     }
-    
+
     /**
      * 
      * Sanitizes a header value.
      * 
-     * @param string $label The header value to be sanitized.
+     * @param string $value The header value to be sanitized.
      * 
      * @return string The sanitized header value.
      * 
@@ -596,3 +604,4 @@ class Response
         return str_replace(["\r", "\n"], '', $value);
     }
 }
+ 

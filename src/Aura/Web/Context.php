@@ -3,6 +3,8 @@
  * 
  * This file is part of the Aura project for PHP.
  * 
+ * @package Aura.Web
+ * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
@@ -25,7 +27,7 @@ class Context
      * 
      */
     protected $get;
-    
+
     /**
      * 
      * Imported $_POST values.
@@ -34,7 +36,7 @@ class Context
      * 
      */
     protected $post;
-    
+
     /**
      * 
      * Imported $_SERVER values.
@@ -43,7 +45,7 @@ class Context
      * 
      */
     protected $server;
-    
+
     /**
      * 
      * Imported $_COOKIE values.
@@ -52,7 +54,7 @@ class Context
      * 
      */
     protected $cookie;
-    
+
     /**
      * 
      * Imported $_ENV values.
@@ -61,7 +63,7 @@ class Context
      * 
      */
     protected $env;
-    
+
     /**
      * 
      * Imported $_FILES values.
@@ -70,7 +72,7 @@ class Context
      * 
      */
     protected $files;
-    
+
     /**
      * 
      * Imported $_SERVER['HTTP_*'] values.
@@ -82,7 +84,7 @@ class Context
      * 
      */
     protected $header;
-    
+
     /**
      * 
      * The parsed http[accept*] headers with each header sorted
@@ -92,7 +94,7 @@ class Context
      * 
      */
     protected $accept;
-    
+
     /**
      * 
      * The value of `php://input`.
@@ -101,7 +103,7 @@ class Context
      * 
      */
     protected $input = false;
-    
+
     /**
      * 
      * An array of http user-agents used in matching 
@@ -131,9 +133,9 @@ class Context
             'Nokia',
             'SymbianOS',
             'UP.Browser', // Openwave Mobile Browser
-            'UP.Link', 
+            'UP.Link',
             'Opera Mobi',
-            'Opera Mini',        
+            'Opera Mini',
             'webOS', // Palm devices
             'Playstation',
             'PS2',
@@ -146,10 +148,10 @@ class Context
         'crawler' => [
             'Ask',
             'Baidu',
-            'Google',        
+            'Google',
             'AdsBot',
             'gsa-crawler',
-            'adidxbot', 
+            'adidxbot',
             'librabot',
             'llssbot',
             'bingbot',
@@ -160,7 +162,7 @@ class Context
             'MSRBOT',
             'Vancouver',
             'Y!J',
-            'Yahoo',       
+            'Yahoo',
             'mp3Spider',
             'Mp3Bot',
             'Scooter',
@@ -179,7 +181,7 @@ class Context
             'Wget'
         ],
     ];
-    
+
     /**
      * 
      * A property to hold previous calls to isMobile() 
@@ -189,7 +191,7 @@ class Context
      * 
      */
     protected $is_mobile;
-    
+
     /**
      * 
      * A property to hold previous calls to isCrawler() 
@@ -199,10 +201,14 @@ class Context
      * 
      */
     protected $is_crawler;
-    
+
     /**
      * 
      * Constructor.
+     * 
+     * @param array $globals An array of global variables, typically $GLOBALS.
+     * 
+     * @param array $agents An array of override agent values.
      * 
      */
     public function __construct(array $globals, array $agents = [])
@@ -214,16 +220,16 @@ class Context
         $this->cookie = ! isset($globals['_COOKIE']) ? [] : $globals['_COOKIE'];
         $this->env    = ! isset($globals['_ENV'])    ? [] : $globals['_ENV'];
         $files        = ! isset($globals['_FILES'])  ? [] : $globals['_FILES'];
-        
+
         if ($agents) {
             $this->agents = array_merge_recursive($this->agents, $agents);
         }
-        
+
         $this->setHeader();
         $this->httpMethodOverride();
         $this->rebuildFiles($files, $this->files);
     }
-    
+
     /**
      * 
      * Magic get to make properties read-only.
@@ -236,11 +242,11 @@ class Context
     public function __get($key)
     {
         $valid = ['get', 'post', 'server', 'cookie', 'env', 'files', 'header'];
-        
+
         if (in_array($key, $valid)) {
             return $this->{$key};
         }
-        
+
         throw new \UnexpectedValueException($key);
     }
 
@@ -255,7 +261,7 @@ class Context
     {
         return 'GET' == $this->getServer('REQUEST_METHOD');
     }
-    
+
     /**
      *  
      * Is this a POST request?
@@ -267,7 +273,7 @@ class Context
     {
         return 'POST' == $this->getServer('REQUEST_METHOD');
     }
-    
+
     /**
      *  
      * Is this a PUT request?
@@ -279,7 +285,7 @@ class Context
     {
         return 'PUT' == $this->getServer('REQUEST_METHOD');
     }
-    
+
     /**
      *  
      * Is this a DELETE request?
@@ -291,7 +297,7 @@ class Context
     {
         return 'DELETE' == $this->getServer('REQUEST_METHOD');
     }
-    
+
     /**
      *  
      * Is this a HEAD request?
@@ -303,7 +309,7 @@ class Context
     {
         return 'HEAD' == $this->getServer('REQUEST_METHOD');
     }
-    
+
     /**
      *  
      * Is this an OPTIONS request?
@@ -315,7 +321,7 @@ class Context
     {
         return 'OPTIONS' == $this->getServer('REQUEST_METHOD');
     }
-    
+
     /**
      *  
      * Is this an XmlHttpRequest?
@@ -327,7 +333,7 @@ class Context
     {
         return 'xmlhttprequest' == strtolower($this->getHeader('X-Requested-With'));
     }
-    
+
     /**
      *  
      * Is this a mobile device? 
@@ -342,13 +348,13 @@ class Context
             // yes, return it
             return $this->is_mobile;
         }
-        
+
         // by default, not mobile
         $this->is_mobile = false;
-        
+
         // what is the actual user-agent string?
         $user_agent = $this->getServer('HTTP_USER_AGENT');
-        
+
         // look for mobile agents
         foreach ($this->agents['mobile'] as $agent) {
             $find = preg_quote($agent);
@@ -358,11 +364,11 @@ class Context
                 break;
             }
         }
-        
+
         // done!
         return $this->is_mobile;
     }
-    
+
     /**
      *  
      * Is this a crawler/bot device? 
@@ -377,13 +383,13 @@ class Context
             // yes, return it
             return $this->is_crawler;
         }
-        
+
         // by default, not crawler
         $this->is_crawler = false;
-        
+
         // what is the actual user-agent string?
         $user_agent = $this->getServer('HTTP_USER_AGENT');
-        
+
         // look for crawler agents
         foreach ($this->agents['crawler'] as $agent) {
             $find = preg_quote($agent);
@@ -393,11 +399,11 @@ class Context
                 break;
             }
         }
-        
+
         // done!
         return $this->is_crawler;
     }
-    
+
     /**
      *  
      * Is this an SSL request?
@@ -410,7 +416,7 @@ class Context
         return $this->getServer('HTTPS') == 'on'
             || $this->getServer('SERVER_PORT') == 443;
     }
-    
+
     /**
      * 
      * Retrieves an **unfiltered** value by key from the `$get` property,
@@ -428,7 +434,7 @@ class Context
     {
         return $this->getValue('get', $key, $alt);
     }
-    
+
     /**
      * 
      * Retrieves an **unfiltered** value by key from the `$post` property,
@@ -446,7 +452,7 @@ class Context
     {
         return $this->getValue('post', $key, $alt);
     }
-    
+
     /**
      * 
      * Retrieves an **unfiltered** value by key from the `$files` property,
@@ -464,7 +470,7 @@ class Context
     {
         return $this->getValue('files', $key, $alt);
     }
-    
+
     /**
      * 
      * Retrieves an **unfiltered** value by key from the `$cookie` property,
@@ -474,7 +480,7 @@ class Context
      * 
      * @param string $alt The value to return if the key does not exist.
      * 
-     * @param bool The value of $cookie[$key], or the alternate default
+     * @return mixed The value of $cookie[$key], or the alternate default
      * value.
      * 
      */
@@ -482,7 +488,7 @@ class Context
     {
         return $this->getValue('cookie', $key, $alt);
     }
-    
+
     /**
      * 
      * Retrieves an **unfiltered** value by key from the `$env` property,
@@ -500,7 +506,7 @@ class Context
     {
         return $this->getValue('env', $key, $alt);
     }
-    
+
     /**
      * 
      * Retrieves an **unfiltered** value by key from the `$server` property,
@@ -518,7 +524,7 @@ class Context
     {
         return $this->getValue('server', $key, $alt);
     }
-    
+
     /**
      * 
      * Retrieves the unfiltered `$input` property.
@@ -530,7 +536,7 @@ class Context
     {
         return $this->input;
     }
-    
+
     /**
      * 
      * Retrieves the `$input` property after applying `json_decode()`.
@@ -540,10 +546,6 @@ class Context
      * 
      * @param int $depth Recursion depth.
      * 
-     * @param int $options Bitmask of JSON decode options. Currently only 
-     * JSON_BIGINT_AS_STRING is supported (default is to cast large integers 
-     * as floats).
-     * 
      * @return object The `json_decode()` results.
      * 
      */
@@ -551,7 +553,7 @@ class Context
     {
         return json_decode($this->input, $assoc, $depth);
     }
-    
+
     /**
      * 
      * Retrieves an **unfiltered** value by key from the `$header` property,
@@ -570,14 +572,14 @@ class Context
         $key = strtolower($key);
         return $this->getValue('header', $key, $alt);
     }
-    
+
     /**
      * 
      * Parse an HTTP `Accept*` header and sort by the quality factor, the 
      * highest being first in the returned array. The returned data is 
      * unfiltered.
      * 
-     * @param string $header The name of the accept header to parse.
+     * @param string $accept The name of the accept header to parse.
      * 
      * @param mixed $alt The value to return if the key does not exist.
      * 
@@ -588,10 +590,10 @@ class Context
     {
         $accept = explode(',', $accept);
         $sorted = [];
-        
+
         foreach ((array) $accept as $key => $value) {
             $value = trim($value);
-            
+
             if (false === strpos($value, ';q=')) {
                 $sorted[$value]  = 1.0;
             } else {
@@ -599,12 +601,12 @@ class Context
                 $sorted[$value]  = (float) $q;
             }
         }
-        
+
         // sort by quality factor, highest first.
         arsort($sorted);
         return $sorted;
     }
-    
+
     /**
      * 
      * Gets an `Accept` header.  If you want the content-type, ask for 
@@ -627,7 +629,7 @@ class Context
             $this->accept = [];
             // go through each header ...
             foreach ($this->header as $label => $value) {
-                
+
                 // then extract and parse only accept* headers
                 $label = strtolower($label);
                 if ('accept' == substr($label, 0, 6)) {
@@ -642,11 +644,11 @@ class Context
                 }
             }
         }
-        
+
         if (null === $key) {
             return $this->accept;
         }
-        
+
         $key = strtolower($key);
         if (isset($this->accept[$key])) {
             return $this->accept[$key];
@@ -654,7 +656,7 @@ class Context
             return $alt;
         }
     }
-    
+
     /**
      * 
      * Set the "fake" `$header` property.
@@ -666,23 +668,23 @@ class Context
     {
         // load the "fake" header var
         $this->header = [];
-        
+
         foreach ($this->server as $key => $val) {
-            
+
             // only retain HTTP headers
             if ('HTTP_' == substr($key, 0, 5)) {
-                
+
                 // normalize the header key
                 $nicekey = str_replace('_', '-', strtolower(substr($key, 5)));
-                
+
                 // strip control characters from keys and values
                 $nicekey = preg_replace('/[\x00-\x1F]/', '', $nicekey);
                 $val     = preg_replace('/[\x00-\x1F]/', '', $val);
-                
+
                 $this->header[$nicekey] = $val;
                 // no control characters wanted in $this->server for these
                 $this->server[$key]     = $val;
-                
+
                 // disallow external setting of X-JSON headers.
                 if ('x-json' == $nicekey) {
                     unset($this->header[$nicekey]);
@@ -691,7 +693,7 @@ class Context
             }
         }
     }
-    
+
     /**
      * 
      * Overrides the REQUEST_METHOD with X-HTTP-Method-Override header or 
@@ -706,14 +708,14 @@ class Context
         if ('POST' != $this->getServer('REQUEST_METHOD')) {
             return;
         }
-        
+
         // look for override in header
         $override = $this->getHeader('x-http-method-override');
         if ($override) {
             $this->server['REQUEST_METHOD'] = strtoupper($override);
             return;
         }
-        
+
         // look for override in $_POST
         $override = isset($this->post['X-HTTP-Method-Override'])
                   ? $this->post['X-HTTP-Method-Override']
@@ -723,7 +725,7 @@ class Context
             return;
         }
     }
-    
+
     /**
      * 
      * Recursive method to rebuild $_FILES structure to be more like $_POST.
@@ -743,15 +745,15 @@ class Context
             $tgt = [];
             return;
         }
-        
+
         // an array with these keys is a "target" for us (pre-sorted)
         $tgtkeys = ['error', 'name', 'size', 'tmp_name', 'type'];
-        
+
         // the keys of the source array (sorted so that comparisons work
         // regardless of original order)
         $srckeys = array_keys((array) $src);
         sort($srckeys);
-        
+
         // is the source array a target?
         if ($srckeys == $tgtkeys) {
             // get error, name, size, etc
@@ -775,7 +777,7 @@ class Context
             }
         }
     }
-    
+
     /**
      * 
      * Common method to get a property value and return it.
@@ -808,4 +810,26 @@ class Context
             return $alt;
         }
     }
+
+    /**
+     *
+     * Get the context URL.
+     *
+     * @return string
+     *
+     */
+    public function getUrl()
+    {
+        // build a default scheme (with '://' in it)
+        $url = $this->isSsl() ? 'https://' : 'http://';
+
+        // add the current host
+        $url .= $this->getServer('HTTP_HOST');
+
+        // add the URI
+        $url .= $this->getServer('REQUEST_URI');
+
+        return $url;
+    }
 }
+ 

@@ -1,1 +1,14 @@
-config and metadata changes
+- [BRK] Significant reorganization of class files. AbstractPage is now
+  Controller\AbstractPage.
+
+- [BRK] New SignalInterface and basic Signal manager class. Hooks are now
+  executed through the Signal manager instead of directly in exec(). Must
+  be passed in AbstractPage constructor.
+
+- [BRK] New Renderer strategy classes, including a default Renderer strategy
+  of "None." Rendering now happens through strategies instead of directly in
+  render(). Must be passed in AbstractPage constructor.
+
+- [CHG] PSR-1/2 compliance.
+
+- [NEW] Method Context::getUrl()
