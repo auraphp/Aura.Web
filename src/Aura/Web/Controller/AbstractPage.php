@@ -127,7 +127,7 @@ abstract class AbstractPage extends AbstractController
 
         // the action cycle
         $this->signal->send($this, 'pre_action', $this);
-        $this->action();
+        $this->action($this->getAction());
         $this->signal->send($this, 'post_action', $this);
 
         // the render cycle
@@ -149,11 +149,11 @@ abstract class AbstractPage extends AbstractController
      * @return void
      * 
      */
-    protected function action()
+    protected function action($name)
     {
-        $method = 'action' . ucfirst($this->action);
+        $method = 'action' . ucfirst($name);
         if (! method_exists($this, $method)) {
-            throw new Exception\NoMethodForAction($this->action);
+            throw new Exception\NoMethodForAction($name);
         }
         $this->invokeMethod($method);
     }
@@ -261,4 +261,3 @@ abstract class AbstractPage extends AbstractController
     {
     }
 }
- 
