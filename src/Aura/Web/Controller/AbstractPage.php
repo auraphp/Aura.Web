@@ -208,7 +208,7 @@ abstract class AbstractPage extends AbstractController
 
     /**
      * 
-     * Runs after `preExec()` and before `action()`.
+     * Runs after `preExec()` and before the main `action()`.
      * 
      * @return void
      * 
@@ -219,7 +219,7 @@ abstract class AbstractPage extends AbstractController
 
     /**
      * 
-     * Runs after `action()` and before `preRender()`.
+     * Runs after the main `action()` and before `preRender()`.
      * 
      * @return void
      * 
