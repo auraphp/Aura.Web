@@ -11,6 +11,7 @@
 namespace Aura\Web\Exception;
 
 use Aura\Web\Exception as Exception;
+
 /**
  * 
  * Context Exception
