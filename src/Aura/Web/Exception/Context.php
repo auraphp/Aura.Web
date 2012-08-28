@@ -22,4 +22,3 @@ use Aura\Web\Exception as Exception;
 class Context extends Exception
 {
 }
- 

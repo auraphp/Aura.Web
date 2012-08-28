@@ -41,4 +41,3 @@ interface RendererInterface
      */
     public function exec();
 }
- 

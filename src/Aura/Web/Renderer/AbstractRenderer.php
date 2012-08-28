@@ -63,4 +63,3 @@ abstract class AbstractRenderer implements RendererInterface
      */
     abstract public function exec();
 }
- 

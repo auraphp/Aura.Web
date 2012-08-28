@@ -604,4 +604,3 @@ class Response
         return str_replace(["\r", "\n"], '', $value);
     }
 }
- 

@@ -43,4 +43,3 @@ class None extends AbstractRenderer
         // do nothing
     }
 }
- 
