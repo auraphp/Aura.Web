@@ -20,5 +20,10 @@
     "require": {
         "php": ">=5.4.0",
         "aura/default-installer": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Aura\\Web": "src/"
+        }
     }
 }
