@@ -628,4 +628,16 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals($object, $context->getJsonInput());
     }
+    
+    public function testGetUrl()
+    {
+        $this->reset();
+        $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['REQUEST_URI'] = '/foo?bar=baz';
+        $context = $this->newContext();
+        
+        $expect = 'http://example.com/foo?bar=baz';
+        $actual = $context->getUrl();
+        $this->assertSame($expect, $actual);
+    }
 }
