@@ -10,8 +10,10 @@
  */
 namespace Aura\Web\Controller;
 
+use Aura\Web\Exception as WebException;
 use Aura\Web\Renderer\RendererInterface;
-use Aura\Web\Exception;
+use Exception;
+use ReflectionMethod;
 
 /**
  * 
@@ -42,6 +44,16 @@ abstract class AbstractPage extends AbstractController
 
     /**
      * 
+     * The exception caught inside `exec()`.
+     * 
+     * @var Exception
+     * 
+     */
+    protected $exception;
+
+
+    /**
+     * 
      * Initialize after construction.
      * 
      * @return void
@@ -63,12 +75,21 @@ abstract class AbstractPage extends AbstractController
                       : null;
 
         // set the signal handlers
-        $this->signal->handler($this, 'pre_exec',    [$this, 'preExec']);
-        $this->signal->handler($this, 'pre_action',  [$this, 'preAction']);
-        $this->signal->handler($this, 'post_action', [$this, 'postAction']);
-        $this->signal->handler($this, 'pre_render',  [$this, 'preRender']);
-        $this->signal->handler($this, 'post_render', [$this, 'postRender']);
-        $this->signal->handler($this, 'post_exec',   [$this, 'postExec']);
+        $this->signal->handler($this, 'pre_exec',        [$this, 'preExec']);
+        $this->signal->handler($this, 'pre_action',      [$this, 'preAction']);
+        $this->signal->handler($this, 'post_action',     [$this, 'postAction']);
+        $this->signal->handler($this, 'pre_render',      [$this, 'preRender']);
+        $this->signal->handler($this, 'post_render',     [$this, 'postRender']);
+        $this->signal->handler($this, 'post_exec',       [$this, 'postExec']);
+        
+        // the exception-catching signal handler on this class is intended as
+        // a final fallback; other handlers most likely need to run before it.
+        $this->signal->handler(
+            $this,
+            'catch_exception',
+            [$this, 'catchException'],
+            999
+        );
     }
 
     /**
@@ -87,7 +108,7 @@ abstract class AbstractPage extends AbstractController
      * 
      * Returns the page format, typically discovered from the params.
      * 
-     * @return StdClass
+     * @return string
      * 
      */
     public function getFormat()
@@ -95,6 +116,18 @@ abstract class AbstractPage extends AbstractController
         return $this->format;
     }
 
+    /**
+     * 
+     * Returns the exception caught by exec().
+     * 
+     * @return Exception
+     * 
+     */
+    public function getException()
+    {
+        return $this->exception;
+    }
+    
     /**
      * 
      * Executes the action and all hooks:
@@ -115,6 +148,9 @@ abstract class AbstractPage extends AbstractController
      * 
      * - signals `post_exec`, thereby calling `postExec()`
      * 
+     * - signals `catch_exception` when a exception is thrown, thereby
+     *   calling `catchException()`
+     * 
      * - returns the Response transfer object
      * 
      * @return Response
@@ -122,21 +158,31 @@ abstract class AbstractPage extends AbstractController
      */
     public function exec()
     {
-        // pre-exec signal
-        $this->signal->send($this, 'pre_exec', $this);
+        try {
+            
+            // pre-exec signal
+            $this->signal->send($this, 'pre_exec', $this);
 
-        // the action cycle
-        $this->signal->send($this, 'pre_action', $this);
-        $this->action($this->getAction());
-        $this->signal->send($this, 'post_action', $this);
+            // the action cycle
+            $this->signal->send($this, 'pre_action', $this);
+            $this->action($this->getAction());
+            $this->signal->send($this, 'post_action', $this);
 
-        // the render cycle
-        $this->signal->send($this, 'pre_render', $this);
-        $this->render();
-        $this->signal->send($this, 'post_render', $this);
+            // the render cycle
+            $this->signal->send($this, 'pre_render', $this);
+            $this->render();
+            $this->signal->send($this, 'post_render', $this);
 
-        // post-exec signal
-        $this->signal->send($this, 'post_exec', $this);
+            // post-exec signal
+            $this->signal->send($this, 'post_exec', $this);
+            
+        } catch (Exception $exception) {
+            
+            // set exception and send signal
+            $this->exception = $exception;
+            $this->signal->send($this, 'catch_exception', $this);
+            
+        }
 
         // done!
         return $this->getResponse();
@@ -153,7 +199,7 @@ abstract class AbstractPage extends AbstractController
     {
         $method = 'action' . ucfirst($name);
         if (! method_exists($this, $method)) {
-            throw new Exception\NoMethodForAction($name);
+            throw new WebException\NoMethodForAction($name);
         }
         $this->invokeMethod($method);
     }
@@ -170,7 +216,7 @@ abstract class AbstractPage extends AbstractController
     protected function invokeMethod($name)
     {
         $args = [];
-        $method = new \ReflectionMethod($this, $name);
+        $method = new ReflectionMethod($this, $name);
         foreach ($method->getParameters() as $param) {
             if (isset($this->params[$param->name])) {
                 $args[] = $this->params[$param->name];
@@ -259,5 +305,23 @@ abstract class AbstractPage extends AbstractController
      */
     public function postExec()
     {
+    }
+    
+    /**
+     * 
+     * Runs when `exec()` catches an exception.
+     * 
+     * @return mixed
+     * 
+     */
+    public function catchException()
+    {
+        // get the current exception
+        $e = $this->getException();
+        
+        // throw a copy, with the original as the previous exception so that
+        // we can see a full trace.
+        $class = get_class($e);
+        throw new $class($e->getMessage(), $e->getCode(), $e);
     }
 }
