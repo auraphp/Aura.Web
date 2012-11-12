@@ -97,7 +97,6 @@ abstract class AbstractController implements ControllerInterface
         $this->renderer = $renderer;
         $this->params   = $params;
         $this->data     = new \StdClass;
-        $this->renderer->setController($this);
         $this->init();
     }
 
@@ -110,7 +109,7 @@ abstract class AbstractController implements ControllerInterface
      */
     protected function init()
     {
-        // do nothing
+        $this->renderer->setController($this);
     }
 
     /**
