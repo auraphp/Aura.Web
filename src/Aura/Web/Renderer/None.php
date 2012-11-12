@@ -21,18 +21,6 @@ class None extends AbstractRenderer
 {
     /**
      * 
-     * A helper method to prepare the renderer after setController().
-     * 
-     * @return void
-     * 
-     */
-    public function prep()
-    {
-        // do nothing
-    }
-
-    /**
-     * 
      * Executes the renderer.
      * 
      * @return void

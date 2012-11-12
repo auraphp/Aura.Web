@@ -42,17 +42,7 @@ abstract class AbstractRenderer implements RendererInterface
     public function setController(ControllerInterface $controller)
     {
         $this->controller = $controller;
-        $this->prep();
     }
-
-    /**
-     * 
-     * A helper method to prepare the renderer after setController().
-     * 
-     * @return void
-     * 
-     */
-    abstract protected function prep();
 
     /**
      * 
