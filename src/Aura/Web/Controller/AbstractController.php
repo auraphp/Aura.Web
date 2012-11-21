@@ -10,6 +10,7 @@
  */
 namespace Aura\Web\Controller;
 
+use Aura\Web\Accept;
 use Aura\Web\Context;
 use Aura\Web\Renderer\RendererInterface;
 use Aura\Web\Response;
@@ -86,12 +87,14 @@ abstract class AbstractController implements ControllerInterface
      */
     public function __construct(
         Context           $context,
+        Accept            $accept,
         Response          $response,
         SignalInterface   $signal,
         RendererInterface $renderer,
         array             $params = []
     ) {
         $this->context  = $context;
+        $this->accept   = $accept;
         $this->response = $response;
         $this->signal   = $signal;
         $this->renderer = $renderer;
@@ -110,6 +113,18 @@ abstract class AbstractController implements ControllerInterface
     protected function init()
     {
         $this->renderer->setController($this);
+    }
+
+    /**
+     * 
+     * Returns the Accept object.
+     * 
+     * @return Accept
+     * 
+     */
+    public function getAccept()
+    {
+        return $this->accept;
     }
 
     /**

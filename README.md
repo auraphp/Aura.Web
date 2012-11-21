@@ -60,12 +60,14 @@ The code would look like this:
 <?php
 use Vendor\Package\Web\Page;
 use Aura\Web\Context;
+use Aura\Web\Accept;
 use Aura\Web\Response;
 use Aura\Web\Signal;
 use Aura\Web\Renderer\None as Renderer;
 
 $page = new Page(
     new Context($GLOBALS),
+    new Accept($_SERVER),
     new Response,
     new Signal,
     new Renderer
@@ -90,6 +92,7 @@ method will be, and what rendering format is expected. The return value is a
 <?php
 use Vendor\Package\Web\Page;
 use Aura\Web\Context;
+use Aura\Web\Accept;
 use Aura\Web\Response;
 use Aura\Web\Signal;
 use Aura\Web\Renderer\None as Renderer;
@@ -102,6 +105,7 @@ $params = [
 
 $page = new Page(
     new Context($GLOBALS),
+    new Accept($_SERVER),
     new Response,
     new Signal,
     new Renderer,
@@ -174,6 +178,7 @@ transfer object has some content in it.
 <?php
 use Vendor\Package\Web\Page;
 use Aura\Web\Context;
+use Aura\Web\Accept;
 use Aura\Web\Response;
 use Aura\Web\Signal;
 use Aura\Web\Renderer\None as Renderer;
@@ -186,6 +191,7 @@ $params = [
 
 $page = new Page(
     new Context($GLOBALS),
+    new Accept($_SERVER),
     new Response,
     new Signal,
     new Renderer,
@@ -234,8 +240,6 @@ object. Some of the important methods are:
 
 - `getJsonInput()`: gets the raw `php://input` value and `json_decode()` it
 
-- `getAccept()`: gets the Accept headers, ordered by weight
-
 - `isGet()`, `isPut()`, `isXhr()`, etc.: Tells if the request method was
   `GET`, `PUT`, an `Xml-HTTP-Request`, etc.
 
@@ -258,6 +262,20 @@ public function actionSearch()
 Given a URI with the query string `'?terms=foo+bar+baz'`, the `$terms`
 variable would be `'foo bar baz'`. If there was no `'terms'` item in the query
 string, `$terms` would be null.
+
+
+The Accept Object
+-----------------
+
+You can discover what the client will accept using the `$this->accept` object.
+
+- `getContentType()`: returns the accepted media types
+
+- `getCharset()`: returns the accepted character sets
+
+- `getEncoding()`: returns the accepted encodings
+
+- `getLanguage()`: returns the accepted languages
 
 
 Data and Rendering
@@ -402,6 +420,7 @@ $params = [
 
 $page = new Page(
     new Context($GLOBALS),
+    new Accept($_SERVER),
     new Response,
     new Signal,
     new NaiveRenderer, // <-- strategy

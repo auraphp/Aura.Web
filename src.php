@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/src/Aura/Web/Accept.php';
 require_once __DIR__ . '/src/Aura/Web/Context.php';
 require_once __DIR__ . '/src/Aura/Web/Controller/ControllerInterface.php';
 require_once __DIR__ . '/src/Aura/Web/Controller/AbstractController.php';
