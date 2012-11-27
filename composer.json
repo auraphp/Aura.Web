@@ -5,7 +5,7 @@
     "keywords": [ "controller", "page controller", "web controller" ],
     "homepage": "http://auraphp.github.com/Aura.Web",
     "version": "1.0.0-dev",
-    "license": "BSD",
+    "license": "BSD-2-Clause",
     "authors": [
         {
             "name": "Aura Contributors",
