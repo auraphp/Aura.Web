@@ -186,6 +186,18 @@ abstract class AbstractController implements ControllerInterface
     {
         return $this->signal;
     }
+    
+    /**
+     * 
+     * Returns the RendererInterface object.
+     * 
+     * @return RendererInterface
+     * 
+     */
+    public function getRenderer()
+    {
+        return $this->renderer;
+    }
 
     /**
      * 
