@@ -192,6 +192,8 @@ abstract class AbstractPage extends AbstractController
      * 
      * Determines the action method, then invokes it.
      * 
+     * @param string $name The name of the action to invoke.
+     * 
      * @return void
      * 
      */

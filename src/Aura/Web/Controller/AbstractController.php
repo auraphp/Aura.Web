@@ -27,6 +27,15 @@ abstract class AbstractController implements ControllerInterface
 {
     /**
      * 
+     * The Accept object for tracking accept header values.
+     * 
+     * @var Accept
+     * 
+     */
+    protected $accept;
+
+    /**
+     * 
      * The context of the request environment.
      * 
      * @var Context
@@ -72,9 +81,20 @@ abstract class AbstractController implements ControllerInterface
 
     /**
      * 
+     * A signal manager.
+     * 
+     * @var SignalInterface
+     * 
+     */
+    protected $signal;
+
+    /**
+     * 
      * Constructor.
      * 
      * @param Context $context The request environment.
+     * 
+     * @param Accept $accept The accept-headers object.
      * 
      * @param Response $response A response transfer object.
      * 
