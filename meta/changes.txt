@@ -1,14 +1,16 @@
-- [BRK] Significant reorganization of class files. AbstractPage is now
-  Controller\AbstractPage.
+- [CHG] Controller\AbstractPage::action() now takes a $name param, so that you
+  can call it directly.
 
-- [BRK] New SignalInterface and basic Signal manager class. Hooks are now
-  executed through the Signal manager instead of directly in exec(). Must
-  be passed in AbstractPage constructor.
+- [CHG] Remove protected method prep()
 
-- [BRK] New Renderer strategy classes, including a default Renderer strategy
-  of "None." Rendering now happens through strategies instead of directly in
-  render(). Must be passed in AbstractPage constructor.
+- [CHG] In Controller\AbstractController, move call to
+  $renderer->setController() out of __construct() and into init()
 
-- [CHG] PSR-1/2 compliance.
+- [ADD] In Controller\AbstractPage, facilitate exception handling with signal
+  'catch_exception', signaled as part of exec(), using new methods
+  catchException() and getException()
 
-- [NEW] Method Context::getUrl()
+- [REF] From Context, extract an Accept object. this is so that Renderers can
+  get to Accept values directly without having to go through Context.
+
+- [ADD] Method Controller\AbstractController::getRenderer()

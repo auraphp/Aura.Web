@@ -10,6 +10,7 @@
  */
 namespace Aura\Web\Controller;
 
+use Aura\Web\Accept;
 use Aura\Web\Context;
 use Aura\Web\Renderer\RendererInterface;
 use Aura\Web\Response;
@@ -24,6 +25,15 @@ use Aura\Web\SignalInterface;
  */
 abstract class AbstractController implements ControllerInterface
 {
+    /**
+     * 
+     * The Accept object for tracking accept header values.
+     * 
+     * @var Accept
+     * 
+     */
+    protected $accept;
+
     /**
      * 
      * The context of the request environment.
@@ -71,9 +81,20 @@ abstract class AbstractController implements ControllerInterface
 
     /**
      * 
+     * A signal manager.
+     * 
+     * @var SignalInterface
+     * 
+     */
+    protected $signal;
+
+    /**
+     * 
      * Constructor.
      * 
      * @param Context $context The request environment.
+     * 
+     * @param Accept $accept The accept-headers object.
      * 
      * @param Response $response A response transfer object.
      * 
@@ -86,18 +107,19 @@ abstract class AbstractController implements ControllerInterface
      */
     public function __construct(
         Context           $context,
+        Accept            $accept,
         Response          $response,
         SignalInterface   $signal,
         RendererInterface $renderer,
         array             $params = []
     ) {
         $this->context  = $context;
+        $this->accept   = $accept;
         $this->response = $response;
         $this->signal   = $signal;
         $this->renderer = $renderer;
         $this->params   = $params;
         $this->data     = new \StdClass;
-        $this->renderer->setController($this);
         $this->init();
     }
 
@@ -110,7 +132,19 @@ abstract class AbstractController implements ControllerInterface
      */
     protected function init()
     {
-        // do nothing
+        $this->renderer->setController($this);
+    }
+
+    /**
+     * 
+     * Returns the Accept object.
+     * 
+     * @return Accept
+     * 
+     */
+    public function getAccept()
+    {
+        return $this->accept;
     }
 
     /**
@@ -172,6 +206,18 @@ abstract class AbstractController implements ControllerInterface
     {
         return $this->signal;
     }
+    
+    /**
+     * 
+     * Returns the RendererInterface object.
+     * 
+     * @return RendererInterface
+     * 
+     */
+    public function getRenderer()
+    {
+        return $this->renderer;
+    }
 
     /**
      * 
@@ -191,4 +237,3 @@ abstract class AbstractController implements ControllerInterface
      */
     abstract protected function render();
 }
- 

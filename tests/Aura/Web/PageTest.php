@@ -14,6 +14,7 @@ class PageTest extends \PHPUnit_Framework_TestCase
     {
         return new MockPage(
             new Context($GLOBALS),
+            new Accept($_SERVER),
             new Response,
             new Signal,
             new Renderer\None,
@@ -30,6 +31,7 @@ class PageTest extends \PHPUnit_Framework_TestCase
     {
         $params = ['action' => 'test', 'format' => '.test'];
         $page = $this->newPage($params);
+        $this->assertInstanceOf('Aura\Web\Accept', $page->getAccept());
         $this->assertInstanceOf('Aura\Web\Context', $page->getContext());
         $this->assertInstanceOf('Aura\Web\Response', $page->getResponse());
         $this->assertInstanceOf('Aura\Web\Signal', $page->getSignal());

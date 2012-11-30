@@ -1,5 +1,4 @@
 <?php
-
 namespace Aura\Web;
 
 require_once 'PhpStream.php';
@@ -530,44 +529,6 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('dib', $actual);
     }
     
-    public function testGetAccept()
-    {
-        $this->reset();
-        $_SERVER['HTTP_ACCEPT'] = 'text/*;q=0.9, text/html ,text/xhtml;q=0.8';
-        $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en-US';
-        
-        $context    = $this->newContext();
-        $expect = [
-            'text/html'  => 1.0,
-            'text/*'     => 0.9,
-            'text/xhtml' => 0.8,
-        ];
-        $actual = $context->getAccept('type');
-        $this->assertSame($expect, $actual);
-        
-        $actual = $context->getAccept('language');
-        $expect = ['en-US' => 1.0];
-        
-        $this->assertSame($expect, $actual);
-        
-        $actual = $context->getAccept('charset', 'alt');
-        $this->assertSame('alt', $actual);
-        
-        $expect = [
-            'type' => [
-                'text/html'  => 1.0,
-                'text/*'     => 0.9,
-                'text/xhtml' => 0.8,
-            ],
-            'language' => [
-                'en-US' => 1.0,
-            ],
-        ];
-        
-        $actual = $context->getAccept();
-        $this->assertSame($expect, $actual);
-    }
-    
     public function testXJsonIsRemoved()
     {
         $this->reset();
@@ -627,5 +588,17 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $context = $this->newContext();
         
         $this->assertEquals($object, $context->getJsonInput());
+    }
+    
+    public function testGetUrl()
+    {
+        $this->reset();
+        $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['REQUEST_URI'] = '/foo?bar=baz';
+        $context = $this->newContext();
+        
+        $expect = 'http://example.com/foo?bar=baz';
+        $actual = $context->getUrl();
+        $this->assertSame($expect, $actual);
     }
 }
