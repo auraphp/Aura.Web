@@ -32,7 +32,7 @@ class Accept
         'HTTP_ACCEPT_ENCODING' => [],
         'HTTP_ACCEPT_LANGUAGE' => [],
     ];
-    
+
     /**
      * 
      * Constructor.
@@ -49,7 +49,7 @@ class Accept
             }
         }
     }
-    
+
     /**
      * 
      * Returns the acceptable content types as an array ordered by q-values.
@@ -61,7 +61,7 @@ class Accept
     {
         return $this->values['HTTP_ACCEPT'];
     }
-    
+
     /**
      * 
      * Returns the acceptable character sets as an array ordered by q-values.
@@ -73,7 +73,7 @@ class Accept
     {
         return $this->values['HTTP_ACCEPT_CHARSET'];
     }
-    
+
     /**
      * 
      * Returns the acceptable encodings as an array ordered by q-values.
@@ -85,7 +85,7 @@ class Accept
     {
         return $this->values['HTTP_ACCEPT_ENCODING'];
     }
-    
+
     /**
      * 
      * Returns the acceptable languages as an array ordered by q-values.
@@ -97,7 +97,7 @@ class Accept
     {
         return $this->values['HTTP_ACCEPT_LANGUAGE'];
     }
-    
+
     /**
      * 
      * Parse an HTTP `Accept*` header and sort by the quality factor, the 

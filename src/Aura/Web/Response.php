@@ -430,7 +430,7 @@ class Response
      * @return void
      * 
      */
-    public function setRedirect($uri, $code = '302', $text = 'Found')
+    public function setRedirect($uri, $code = 302, $text = 'Found')
     {
         $this->redirect = $uri;
         $this->setStatusCode($code);

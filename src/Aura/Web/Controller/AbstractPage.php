@@ -81,7 +81,7 @@ abstract class AbstractPage extends AbstractController
         $this->signal->handler($this, 'pre_render',      [$this, 'preRender']);
         $this->signal->handler($this, 'post_render',     [$this, 'postRender']);
         $this->signal->handler($this, 'post_exec',       [$this, 'postExec']);
-        
+
         // the exception-catching signal handler on this class is intended as
         // a final fallback; other handlers most likely need to run before it.
         $this->signal->handler(
@@ -127,7 +127,7 @@ abstract class AbstractPage extends AbstractController
     {
         return $this->exception;
     }
-    
+
     /**
      * 
      * Executes the action and all hooks:
@@ -159,7 +159,7 @@ abstract class AbstractPage extends AbstractController
     public function exec()
     {
         try {
-            
+
             // pre-exec signal
             $this->signal->send($this, 'pre_exec', $this);
 
@@ -175,13 +175,13 @@ abstract class AbstractPage extends AbstractController
 
             // post-exec signal
             $this->signal->send($this, 'post_exec', $this);
-            
+
         } catch (Exception $exception) {
-            
+
             // set exception and send signal
             $this->exception = $exception;
             $this->signal->send($this, 'catch_exception', $this);
-            
+
         }
 
         // done!
@@ -210,7 +210,7 @@ abstract class AbstractPage extends AbstractController
      * 
      * Invokes a method by name, matching method params to `$this->params`.
      * 
-     * @param string $name The method name to execute, typcially an action.
+     * @param string $name The method name to execute, typically an action.
      * 
      * @return void
      * 
@@ -308,7 +308,7 @@ abstract class AbstractPage extends AbstractController
     public function postExec()
     {
     }
-    
+
     /**
      * 
      * Runs when `exec()` catches an exception.
@@ -320,7 +320,7 @@ abstract class AbstractPage extends AbstractController
     {
         // get the current exception
         $e = $this->getException();
-        
+
         // throw a copy, with the original as the previous exception so that
         // we can see a full trace.
         $class = get_class($e);
