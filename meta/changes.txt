@@ -1,16 +1,1 @@
-- [CHG] Controller\AbstractPage::action() now takes a $name param, so that you
-  can call it directly.
-
-- [CHG] Remove protected method prep()
-
-- [CHG] In Controller\AbstractController, move call to
-  $renderer->setController() out of __construct() and into init()
-
-- [ADD] In Controller\AbstractPage, facilitate exception handling with signal
-  'catch_exception', signaled as part of exec(), using new methods
-  catchException() and getException()
-
-- [REF] From Context, extract an Accept object. this is so that Renderers can
-  get to Accept values directly without having to go through Context.
-
-- [ADD] Method Controller\AbstractController::getRenderer()
+Typo fixes. Thanks, Pascal Borrelli.
