@@ -43,7 +43,7 @@ class Response
      * @see setRedirectAfterPost()
      * 
      */
-    protected $disable_cache = null;
+    protected $disable_cache = false;
 
     /**
      * 
@@ -112,10 +112,10 @@ class Response
      * 
      * The response status text.
      * 
-     * @var int
+     * @var string
      * 
      */
-    protected $status_text = null;
+    protected $status_text = 'OK';
 
     /**
      * 
@@ -144,9 +144,9 @@ class Response
      * @return void
      * 
      */
-    public function disableCache($flag = true)
+    public function disableCache($disable_cache = true)
     {
-        $this->disable_cache = (bool) $flag;
+        $this->disable_cache = (bool) $disable_cache;
     }
 
     /**
@@ -335,7 +335,7 @@ class Response
     {
         $key = $this->headerLabel($key);
         $val = $this->headerValue($val);
-        $this->headers[$key] = $val;
+        $this->headers[$key][] = $val;
     }
 
     /**
@@ -353,8 +353,7 @@ class Response
     {
         $key = $this->headerLabel($key);
         $val = $this->headerValue($val);
-        settype($this->headers[$key], 'array');
-        $this->headers[$key] = (array) $val;
+        $this->headers[$key][] = $val;
     }
 
     /**
@@ -389,20 +388,20 @@ class Response
         $headers = $this->headers;
 
         if ($this->content_type) {
-            $headers['Content-Type'] = $this->headerValue($this->content_type);
+            $headers['Content-Type'] = [$this->headerValue($this->content_type)];
         }
 
         if ($this->disable_cache) {
-            $headers['Pragma'] = 'no-cache';
+            $headers['Pragma'] = ['no-cache'];
             $headers['Cache-Control'] = [
                 'no-store, no-cache, must-revalidate',
                 'post-check=0, pre-check=0',
             ];
-            $headers['Expires'] = '1';
+            $headers['Expires'] = ['1'];
         }
 
         if ($this->redirect) {
-            $headers['Location'] = $this->headerValue($this->redirect);
+            $headers['Location'] = [$this->headerValue($this->redirect)];
         }
 
         return $headers;
@@ -475,18 +474,28 @@ class Response
         return $this->redirect;
     }
 
+    public function setStatus($code, $text)
+    {
+        $this->setStatusCode($code);
+        $this->setStatusText($text);
+    }
+    
     /**
      * 
      * Sets the HTTP status code to for the response.
      * 
      * Automatically resets the status text to null.
      * 
-     * @param int $code An HTTP status code, such as 200, 302, 404, etc.
+     * @param int $status_code An HTTP status code, such as 200, 302, 404, etc.
      * 
      */
-    public function setStatusCode($code)
+    public function setStatusCode($status_code)
     {
-        $this->status_code = (int) $code;
+        $status_code = (int) $status_code;
+        if ($status_code < 100 || $status_code > 599) {
+            throw new Exception\InvalidStatusCode($status_code);
+        }
+        $this->status_code = $status_code;
         $this->setStatusText(null);
     }
 
@@ -506,16 +515,16 @@ class Response
      * 
      * Sets the HTTP status text for the response.
      * 
-     * @param string $text The status text.
+     * @param string $status_text The status text.
      * 
      * @return void
      * 
      */
-    public function setStatusText($text)
+    public function setStatusText($status_text)
     {
         // trim and remove newlines
-        $text = trim(str_replace(["\r", "\n"], '', $text));
-        $this->status_text = $text;
+        $status_text = trim(str_replace(["\r", "\n"], '', $status_text));
+        $this->status_text = $status_text;
     }
 
     /**
@@ -541,6 +550,10 @@ class Response
      */
     public function setVersion($version)
     {
+        $version = (float) $version;
+        if ($version != '1.0' && $version != '1.1') {
+            throw new Exception\InvalidVersion($version);
+        }
         $this->version = trim($version);
     }
 

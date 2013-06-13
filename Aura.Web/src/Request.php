@@ -10,7 +10,7 @@
  */
 namespace Aura\Web;
 
-use Aura\Web\Request\Factory;
+use Aura\Web\Request\ValueFactory;
 
 /**
  * 
@@ -24,13 +24,22 @@ class Request
 {
     /**
      * 
-     * An object representing client/browser information.
+     * An object representing client/browser values.
      * 
      * @var Client
      * 
      */
     protected $client;
     
+    /**
+     * 
+     * An object representing the `php://input` value.
+     * 
+     * @var Content
+     * 
+     */
+    protected $content;
+
     /**
      * 
      * A superglobal object representing $_COOKIE values.
@@ -69,21 +78,21 @@ class Request
 
     /**
      * 
-     * The value of `php://input`.
-     * 
-     * @var string
-     * 
-     */
-    protected $input;
-
-    /**
-     * 
      * An object representing the HTTP method.
      * 
      * @var Method
      * 
      */
     protected $method;
+    
+    /**
+     * 
+     * An object representing negotiable "accept" values.
+     * 
+     * @var Negotiate
+     * 
+     */
+    protected $negotiate;
     
     /**
      * 
@@ -116,29 +125,30 @@ class Request
      * 
      * Constructor.
      * 
-     * @param Factory $factory A factory to create value objects.
+     * @param ValueFactory $value_factory A factory to create value objects.
      * 
      */
-    public function __construct(Factory $factory)
+    public function __construct(ValueFactory $value_factory)
     {
-        $this->cookies = $factory->newCookies();
-        $this->env     = $factory->newEnv();
-        $this->files   = $factory->newFiles();
-        $this->headers = $factory->newHeaders();
-        $this->input   = $factory->getContent();
-        $this->method  = $factory->newMethod();
-        $this->post    = $factory->newPost();
-        $this->query   = $factory->newQuery();
-        $this->server  = $factory->newServer();
+        $this->cookies   = $value_factory->newCookies();
+        $this->env       = $value_factory->newEnv();
+        $this->files     = $value_factory->newFiles();
+        $this->headers   = $value_factory->newHeaders();
+        $this->content   = $value_factory->getContent();
+        $this->method    = $value_factory->newMethod();
+        $this->negotiate = $value_factory->newNegotiate();
+        $this->post      = $value_factory->newPost();
+        $this->query     = $value_factory->newQuery();
+        $this->server    = $value_factory->newServer();
     }
 
     /**
      * 
-     * Read-only access to properties.
+     * Read-only access to value objects.
      * 
-     * @param string $key The property to read.
+     * @param string $key The value object get.
      * 
-     * @return mixed The property value.
+     * @return mixed The value object.
      * 
      */
     public function __get($key)

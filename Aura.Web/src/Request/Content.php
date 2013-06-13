@@ -3,7 +3,7 @@ namespace Aura\Web\Request;
 
 class Content
 {
-    protected $decode = [
+    protected $decoders = [
         'application/json' => 'json_decode',
         'application/x-www-form-urlencoded' => 'parse_str',
     ];
@@ -14,21 +14,23 @@ class Content
     
     protected $raw;
     
-    public function __construct($server, $decode = [])
-    {
+    public function __construct(
+        array $server,
+        array $decoders = []
+    ) {
         $this->type = isset($server['HTTP_CONTENT_TYPE'])
                     ? strtolower($server['HTTP_CONTENT_TYPE'])
                     : null;
         
-        $this->decode = array_merge($this->decode, $decode);
+        $this->decoders = array_merge($this->decoders, $decoders);
     }
     
     public function get()
     {
         if ($this->value === null) {
             $this->value = $this->getRaw();
-            if (isset($this->decode[$type])) {
-                $decode = $this->decode[$type];
+            if (isset($this->decoders[$type])) {
+                $decode = $this->decoders[$type];
                 $this->value = $decode($this->value);
             }
         }
