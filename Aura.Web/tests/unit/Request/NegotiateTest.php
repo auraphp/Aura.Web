@@ -8,6 +8,33 @@ class NegotiateTest extends \PHPUnit_Framework_TestCase
         return new Negotiate($server);
     }
     
+    public function testGet()
+    {
+        $negotiate = $this->newNegotiate([
+            'HTTP_ACCEPT' => 'text/*;q=0.9, text/html, text/xhtml;q=0.8',
+            'HTTP_ACCEPT_CHARSET' => 'iso-8859-5, unicode-1-1;q=0.8',
+            'HTTP_ACCEPT_ENCODING' => 'compress;q=0.5, gzip;q=1.0',
+            'HTTP_ACCEPT_LANGUAGE' => 'en-US, en-GB, en, *',
+        ]);
+        
+        $available = [
+            'charset'  => ['unicode-1-1'],
+            'encoding' => [],
+            'language' => ['en-us'],
+            'media'    => ['text/html'],
+        ];
+        
+        $expect = [
+            'charset'  => 'unicode-1-1',
+            'encoding' => false,
+            'language' => 'en-us',
+            'media'    => 'text/html',
+        ];
+        
+        $actual = $negotiate->get($available);
+        $this->assertSame($expect, $actual);
+    }
+    
     public function testGetAccept()
     {
         $negotiate = $this->newNegotiate([

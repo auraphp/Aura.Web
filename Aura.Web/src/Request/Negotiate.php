@@ -4,6 +4,7 @@ namespace Aura\Web\Request;
 /**
  * Trying real hard to adhere to <http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>.
  * @todo figure out what to do when matching to * when the result has an explicit q=0 value.
+ * @todo identity encoding is always acceptable unless set explictly to q=0
  */
 class Negotiate
 {
