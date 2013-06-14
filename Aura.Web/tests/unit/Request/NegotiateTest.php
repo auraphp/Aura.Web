@@ -61,10 +61,140 @@ class NegotiateTest extends \PHPUnit_Framework_TestCase
     public function testGetAcceptLanguage()
     {
         $negotiate = $this->newNegotiate([
-            'HTTP_ACCEPT_LANGUAGE' => 'en-US',
+            'HTTP_ACCEPT_LANGUAGE' => 'en-US, en-GB, en, *',
         ]);
-        $expect = ['en-US' => 1.0];
+        
+        $expect = [
+            'en-US' => 1.0,
+            'en-GB' => 1.0,
+            'en' => 1.0,
+            '*' => 1.0
+        ];
+        
         $actual = $negotiate->getAcceptLanguage();
+        
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testGetCharset()
+    {
+        $negotiate = $this->newNegotiate([
+            'HTTP_ACCEPT_CHARSET' => 'iso-8859-5, unicode-1-1, *',
+        ]);
+        
+        // nothing available
+        $expect = false;
+        $actual = $negotiate->getCharset([]);
+        $this->assertSame($expect, $actual);
+        
+        // explicitly accepts *, and no matching charset available
+        $expect = 'foo';
+        $actual = $negotiate->getCharset(['foo', 'bar']);
+        $this->assertSame($expect, $actual);
+        
+        // explictly accepts unicode-1-1, which is explictly available.
+        // note that it returns the *available* value, which is determined
+        // by the developer, not the acceptable value, which is determined
+        // by the user/client/headers.
+        $expect = 'UniCode-1-1';
+        $actual = $negotiate->getCharset(['foo', 'UniCode-1-1']);
+        $this->assertSame($expect, $actual);
+        
+        // no acceptable charset specified, use first available
+        $negotiate = $this->newNegotiate();
+        $expect = 'ISO-8859-5';
+        $actual = $negotiate->getCharset(['ISO-8859-5', 'foo']);
+        $this->assertSame($expect, $actual);
+        
+        // charset is available but quality level is not acceptable
+        $negotiate = $this->newNegotiate([
+            'HTTP_ACCEPT_CHARSET' => 'foo, bar, baz;q=0',
+        ]);
+        $expect = false;
+        $actual = $negotiate->getCharset(['baz']);
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testGetEncoding()
+    {
+        $negotiate = $this->newNegotiate([
+            'HTTP_ACCEPT_ENCODING' => 'gzip, compress, *',
+        ]);
+        
+        // nothing available
+        $expect = false;
+        $actual = $negotiate->getEncoding([]);
+        $this->assertSame($expect, $actual);
+        
+        // explicitly accepts *, and no matching encoding available
+        $expect = 'foo';
+        $actual = $negotiate->getEncoding(['foo', 'bar']);
+        $this->assertSame($expect, $actual);
+        
+        // explictly accepts compress, which is explictly available.
+        // note that it returns the *available* value, which is determined
+        // by the developer, not the acceptable value, which is determined
+        // by the user/client/headers.
+        $expect = 'GZIP';
+        $actual = $negotiate->getEncoding(['foo', 'GZIP']);
+        $this->assertSame($expect, $actual);
+        
+        // no acceptable encoding specified, use first available
+        $negotiate = $this->newNegotiate();
+        $expect = 'gzip';
+        $actual = $negotiate->getEncoding(['gzip', 'compress']);
+        $this->assertSame($expect, $actual);
+        
+        // encoding is available but quality level is not acceptable
+        $negotiate = $this->newNegotiate([
+            'HTTP_ACCEPT_ENCODING' => 'gzip, compress, foo;q=0',
+        ]);
+        $expect = false;
+        $actual = $negotiate->getEncoding(['foo']);
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testGetLanguage()
+    {
+        $negotiate = $this->newNegotiate([
+            'HTTP_ACCEPT_LANGUAGE' => 'en-US, en-GB, en, *',
+        ]);
+        
+        // nothing available
+        $expect = false;
+        $actual = $negotiate->getLanguage([]);
+        $this->assertSame($expect, $actual);
+        
+        // explicitly accepts *, and no matching language available
+        $expect = 'foo-bar';
+        $actual = $negotiate->getLanguage(['foo-bar', 'baz-dib']);
+        $this->assertSame($expect, $actual);
+        
+        // explictly accepts en-gb, which is explictly available.
+        // note that it returns the *available* value, which is determined
+        // by the developer, not the acceptable value, which is determined
+        // by the user/client/headers.
+        $expect = 'en-gb';
+        $actual = $negotiate->getLanguage(['en-gb', 'fr-FR']);
+        $this->assertSame($expect, $actual);
+        
+        // a subtype is available
+        $expect = 'en-zo';
+        $actual = $negotiate->getLanguage(['foo-bar', 'en-zo', 'baz-qux']);
+        $this->assertSame($expect, $actual);
+        
+        // no acceptable language specified, use first available
+        $negotiate = $this->newNegotiate();
+        $expect = 'en-us';
+        $actual = $negotiate->getLanguage(['en-us', 'en-gb']);
+        $this->assertSame($expect, $actual);
+        
+        // language is available but quality level is not acceptable
+        $negotiate = $this->newNegotiate([
+            'HTTP_ACCEPT_LANGUAGE' => 'en-us, en-gb, en, foo-bar;q=0',
+        ]);
+        $expect = false;
+        $actual = $negotiate->getLanguage(['foo-bar']);
         $this->assertSame($expect, $actual);
     }
     

@@ -3,7 +3,9 @@ namespace Aura\Web\Request;
 
 /**
  * Trying real hard to adhere to <http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>.
- * Need to figure out what to do when matching to * with an explicit q=0 value.
+ * @todo figure out what to do when matching to * with an explicit q=0 value
+ * @todo fix incoming media to force a /, and language to force a -, to avoid
+ * "undefined offset: 1" errors when exploding.
  */
 class Negotiate
 {
@@ -158,15 +160,12 @@ class Negotiate
         $path   = parse_url('http://example.com/' . $request_uri, PHP_URL_PATH);
         $name   = basename($path);
         $ext    = strrchr('.', $name);
-        $this->accept = ($ext && isset($this->types[$ext]))
-                      ? [$this->types[$ext] => 1.0]
-                      : $this->accept;
+        if ($ext && isset($this->types[$ext])) {
+            $this->accept = [$this->types[$ext] => 1.0];
+        }
         
         // fix charset
-        if (! $this->accept_charset) {
-            // no charset? anything is acceptable.
-            $this->accept_charset = ['*' => 1.0];
-        } else {
+        if ($this->accept_charset) {
             // look for ISO-8859-1, case insensitive
             $found = false;
             foreach ($this->accept_charset as $charset => $q) {
@@ -182,18 +181,6 @@ class Negotiate
                     $this->accept_charset
                 );
             }
-        }
-        
-        // fix encoding
-        if (! $this->accept_encoding) {
-            $this->accept_encoding = [
-                'identity' => 1.0
-            ];
-        }
-        
-        // fix language
-        if (! $this->accept_language) {
-            $this->accept_language = ['*' => 1.0];
         }
     }
     
@@ -244,7 +231,7 @@ class Negotiate
         return $this->accept_language;
     }
     
-    public function getCharset(array $available)
+    public function getCharset(array $available = [])
     {
         if (! $available) {
             return false;
@@ -259,10 +246,13 @@ class Negotiate
         }
         
         // normalize for comparisons
-        $this->normalize($acceptable, $available);
+        list($norm_accept, $norm_avail) = $this->normalize(
+            $acceptable,
+            $available
+        );
         
         // loop through acceptable charsets
-        foreach ($acceptable as $charset => $q) {
+        foreach ($norm_accept as $charset => $q) {
             
             // if the acceptable quality is zero, skip it
             if (! $q) {
@@ -275,15 +265,17 @@ class Negotiate
             }
             
             // if acceptable charset is available, use it
-            if (in_array($available, $charset)) {
-                return $charset;
+            foreach ($norm_avail as $key => $avail) {
+                if ($charset == $avail) {
+                    return $available[$key];
+                }
             }
         }
         
         return false;
     }
     
-    public function getEncoding(array $available)
+    public function getEncoding(array $available = [])
     {
         if (! $available) {
             return false;
@@ -298,10 +290,13 @@ class Negotiate
         }
         
         // normalize for comparisons
-        $this->normalize($acceptable, $available);
+        list($norm_accept, $norm_avail) = $this->normalize(
+            $acceptable,
+            $available
+        );
         
         // loop through acceptable encodings
-        foreach ($acceptable as $encoding => $q) {
+        foreach ($norm_accept as $encoding => $q) {
             
             // if the acceptable quality is zero, skip it
             if (! $q) {
@@ -314,15 +309,17 @@ class Negotiate
             }
             
             // if acceptable encoding is available, use it
-            if (in_array($available, $encoding)) {
-                return $encoding;
+            foreach ($norm_avail as $key => $avail) {
+                if ($encoding == $avail) {
+                    return $available[$key];
+                }
             }
         }
         
         return false;
     }
     
-    public function getLanguage(array $available)
+    public function getLanguage(array $available = [])
     {
         if (! $available) {
             return false;
@@ -337,10 +334,13 @@ class Negotiate
         }
         
         // normalize for comparisons
-        $this->normalize($acceptable, $available);
+        list($norm_accept, $norm_avail) = $this->normalize(
+            $acceptable,
+            $available
+        );
         
-        // loop through acceptable language
-        foreach ($acceptable as $language => $q) {
+        // loop through acceptable languages
+        foreach ($norm_accept as $language => $q) {
             
             // if the acceptable quality is zero, skip it
             if (! $q) {
@@ -352,20 +352,21 @@ class Negotiate
                 return $available[0];
             }
             
-            // if acceptable language is available, use it
-            if (in_array($available, $language)) {
-                return $language;
-            }
-            
-            // if acceptable language is type/* ...
-            list($language_type, $language_subtype) = explode('-', $language);
-            if (! $language_subtype) {
-                // ... find the first available for that type
-                foreach ($available as $avail) {
+            // go through the available values and find what's acceptable.
+            // force an ending dash on the language; ignored if subtype is
+            // already present, avoids "undefined offset" error when not.
+            list($language_type, $language_subtype) = explode('-', $language . '-');
+            foreach ($norm_avail as $key => $avail) {
+                if (! $language_subtype) {
+                    // accept any subtype of a language
                     list($avail_type, $avail_subtype) = explode('-', $avail);
                     if ($language_type == $avail_type) {
-                        return $avail;
+                        // type match (subtype ignored)
+                        return $available[$key];
                     }
+                } elseif ($language == $avail) {
+                    // type and subtype match
+                    return $available[$key];
                 }
             }
         }
@@ -373,7 +374,7 @@ class Negotiate
         return false;
     }
     
-    public function getMedia(array $available)
+    public function getMedia(array $available = [])
     {
         if (! $available) {
             return false;
@@ -389,7 +390,7 @@ class Negotiate
         
         // normalize for comparisons
         list($norm_accept, $norm_avail) = $this->normalize(
-            $this->accept,
+            $acceptable,
             $available
         );
         
@@ -406,10 +407,12 @@ class Negotiate
                 return $available[0];
             }
             
-            // go through the available values and see it it's acceptable
-            list($media_type, $media_subtype) = explode('/', $media);
+            // go through the available values and find what's acceptable.
+            // force an ending dash on the language; ignored if subtype is
+            // already present, avoids "undefined offset" error when not.
+            list($media_type, $media_subtype) = explode('/', $media . '/*');
             foreach ($norm_avail as $key => $avail) {
-                if ($avail == $media) {
+                if ($media == $avail) {
                     return $available[$key];
                 }
                 list($avail_type, $avail_subtype) = explode('/', $avail);
