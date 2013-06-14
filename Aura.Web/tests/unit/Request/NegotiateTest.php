@@ -108,7 +108,7 @@ class NegotiateTest extends \PHPUnit_Framework_TestCase
         
         // charset is available but quality level is not acceptable
         $negotiate = $this->newNegotiate([
-            'HTTP_ACCEPT_CHARSET' => 'foo, bar, baz;q=0',
+            'HTTP_ACCEPT_CHARSET' => 'ISO-8859-1, baz;q=0',
         ]);
         $expect = false;
         $actual = $negotiate->getCharset(['baz']);
@@ -239,6 +239,15 @@ class NegotiateTest extends \PHPUnit_Framework_TestCase
         ]);
         $expect = false;
         $actual = $negotiate->getMedia(['foo/bar']);
+        $this->assertSame($expect, $actual);
+        
+        // override with file extension
+        $negotiate = $this->newNegotiate([
+            'HTTP_ACCEPT' => 'text/html, text/xhtml, text/plain',
+            'REQUEST_URI' => '/path/to/resource.json',
+        ]);
+        $expect = 'application/json';
+        $actual = $negotiate->getMedia(['text/html', 'application/json']);
         $this->assertSame($expect, $actual);
     }
 }

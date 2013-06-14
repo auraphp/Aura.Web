@@ -3,9 +3,7 @@ namespace Aura\Web\Request;
 
 /**
  * Trying real hard to adhere to <http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>.
- * @todo figure out what to do when matching to * with an explicit q=0 value
- * @todo fix incoming media to force a /, and language to force a -, to avoid
- * "undefined offset: 1" errors when exploding.
+ * @todo figure out what to do when matching to * when the result has an explicit q=0 value.
  */
 class Negotiate
 {
@@ -159,7 +157,7 @@ class Negotiate
                      : null;
         $path   = parse_url('http://example.com/' . $request_uri, PHP_URL_PATH);
         $name   = basename($path);
-        $ext    = strrchr('.', $name);
+        $ext    = strrchr($name, '.');
         if ($ext && isset($this->types[$ext])) {
             $this->accept = [$this->types[$ext] => 1.0];
         }
