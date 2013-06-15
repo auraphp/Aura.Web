@@ -29,8 +29,8 @@ class Content
     {
         if ($this->value === null) {
             $this->value = $this->getRaw();
-            if (isset($this->decoders[$type])) {
-                $decode = $this->decoders[$type];
+            if (isset($this->decoders[$this->type])) {
+                $decode = $this->decoders[$this->type];
                 $this->value = $decode($this->value);
             }
         }
@@ -41,7 +41,7 @@ class Content
     public function getRaw()
     {
         if ($this->raw === null) {
-            $raw = file_get_contents('php://input');
+            $this->raw = file_get_contents('php://input');
         }
         return $this->raw;
     }

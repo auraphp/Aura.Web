@@ -1,6 +1,8 @@
 <?php
 namespace Aura\Web\Request;
 
+use Aura\Web\PhpStream;
+
 class ContentTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
@@ -14,42 +16,27 @@ class ContentTest extends \PHPUnit_Framework_TestCase
         stream_wrapper_restore('php');
     }
     
-    public function testGetInput()
+    public function newContent($server = [], $decoders = [])
     {
-        $this->reset();
-        
+        return new Content($server, $decoders);
+    }
+    
+    public function testGet()
+    {
         $object = (object) [
             'foo' => 'bar',
             'baz' => 'dib',
             'zim' => 'gir',
         ];
-        
         $encode = json_encode($object);
-        
         PhpStream::$content = $encode;
         
-        $context = $this->newContext();
+        $server = ['HTTP_CONTENT_TYPE' => 'application/json'];
+        $content = $this->newContent($server);
         
-        $this->assertSame($encode, $context->getInput());
+        $actual = $content->get();
+        $this->assertEquals($object, $actual);
+        
+        $this->assertSame('application/json', $content->getType());
     }
-    
-    public function testGetJsonInput()
-    {
-        $this->reset();
-        
-        $object = (object) [
-            'foo' => 'bar',
-            'baz' => 'dib',
-            'zim' => 'gir',
-        ];
-        
-        $encode = json_encode($object);
-        
-        PhpStream::$content = $encode;
-        
-        $context = $this->newContext();
-        
-        $this->assertEquals($object, $context->getJsonInput());
-    }
-    
 }

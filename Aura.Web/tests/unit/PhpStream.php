@@ -16,7 +16,6 @@ class PhpStream
     {
         $return = substr(self::$content, $this->pos, $count);
         $this->pos += strlen($return);
-        
         return $return;
     }
 
