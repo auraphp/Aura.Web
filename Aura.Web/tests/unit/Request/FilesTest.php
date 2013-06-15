@@ -3,11 +3,15 @@ namespace Aura\Web\Request;
 
 class FilesTest extends \PHPUnit_Framework_TestCase
 {
+    public function newFiles($filedata = [])
+    {
+        return new Files($filedata);
+    }
+    
     public function testGetFiles()
     {
-        $this->reset();
         // single file
-        $_FILES['foo'] = [
+        $filedata['foo'] = [
             'error'     => null,
             'name'      => 'bar',
             'size'      => null,
@@ -15,7 +19,7 @@ class FilesTest extends \PHPUnit_Framework_TestCase
             'type'      => null,
         ];
         // bar[]
-        $_FILES['bar'] = [
+        $filedata['bar'] = [
             'error'     => [null, null],
             'name'      => ['foo', 'fooz'],
             'size'      => [null, null],
@@ -23,14 +27,14 @@ class FilesTest extends \PHPUnit_Framework_TestCase
             'type'      => [null, null],
         ];
         // upload[file1]
-        $_FILES['upload']['file1'] = [
+        $filedata['upload']['file1'] = [
             'error'     => null,
             'name'      => 'file1.bar',
             'size'      => null,
             'tmp_name'  => null,
             'type'      => null,
         ];
-        $_FILES['upload']['file2'] = [
+        $filedata['upload']['file2'] = [
             'error'     => null,
             'name'      => 'file2.bar',
             'size'      => null,
@@ -38,39 +42,24 @@ class FilesTest extends \PHPUnit_Framework_TestCase
             'type'      => null,
         ];
         
-        $context = $this->newContext();
+        $files = $this->newFiles($filedata);
         
-        $actual = $context->getFiles('foo');
+        $actual = $files->get('foo');
         $this->assertSame('bar', $actual['name']);
         
-        $actual = $context->getFiles('bar');
+        $actual = $files->get('bar');
         $this->assertSame('foo',  $actual[0]['name']);
         $this->assertSame('fooz', $actual[1]['name']);
         
-        $actual = $context->getFiles('upload');
+        $actual = $files->get('upload');
         $this->assertSame('file1.bar', $actual['file1']['name']);
         $this->assertSame('file2.bar', $actual['file2']['name']);
         
-        $actual = $context->getFiles('baz');
+        $actual = $files->get('baz');
         $this->assertNull($actual);
         
         // return default
-        $actual = $context->getFiles('baz', 'dib');
+        $actual = $files->get('baz', 'dib');
         $this->assertSame('dib', $actual);
-        
-        // return all
-        $this->reset();
-        $_FILES['foo'] = [
-            'error'     => null,
-            'name'      => 'bar',
-            'size'      => null,
-            'tmp_name'  => null,
-            'type'      => null,
-        ];
-        
-        $context    = $this->newContext();
-        $actual = $context->getFiles();
-        $this->assertSame($_FILES, $actual);
     }
-
 }

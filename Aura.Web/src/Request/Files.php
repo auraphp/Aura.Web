@@ -10,10 +10,9 @@ class Files extends Superglobal
     
     /**
      * 
-     * Recursive method to init $_FILES structure to be more like $_POST.
+     * Recursively initialize the data structure to be more like $_POST.
      * 
-     * @param array $src The source $_FILES array, perhaps from a sub-
-     * element of that array.
+     * @param array $src The source array.
      * 
      * @param array &$tgt Where we will store the restructured data when we
      * find it.
@@ -23,11 +22,6 @@ class Files extends Superglobal
      */
     protected function init($src, &$tgt)
     {
-        if (! $src) {
-            $tgt = [];
-            return;
-        }
-
         // an array with these keys is a "target" for us (pre-sorted)
         $tgtkeys = ['error', 'name', 'size', 'tmp_name', 'type'];
 
@@ -55,7 +49,7 @@ class Files extends Superglobal
             // not a target, create sub-elements and init them too
             foreach ($src as $key => $val) {
                 $tgt[$key] = [];
-                $this->initFiles($val, $tgt[$key]);
+                $this->init($val, $tgt[$key]);
             }
         }
     }

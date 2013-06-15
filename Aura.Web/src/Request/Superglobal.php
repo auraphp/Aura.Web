@@ -12,7 +12,7 @@ class Superglobal
     
     public function get($key, $alt = null)
     {
-        if (array_key_exists($this->data[$key])) {
+        if (array_key_exists($key, $this->data)) {
             return $this->data[$key];
         }
         return $alt;
