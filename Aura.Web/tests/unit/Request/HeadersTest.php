@@ -3,33 +3,23 @@ namespace Aura\Web\Request;
 
 class HeadersTest extends \PHPUnit_Framework_TestCase
 {
-    public function testGetHeader()
+    protected function newHeaders($server = [])
     {
-        $this->reset();
-        $_SERVER['HTTP_FOO'] = 'bar';
-        $context = $this->newContext();
+        return new Headers($server);
+    }
+    
+    public function testGet()
+    {
+        $server['HTTP_FOO'] = 'bar';
+        $headers = $this->newHeaders($server);
         
-        $actual = $context->getHeader('foo');
+        $actual = $headers->get('foo');
         $this->assertSame('bar', $actual);
         
-        $actual = $context->getHeader('baz');
+        $actual = $headers->get('baz');
         $this->assertNull($actual);
         
-        $actual = $context->getHeader('baz', 'dib');
+        $actual = $headers->get('baz', 'dib');
         $this->assertSame('dib', $actual);
     }
-    
-    public function testXJsonIsRemoved()
-    {
-        $this->reset();
-        $_SERVER['HTTP_X_JSON'] = 'remove-me';
-        $context = $this->newContext();
-        
-        $actual = $context->getHeader('x-json');
-        $this->assertNull($actual);
-        
-        $actual = $context->getServer('HTTP_X_JSON');
-        $this->assertNull($actual);
-    }
-    
 }
