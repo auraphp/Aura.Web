@@ -92,16 +92,15 @@ class Client
     ) {
         $this->agents = array_merge_recursive($this->agents, $agents);
 
-        if (isset($server['HTTP_X_FORWARDED_FOR'])) {
-            $value = $server['HTTP_X_FORWARDED_FOR'];
-            $this->forwarded_for = explode(',', $value);
-        }
-        
         if (isset($server['REMOTE_ADDR'])) {
             $this->ip = $server['REMOTE_ADDR'];
         }
         
-        if ($this->forwarded_for) {
+        if (isset($server['HTTP_X_FORWARDED_FOR'])) {
+            $ips = explode(',', $server['HTTP_X_FORWARDED_FOR']);
+            foreach ($ips as $ip) {
+                $this->forwarded_for[] = trim($ip);
+            }
             $this->ip = $this->forwarded_for[0];
         }
         
@@ -118,12 +117,12 @@ class Client
             $this->xhr = ($value == 'xmlhttprequest');
         }
     }
-    
+
     public function getForwardedFor()
     {
         return $this->forwarded_for;
     }
-    
+
     /**
      * 
      * Returns the client IP address.
