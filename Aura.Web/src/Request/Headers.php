@@ -19,12 +19,17 @@ class Headers
         }
     }
     
-    public function get($key, $alt = null)
+    public function get($key = null, $alt = null)
     {
+        if (! $key) {
+            return $this->data;
+        }
+        
         $key = strtolower($key);
         if (array_key_exists($key, $this->data)) {
             return $this->data[$key];
         }
+        
         return $alt;
     }
 }

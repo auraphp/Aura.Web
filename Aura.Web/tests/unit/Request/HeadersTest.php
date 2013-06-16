@@ -11,6 +11,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     public function testGet()
     {
         $server['HTTP_FOO'] = 'bar';
+        $server['HTTP_QUX'] = 'quux';
         $headers = $this->newHeaders($server);
         
         $actual = $headers->get('foo');
@@ -21,5 +22,9 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         
         $actual = $headers->get('baz', 'dib');
         $this->assertSame('dib', $actual);
+        
+        $expect = ['foo' => 'bar', 'qux' => 'quux'];
+        $actual = $headers->get();
+        $this->assertSame($expect, $actual);
     }
 }
