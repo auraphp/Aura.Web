@@ -130,11 +130,12 @@ class Request
      */
     public function __construct(ValueFactory $value_factory)
     {
+        $this->client    = $value_factory->newClient();
         $this->cookies   = $value_factory->newCookies();
         $this->env       = $value_factory->newEnv();
         $this->files     = $value_factory->newFiles();
         $this->headers   = $value_factory->newHeaders();
-        $this->content   = $value_factory->getContent();
+        $this->content   = $value_factory->newContent();
         $this->method    = $value_factory->newMethod();
         $this->negotiate = $value_factory->newNegotiate();
         $this->post      = $value_factory->newPost();

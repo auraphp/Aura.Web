@@ -1,29 +1,27 @@
 <?php
 namespace Aura\Web;
 
+use Aura\Web\Request\ValueFactory;
+
 class RequestTest extends \PHPUnit_Framework_TestCase
 {
-    protected function newRequest(array $agents = [])
-    {
-        return new Context($GLOBALS, $agents);
-    }
-    
     public function test__get()
     {
-        $this->reset();
-        $context = $this->newContext();
-        
-        // test that we can access without causing an exception
-        $context->get;
-        $context->post;
-        $context->server;
-        $context->cookie;
-        $context->env;
-        $context->files;
-        $context->header;
-        
-        // invalid or protected should cause an exception
-        $this->setExpectedException('\UnexpectedValueException');
-        $context->invalid;
+        $request = new Request(new ValueFactory([
+            '_SERVER' => [
+                'HTTP_CONTENT_TYPE' => 'text/html',
+                'HTTP_X_JSON' => 'delete-me',
+            ]
+        ]));
+        $this->assertNotNull($request->cookies);
+        $this->assertNotNull($request->env);
+        $this->assertNotNull($request->files);
+        $this->assertNotNull($request->headers);
+        $this->assertNotNull($request->content);
+        $this->assertNotNull($request->method);
+        $this->assertNotNull($request->negotiate);
+        $this->assertNotNull($request->post);
+        $this->assertNotNull($request->query);
+        $this->assertNotNull($request->server);
     }
 }

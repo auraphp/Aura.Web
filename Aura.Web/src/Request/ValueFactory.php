@@ -24,7 +24,7 @@ class ValueFactory
         $method_field = null
     ) {
         $this->globals      = $this->sanitize($globals);
-        $this->agents       = $mobile;
+        $this->agents       = $agents;
         $this->stream       = $stream ? $stream : 'php://input';
         $this->decoders     = $decoders;
         $this->types        = $types;
@@ -43,27 +43,26 @@ class ValueFactory
     {
         return new Content(
             $this->get('_SERVER'),
-            $this->stream,
             $this->decoders
         );
     }
     
     public function newCookies()
     {
-        return new $this->newSuperglobal('_COOKIE');
+        return $this->newSuperglobal('_COOKIE');
     }
     
     public function newEnv()
     {
-        return new $this->newSuperglobal('_ENV');
+        return $this->newSuperglobal('_ENV');
     }
     
-    public function newFiles($key)
+    public function newFiles()
     {
         return new Files($this->get('_FILES'));
     }
     
-    public function newHeaders($key)
+    public function newHeaders()
     {
         return new Headers($this->get('_SERVER'));
     }
@@ -87,22 +86,22 @@ class ValueFactory
     
     public function newPost()
     {
-        return new $this->newSuperglobal('_POST');
+        return $this->newSuperglobal('_POST');
     }
     
     public function newQuery()
     {
-        return new $this->newSuperglobal('_GET');
+        return $this->newSuperglobal('_GET');
     }
     
     public function newServer()
     {
-        return new $this->newSuperglobal('_SERVER');
+        return $this->newSuperglobal('_SERVER');
     }
     
     protected function newSuperglobal($key)
     {
-        return new Values($this->get($key));
+        return new Superglobal($this->get($key));
     }
     
     protected function get($key)
@@ -114,10 +113,6 @@ class ValueFactory
     
     protected function sanitize($globals)
     {
-        if (! $globals['_SERVER']) {
-            return;
-        }
-        
         // sanitize the $_SERVER['HTTP_*'] values here because they get used
         // in so many places. this strips control characters, including tabs,
         // newlines, and linefeeds.
@@ -126,8 +121,8 @@ class ValueFactory
                 // remove the existing key
                 unset($globals['_SERVER'][$key]);
                 // sanitize the new label and value
-                $label = preg_replace('/[\x00-\x1F]/', '', $label);
-                $value = preg_replace('/[\x00-\x1F]/', '', $value);
+                $label = preg_replace('/[\x00-\x1F]/', '', $key);
+                $value = preg_replace('/[\x00-\x1F]/', '', $val);
                 // retain the new label and value
                 $globals['_SERVER'][$label] = $value;
             }
