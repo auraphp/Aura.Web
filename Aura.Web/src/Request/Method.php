@@ -13,18 +13,12 @@ class Method
         $method_field = null
     ) {
         // set the original value
-        $this->value = strtoupper($server['REQUEST_METHOD']);
+        if (isset($server['REQUEST_METHOD'])) {
+            $this->value = strtoupper($server['REQUEST_METHOD']);
+        }
         
         // must be a POST to do an override
         if ($this->value == 'POST') {
-            
-            // look for override in headers
-            $override = isset($server['HTTP_X_HTTP_METHOD_OVERRIDE'])
-                      ? $server['HTTP_X_HTTP_METHOD_OVERRIDE']
-                      : false;
-            if ($override) {
-                $this->value = strtoupper($override);
-            }
             
             // look for this method field in the post data
             if (! $method_field) {
@@ -34,6 +28,14 @@ class Method
             // look for override in post data
             $override = isset($post[$method_field])
                       ? $post[$method_field]
+                      : false;
+            if ($override) {
+                $this->value = strtoupper($override);
+            }
+            
+            // look for override in headers
+            $override = isset($server['HTTP_X_HTTP_METHOD_OVERRIDE'])
+                      ? $server['HTTP_X_HTTP_METHOD_OVERRIDE']
                       : false;
             if ($override) {
                 $this->value = strtoupper($override);
@@ -90,10 +92,5 @@ class Method
     public function isPost()
     {
         return $this->value == 'POST';
-    }
-
-    public function isTrace()
-    {
-        return $this->value == 'TRACE';
     }
 }

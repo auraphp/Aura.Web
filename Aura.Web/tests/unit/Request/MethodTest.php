@@ -3,137 +3,138 @@ namespace Aura\Web\Request;
 
 class MethodTest extends \PHPUnit_Framework_TestCase
 {
+    protected function newMethod($server = [], $post = [])
+    {
+        return new Method($server, $post);
+    }
+    
+    public function test__call()
+    {
+        $server['REQUEST_METHOD'] = 'OTHER';
+        $method = $this->newMethod($server);
+        $this->assertTrue($method->isOther());
+        
+        $this->setExpectedException('BadMethodCallException');
+        $method->badMethodCall();
+    }
+
     public function testIsGet()
     {
-        $this->reset();
-        $context = $this->newContext();
+        $method = $this->newMethod();
+        $this->assertFalse($method->isGet());
         
-        // REQUEST_METHOD not set
-        $this->assertFalse($context->isGet());
+        $server['REQUEST_METHOD'] = 'GET';
+        $method = $this->newMethod($server);
+        $this->assertTrue($method->isGet());
         
-        $this->reset();
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $context = $this->newContext();
-        $this->assertTrue($context->isGet());
-        
-        $this->reset();
-        $_SERVER['REQUEST_METHOD'] = 'NOT-GET';
-        $context = $this->newContext();
-        $this->assertFalse($context->isGet());
+        $server['REQUEST_METHOD'] = 'NOT-GET';
+        $method = $this->newMethod($server);
+        $this->assertFalse($method->isGet());
     }
 
     public function testIsPost()
     {
-        $this->reset();
-        $context = $this->newContext();
+        $method = $this->newMethod();
+        $this->assertFalse($method->isPost());
         
-        // REQUEST_METHOD not set
-        $this->assertFalse($context->isPost());
+        $server['REQUEST_METHOD'] = 'POST';
+        $method = $this->newMethod($server);
+        $this->assertTrue($method->isPost());
         
-        $this->reset();
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $context = $this->newContext();
-        $this->assertTrue($context->isPost());
-        
-        $this->reset();
-        $_SERVER['REQUEST_METHOD'] = 'NOT-POST';
-        $context = $this->newContext();
-        $this->assertFalse($context->isPost());
+        $server['REQUEST_METHOD'] = 'NOT-POST';
+        $method = $this->newMethod($server);
+        $this->assertFalse($method->isPost());
     }
 
     public function testIsPut()
     {
-        $this->reset();
-        $context = $this->newContext();
+        $method = $this->newMethod();
+        $this->assertFalse($method->isPut());
         
-        // REQUEST_METHOD not set
-        $this->assertFalse($context->isPut());
+        $server['REQUEST_METHOD'] = 'PUT';
+        $method = $this->newMethod($server);
+        $this->assertTrue($method->isPut());
         
-        $this->reset();
-        $_SERVER['REQUEST_METHOD'] = 'PUT';
-        $context = $this->newContext();
-        $this->assertTrue($context->isPut());
-        
-        $this->reset();
-        $_SERVER['REQUEST_METHOD'] = 'NOT-PUT';
-        $context = $this->newContext();
-        $this->assertFalse($context->isPut());
+        $server['REQUEST_METHOD'] = 'NOT-PUT';
+        $method = $this->newMethod($server);
+        $this->assertFalse($method->isPut());
     }
 
     public function testIsDelete()
     {
-        $this->reset();
-        $context = $this->newContext();
+        $method = $this->newMethod();
+        $this->assertFalse($method->isDelete());
         
-        // REQUEST_METHOD not set
-        $this->assertFalse($context->isDelete());
+        $server['REQUEST_METHOD'] = 'DELETE';
+        $method = $this->newMethod($server);
+        $this->assertTrue($method->isDelete());
         
-        $this->reset();
-        $_SERVER['REQUEST_METHOD'] = 'DELETE';
-        $context = $this->newContext();
-        $this->assertTrue($context->isDelete());
-        
-        $this->reset();
-        $_SERVER['REQUEST_METHOD'] = 'NOT-DELETE';
-        $context = $this->newContext();
-        $this->assertFalse($context->isDelete());
+        $server['REQUEST_METHOD'] = 'NOT-DELETE';
+        $method = $this->newMethod($server);
+        $this->assertFalse($method->isDelete());
     }
 
     public function testIsHead()
     {
-        $this->reset();
-        $context = $this->newContext();
+        $method = $this->newMethod();
+        $this->assertFalse($method->isHead());
         
-        // REQUEST_METHOD not set
-        $this->assertFalse($context->isHead());
+        $server['REQUEST_METHOD'] = 'HEAD';
+        $method = $this->newMethod($server);
+        $this->assertTrue($method->isHead());
         
-        $this->reset();
-        $_SERVER['REQUEST_METHOD'] = 'HEAD';
-        $context = $this->newContext();
-        $this->assertTrue($context->isHead());
-        
-        $this->reset();
-        $_SERVER['REQUEST_METHOD'] = 'NOT-HEAD';
-        $context = $this->newContext();
-        $this->assertFalse($context->isHead());
+        $server['REQUEST_METHOD'] = 'NOT-HEAD';
+        $method = $this->newMethod($server);
+        $this->assertFalse($method->isHead());
     }
 
     public function testIsOptions()
     {
-        $this->reset();
-        $context = $this->newContext();
+        $method = $this->newMethod();
+        $this->assertFalse($method->isOptions());
         
-        // REQUEST_METHOD not set
-        $this->assertFalse($context->isOptions());
+        $server['REQUEST_METHOD'] = 'OPTIONS';
+        $method = $this->newMethod($server);
+        $this->assertTrue($method->isOptions());
         
-        $this->reset();
-        $_SERVER['REQUEST_METHOD'] = 'OPTIONS';
-        $context = $this->newContext();
-        $this->assertTrue($context->isOptions());
+        $server['REQUEST_METHOD'] = 'NOT-OPTIONS';
+        $method = $this->newMethod($server);
+        $this->assertFalse($method->isOptions());
+    }
+
+    public function testIsPatch()
+    {
+        $method = $this->newMethod();
+        $this->assertFalse($method->isPatch());
         
-        $this->reset();
-        $_SERVER['REQUEST_METHOD'] = 'NOT-OPTIONS';
-        $context = $this->newContext();
-        $this->assertFalse($context->isOptions());
+        $server['REQUEST_METHOD'] = 'PATCH';
+        $method = $this->newMethod($server);
+        $this->assertTrue($method->isPatch());
+        
+        $server['REQUEST_METHOD'] = 'NOT-PATCH';
+        $method = $this->newMethod($server);
+        $this->assertFalse($method->isPatch());
     }
 
     public function testHttpMethodOverload()
     {
-        $this->reset();
-        $_POST['X-HTTP-Method-Override']        = 'header-takes-precedence';
-        $_SERVER['REQUEST_METHOD']              = 'POST';
-        $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'] = 'PUT';
-        $context    = $this->newContext();
-        $actual = $context->getServer('REQUEST_METHOD');
-        
+        // headers take precedence
+        $server = [
+            'REQUEST_METHOD' => 'POST',
+            'HTTP_X_HTTP_METHOD_OVERRIDE' => 'PUT',
+        ];
+        $post['_method'] = 'header-takes-precedence';
+        $method = $this->newMethod($server, $post);
+        $actual = $method->get();
         $this->assertSame('PUT', $actual);
         
-        $this->reset();
-        $_POST['X-HTTP-Method-Override']        = 'DELETE';
-        $_SERVER['REQUEST_METHOD']              = 'POST';
-        $context    = $this->newContext();
-        $actual = $context->getServer('REQUEST_METHOD');
-        
+        // no header? look for field name
+        $server = [
+            'REQUEST_METHOD' => 'POST',
+        ];
+        $post['_method'] = 'DELETE';
+        $method = $this->newMethod($server, $post);
+        $actual = $method->get();
         $this->assertSame('DELETE', $actual);
     }    
 }
