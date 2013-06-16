@@ -3,34 +3,33 @@ namespace Aura\Web\Request;
 
 class UrlTest extends \PHPUnit_Framework_TestCase
 {
-    public function testGetUrl()
+    protected function newUrl($server = [])
     {
-        $this->reset();
-        $_SERVER['HTTP_HOST'] = 'example.com';
-        $_SERVER['REQUEST_URI'] = '/foo?bar=baz';
-        $context = $this->newContext();
+        return new Url($server);
+    }
+    
+    public function testGet()
+    {
+        $server['HTTP_HOST'] = 'example.com';
+        $server['REQUEST_URI'] = '/foo?bar=baz';
+        $url = $this->newUrl($server);
         
         $expect = 'http://example.com/foo?bar=baz';
-        $actual = $context->getUrl();
+        $actual = $url->get();
         $this->assertSame($expect, $actual);
     }
     
     public function testIsSsl()
     {
-        $this->reset();
-        $client = $this->newContext();
+        $url = $this->newUrl();
+        $this->assertFalse($url->isSsl());
         
-        // HTTPS & SERVER_PORT not set
-        $this->assertFalse($client->isSsl());
+        $server = ['HTTPS' => 'on'];
+        $url = $this->newUrl($server);
+        $this->assertTrue($url->isSsl());
         
-        $this->reset();
-        $_SERVER['HTTPS'] = 'on';
-        $client = $this->newContext();
-        $this->assertTrue($client->isSsl());
-        
-        $this->reset();
-        $_SERVER['SERVER_PORT'] = '443';
-        $client = $this->newContext();
-        $this->assertTrue($client->isSsl());
+        $server = ['SERVER_PORT' => '443'];
+        $url = $this->newUrl($server);
+        $this->assertTrue($url->isSsl());
     }    
 }

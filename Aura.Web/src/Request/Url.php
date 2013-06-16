@@ -47,7 +47,7 @@ class Url
         return $this->value;
     }
     
-    public function isSecure()
+    public function isSsl()
     {
         return $this->secure;
     }
