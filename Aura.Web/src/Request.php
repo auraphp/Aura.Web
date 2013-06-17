@@ -10,7 +10,7 @@
  */
 namespace Aura\Web;
 
-use Aura\Web\Request\ValueFactory;
+use Aura\Web\Request\PropertyFactory;
 
 /**
  * 
@@ -42,25 +42,25 @@ class Request
 
     /**
      * 
-     * A superglobal object representing $_COOKIE values.
+     * An object representing $_COOKIE values.
      * 
-     * @var Superglobal
+     * @var Values
      * 
      */
     protected $cookies;
 
     /**
      * 
-     * A superglobal object representing $_ENV values.
+     * An object representing $_ENV values.
      * 
-     * @var Superglobal
+     * @var Values
      * 
      */
     protected $env;
 
     /**
      * 
-     * A superglobal object representing $_GET values.
+     * An object representing $_GET values.
      * 
      * @var Files
      * 
@@ -96,27 +96,36 @@ class Request
     
     /**
      * 
-     * A superglobal object representing $_POST values.
+     * An object representing arbitrary parameter values; e.g., from a router.
      * 
-     * @var Superglobal
+     * @var Params
+     * 
+     */
+    protected $params;
+    
+    /**
+     * 
+     * An object representing $_POST values.
+     * 
+     * @var Values
      * 
      */
     protected $post;
 
     /**
      * 
-     * A superglobal object representing $_GET values.
+     * An object representing $_GET values.
      * 
-     * @var Superglobal
+     * @var Values
      * 
      */
     protected $query;
 
     /**
      * 
-     * A superglobal object representing $_SERVER values.
+     * An object representing $_SERVER values.
      * 
-     * @var Superglobal
+     * @var Values
      * 
      */
     protected $server;
@@ -125,31 +134,33 @@ class Request
      * 
      * Constructor.
      * 
-     * @param ValueFactory $value_factory A factory to create value objects.
+     * @param PropertyFactory $property_factory A factory to create property
+     * objects.
      * 
      */
-    public function __construct(ValueFactory $value_factory)
+    public function __construct(PropertyFactory $property_factory)
     {
-        $this->client    = $value_factory->newClient();
-        $this->cookies   = $value_factory->newCookies();
-        $this->env       = $value_factory->newEnv();
-        $this->files     = $value_factory->newFiles();
-        $this->headers   = $value_factory->newHeaders();
-        $this->content   = $value_factory->newContent();
-        $this->method    = $value_factory->newMethod();
-        $this->negotiate = $value_factory->newNegotiate();
-        $this->post      = $value_factory->newPost();
-        $this->query     = $value_factory->newQuery();
-        $this->server    = $value_factory->newServer();
+        $this->client    = $property_factory->newClient();
+        $this->cookies   = $property_factory->newCookies();
+        $this->env       = $property_factory->newEnv();
+        $this->files     = $property_factory->newFiles();
+        $this->headers   = $property_factory->newHeaders();
+        $this->content   = $property_factory->newContent();
+        $this->method    = $property_factory->newMethod();
+        $this->negotiate = $property_factory->newNegotiate();
+        $this->params    = $property_factory->newParams();
+        $this->post      = $property_factory->newPost();
+        $this->query     = $property_factory->newQuery();
+        $this->server    = $property_factory->newServer();
     }
 
     /**
      * 
-     * Read-only access to value objects.
+     * Read-only access to property objects.
      * 
-     * @param string $key The value object get.
+     * @param string $key The name of the property object to read.
      * 
-     * @return mixed The value object.
+     * @return mixed The property object.
      * 
      */
     public function __get($key)

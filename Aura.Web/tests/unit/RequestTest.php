@@ -1,13 +1,13 @@
 <?php
 namespace Aura\Web;
 
-use Aura\Web\Request\ValueFactory;
+use Aura\Web\Request\PropertyFactory;
 
 class RequestTest extends \PHPUnit_Framework_TestCase
 {
     public function test__get()
     {
-        $request = new Request(new ValueFactory([
+        $request = new Request(new PropertyFactory([
             '_SERVER' => [
                 'HTTP_CONTENT_TYPE' => 'text/html',
                 'HTTP_X_JSON' => 'delete-me',

@@ -1,7 +1,7 @@
 <?php
 namespace Aura\Web\Request;
 
-class Files extends Superglobal
+class Files extends Values
 {
     public function __construct(array $files)
     {

@@ -5,7 +5,7 @@ namespace Aura\Web\Request;
  * Need to be sure we are sanitizing values when appropriate,
  * e.g. $_SERVER['HTTP_*'] values.
  */
-class ValueFactory
+class PropertyFactory
 {
     protected $globals;
     
@@ -49,12 +49,12 @@ class ValueFactory
     
     public function newCookies()
     {
-        return $this->newSuperglobal('_COOKIE');
+        return new Values($this->get('_COOKIE'));
     }
     
     public function newEnv()
     {
-        return $this->newSuperglobal('_ENV');
+        return new Values($this->get('_ENV'));
     }
     
     public function newFiles()
@@ -84,24 +84,24 @@ class ValueFactory
         );
     }
     
+    public function newParams(array $data = [])
+    {
+        return new Params($data);
+    }
+    
     public function newPost()
     {
-        return $this->newSuperglobal('_POST');
+        return new Values($this->get('_POST'));
     }
     
     public function newQuery()
     {
-        return $this->newSuperglobal('_GET');
+        return new Values($this->get('_GET'));
     }
     
     public function newServer()
     {
-        return $this->newSuperglobal('_SERVER');
-    }
-    
-    protected function newSuperglobal($key)
-    {
-        return new Superglobal($this->get($key));
+        return new Values($this->get('_SERVER'));
     }
     
     protected function get($key)

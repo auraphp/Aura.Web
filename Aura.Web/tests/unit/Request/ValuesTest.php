@@ -1,24 +1,24 @@
 <?php
 namespace Aura\Web\Request;
 
-class SuperglobalTest extends \PHPUnit_Framework_TestCase
+class ValuesTest extends \PHPUnit_Framework_TestCase
 {
     public function testGet()
     {
-        $super = new Superglobal(['foo' => 'bar']);
+        $values = new Values(['foo' => 'bar']);
         
-        $actual = $super->get('foo');
+        $actual = $values->get('foo');
         $this->assertSame('bar', $actual);
         
-        $actual = $super->get('baz');
+        $actual = $values->get('baz');
         $this->assertNull($actual);
         
         // return alt
-        $actual = $super->get('baz', 'dib');
+        $actual = $values->get('baz', 'dib');
         $this->assertSame('dib', $actual);
         
         // return all
-        $actual = $super->get();
+        $actual = $values->get();
         $this->assertSame(['foo' => 'bar'], $actual);
     }
 }

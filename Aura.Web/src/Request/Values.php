@@ -1,11 +1,11 @@
 <?php
 namespace Aura\Web\Request;
 
-class Superglobal
+class Values
 {
     protected $data;
     
-    public function __construct(array $data)
+    public function __construct(array $data = [])
     {
         $this->data = $data;
     }
