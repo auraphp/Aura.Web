@@ -1,10 +1,6 @@
 <?php
 namespace Aura\Web\Request;
 
-/**
- * Need to be sure we are sanitizing values when appropriate,
- * e.g. $_SERVER['HTTP_*'] values.
- */
 class PropertyFactory
 {
     protected $globals;

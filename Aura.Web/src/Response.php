@@ -10,593 +10,84 @@
  */
 namespace Aura\Web;
 
+use Aura\Web\Response\PropertyFactory;
+
 /**
  * 
  * Data transfer object for an HTTP response.
+ * 
+ * @todo Add a "finished" method to indicate that controllers should return
+ * the response without further processing?
+ * 
+ * https://en.wikipedia.org/wiki/List_of_HTTP_headers
  * 
  * @package Aura.Web
  * 
  */
 class Response
 {
-    /**
-     * 
-     * Should the response disable browser caching?
-     * 
-     * When `false`, the `getHeaders()` method will set these headers in its
-     * return value (note that they are not added to `$headers` directly):
-     * 
-     * {{code:
-     *     Pragma: no-cache
-     *     Cache-Control: no-store, no-cache, must-revalidate
-     *     Cache-Control: post-check=0, pre-check=0
-     *     Expires: 1
-     * }}
-     * 
-     * When true or null, the `getHeaders()` method will make no changes to
-     * the existing headers.
-     * 
-     * @var bool
-     * 
-     * @see setCache()
-     * 
-     * @see setRedirectAfterPost()
-     * 
-     */
-    protected $disable_cache = false;
-
-    /**
-     * 
-     * The response body content.
-     * 
-     * @var string
-     * 
-     */
-    protected $content = null;
-
-    /**
-     * 
-     * The Content-Type of the response.
-     * 
-     * @var string
-     * 
-     */
-    protected $content_type = null;
-
-    /**
-     * 
-     * The response cookies.
-     * 
-     * @var array
-     * 
-     */
-    protected $cookies = [];
-
-    /**
-     * 
-     * Whether or not cookies should default to being sent by HTTP only.
-     * 
-     * @var bool
-     * 
-     */
-    protected $cookies_httponly = true;
-
-    /**
-     * 
-     * The response headers (less the cookies).
-     * 
-     * @var array
-     * 
-     */
-    protected $headers = [];
-
-    /**
-     * 
-     * Redirect to this location.
-     * 
-     * @var string
-     * 
-     */
-    protected $redirect = '';
-
-    /**
-     * 
-     * The response status code.
-     * 
-     * @var int
-     * 
-     */
-    protected $status_code = 200;
-
-    /**
-     * 
-     * The response status text.
-     * 
-     * @var string
-     * 
-     */
-    protected $status_text = 'OK';
-
-    /**
-     * 
-     * The HTTP version to send as.
-     * 
-     * @var string
-     * 
-     */
-    protected $version = '1.1';
-
-    /**
-     * 
-     * Should the response disable HTTP caching?
-     * 
-     * When disabled, the `getHeaders()` method will add these headers:
-     * 
-     *     Pragma: no-cache
-     *     Cache-Control: no-store, no-cache, must-revalidate
-     *     Cache-Control: post-check=0, pre-check=0
-     *     Expires: 1
-     * 
-     * @param bool $flag When false, disable browser caching.
-     * 
-     * @see redirectPost()
-     * 
-     * @return void
-     * 
-     */
-    public function disableCache($disable_cache = true)
+    protected $cache;
+    protected $content;
+    protected $cookies;
+    protected $data;
+    protected $headers;
+    protected $redirect;
+    protected $status;
+    
+    public function __construct(PropertyFactory $property_factory)
     {
-        $this->disable_cache = (bool) $disable_cache;
+        $this->cache    = $property_factory->newCache();
+        $this->content  = $property_factory->newContent();
+        $this->cookies  = $property_factory->newCookies();
+        $this->data     = $property_factory->newData();
+        $this->headers  = $property_factory->newHeaders();
+        $this->redirect = $property_factory->newRedirect();
+        $this->status   = $property_factory->newStatus();
     }
-
-    /**
-     * 
-     * Is caching turned off?
-     * 
-     * @return mixed Note that this is a ternary: true, false, or null.
-     * 
-     */
-    public function isCacheDisabled()
+    
+    public function __clone()
     {
-        return $this->disable_cache;
-    }
-
-    /**
-     * 
-     * Sets the content of the response.
-     * 
-     * @param string $content The body content of the response.
-     * 
-     * @return void
-     * 
-     */
-    public function setContent($content)
-    {
-        $this->content = $content;
-    }
-
-    /**
-     * 
-     * Gets the content of the response.
-     * 
-     * @return string The body content of the response.
-     * 
-     */
-    public function getContent()
-    {
-        return $this->content;
-    }
-
-    /**
-     * 
-     * Sets the Content-Type of the response.
-     * 
-     * @param string The Content-Type of the response.
-     * 
-     * @return void
-     * 
-     * @see negotiateContentType()
-     * 
-     */
-    public function setContentType($type)
-    {
-        $this->content_type = $type;
-    }
-
-    /**
-     * 
-     * Gets the Content-Type of the response.
-     * 
-     * @return string The Content-Type of the response.
-     * 
-     */
-    public function getContentType()
-    {
-        return $this->content_type;
-    }
-
-    /**
-     * 
-     * Sets a cookie value in `$cookies`.
-     * 
-     * @param string $name The name of the cookie.
-     * 
-     * @param string $value The value of the cookie.
-     * 
-     * @param int|string $expire The Unix timestamp after which the cookie
-     * expires.  If non-numeric, the method uses strtotime() on the value.
-     * 
-     * @param string $path The path on the server in which the cookie will be
-     * available on.
-     * 
-     * @param string $domain The domain that the cookie is available on.
-     * 
-     * @param bool $secure Indicates that the cookie should only be
-     * transmitted over a secure HTTPS connection.
-     * 
-     * @param bool $httponly When true, the cookie will be made accessible
-     * only through the HTTP protocol. This means that the cookie won't be
-     * accessible by scripting languages, such as JavaScript.
-     * 
-     * @return void
-     * 
-     */
-    public function setCookie(
-        $name,
-        $value = '',
-        $expire = 0,
-        $path = '',
-        $domain = '',
-        $secure = false,
-        $httponly = null
-    ) {
-        $this->cookies[$name] = [
-            'value'    => $value,
-            'expire'   => $expire,
-            'path'     => $path,
-            'domain'   => $domain,
-            'secure'   => $secure,
-            'httponly' => $httponly,
-        ];
-    }
-
-    /**
-     * 
-     * Gets one cookie for the response.
-     * 
-     * @param string $name The cookie name.
-     * 
-     * @return array A cookie descriptor.
-     * 
-     */
-    public function getCookie($name)
-    {
-        $cookie = $this->cookies[$name];
-
-        // was httponly set for this cookie?  if not,
-        // use the default.
-        $cookie['httponly'] = ($cookie['httponly'] === null)
-                            ? $this->cookies_httponly
-                            : (bool) $cookie['httponly'];
-
-        // try to allow for times not in unix-timestamp format
-        if (! is_numeric($cookie['expire'])) {
-            $cookie['expire'] = strtotime($cookie['expire']);
-        }
-
-        $cookie['expire'] = (int) $cookie['expire'];
-        $cookie['secure']  = (bool) $cookie['secure'];
-        return $cookie;
-    }
-
-    /**
-     * 
-     * Gets all cookies for the response.
-     * 
-     * @return array A sequential array of cookie descriptors.
-     * 
-     */
-    public function getCookies()
-    {
-        $cookies = [];
-        foreach ($this->cookies as $name => $cookie) {
-            $cookies[$name] = $this->getCookie($name);
-        }
-        return $cookies;
-    }
-
-    /**
-     * 
-     * By default, should cookies be sent by HTTP only?
-     * 
-     * @param bool $flag True to send by HTTP only, false to send by any
-     * method.
-     * 
-     * @return void
-     * 
-     */
-    public function setCookiesHttponly($flag)
-    {
-        $this->cookies_httponly = (bool) $flag;
-    }
-
-    /**
-     * 
-     * Sets a header value in `$headers`.
-     * 
-     * @param string $key The header label.
-     * 
-     * @param string $val The value for the header.
-     * 
-     * @return void
-     * 
-     */
-    public function setHeader($key, $val)
-    {
-        $key = $this->headerLabel($key);
-        $val = $this->headerValue($val);
-        $this->headers[$key][] = $val;
-    }
-
-    /**
-     * 
-     * Adds to a header value in $this->headers.
-     * 
-     * @param string $key The header label, such as "Content-Type".
-     * 
-     * @param string $val The value for the header.
-     * 
-     * @return void
-     * 
-     */
-    public function addHeader($key, $val)
-    {
-        $key = $this->headerLabel($key);
-        $val = $this->headerValue($val);
-        $this->headers[$key][] = $val;
-    }
-
-    /**
-     * 
-     * Returns the value of a single header.
-     * 
-     * @param string $key The header name.
-     * 
-     * @return string|array A string if the header has only one value, or an
-     * array if the header has multiple values, or null if the header does not
-     * exist.
-     * 
-     */
-    public function getHeader($key)
-    {
-        $headers = $this->getHeaders();
-        $key     = $this->headerLabel($key);
-        if (isset($headers[$key])) {
-            return $headers[$key];
-        }
-    }
-
-    /**
-     * 
-     * Returns the array of all headers to be sent with the response.
-     * 
-     * @return array
-     * 
-     */
-    public function getHeaders()
-    {
-        $headers = $this->headers;
-
-        if ($this->content_type) {
-            $headers['Content-Type'] = [$this->headerValue($this->content_type)];
-        }
-
-        if ($this->disable_cache) {
-            $headers['Pragma'] = ['no-cache'];
-            $headers['Cache-Control'] = [
-                'no-store, no-cache, must-revalidate',
-                'post-check=0, pre-check=0',
-            ];
-            $headers['Expires'] = ['1'];
-        }
-
-        if ($this->redirect) {
-            $headers['Location'] = [$this->headerValue($this->redirect)];
-        }
-
-        return $headers;
-    }
-
-    /**
-     * 
-     * Set a location that the response should redirect to, along with a
-     * a status code and status text.
-     * 
-     * @param string $uri The URI to redirect to.
-     * 
-     * @param int $code The HTTP status code to redirect with; default
-     * is `302`.
-     * 
-     * @param string $text The HTTP status text; default is `'Found'`.
-     * 
-     * @return void
-     * 
-     */
-    public function setRedirect($uri, $code = 302, $text = 'Found')
-    {
-        $this->redirect = $uri;
-        $this->setStatusCode($code);
-        $this->setStatusText($text);
-    }
-
-    /**
-     * 
-     * Set a location that the response should redirect to, along with a
-     * a status code and status text, *and* sets caching to false.
-     * 
-     * @param string $uri The URI to redirect to.
-     * 
-     * @param int|string $code The HTTP status code to redirect with; default
-     * is `303`.
-     * 
-     * @param string $text The HTTP status text; default is `'See Other'`.
-     * 
-     * @return void
-     * 
-     */
-    public function setRedirectAfterPost($uri, $code = '303', $text = 'See Other')
-    {
-        $this->setRedirect($uri, $code, $text);
-        $this->disableCache();
-    }
-
-    /**
-     * 
-     * Is the response set to issue a redirect?
-     * 
-     * @return bool
-     * 
-     */
-    public function isRedirect()
-    {
-        return (bool) $this->redirect;
-    }
-
-    /**
-     * 
-     * Returns the redirect location, if any.
-     * 
-     * @return string
-     * 
-     */
-    public function getRedirect()
-    {
-        return $this->redirect;
-    }
-
-    public function setStatus($code, $text)
-    {
-        $this->setStatusCode($code);
-        $this->setStatusText($text);
+        $this->content  = clone $this->content;
+        $this->cookies  = clone $this->cookies;
+        $this->data     = clone $this->data;
+        $this->headers  = clone $this->headers;
+        $this->redirect = clone $this->redirect;
+        $this->status   = clone $this->status;
     }
     
     /**
      * 
-     * Sets the HTTP status code to for the response.
+     * Read-only access to property objects.
      * 
-     * Automatically resets the status text to null.
+     * @param string $key The name of the property object to read.
      * 
-     * @param int $status_code An HTTP status code, such as 200, 302, 404, etc.
+     * @return mixed The property object.
      * 
      */
-    public function setStatusCode($status_code)
+    public function __get($key)
     {
-        $status_code = (int) $status_code;
-        if ($status_code < 100 || $status_code > 599) {
-            throw new Exception\InvalidStatusCode($status_code);
-        }
-        $this->status_code = $status_code;
-        $this->setStatusText(null);
+        return $this->$key;
     }
-
+    
     /**
      * 
-     * Returns the HTTP status code for the response.
+     * Creates and returns a data transfer object assembled from the response
+     * properties.
      * 
-     * @return int
-     * 
-     */
-    public function getStatusCode()
-    {
-        return $this->status_code;
-    }
-
-    /**
-     * 
-     * Sets the HTTP status text for the response.
-     * 
-     * @param string $status_text The status text.
-     * 
-     * @return void
+     * @return StdClass
      * 
      */
-    public function setStatusText($status_text)
+    public function getTransfer()
     {
-        // trim and remove newlines
-        $status_text = trim(str_replace(["\r", "\n"], '', $status_text));
-        $this->status_text = $status_text;
-    }
-
-    /**
-     * 
-     * Returns the HTTP status text for the response.
-     * 
-     * @return string
-     * 
-     */
-    public function getStatusText()
-    {
-        return $this->status_text;
-    }
-
-    /**
-     * 
-     * Sets the HTTP version for the response to '1.0' or '1.1'.
-     * 
-     * @param string $version The HTTP version to use for this response.
-     * 
-     * @return void
-     * 
-     */
-    public function setVersion($version)
-    {
-        $version = (float) $version;
-        if ($version != '1.0' && $version != '1.1') {
-            throw new Exception\InvalidVersion($version);
-        }
-        $this->version = trim($version);
-    }
-
-    /**
-     * 
-     * Returns the HTTP version for the response.
-     * 
-     * @return string
-     * 
-     */
-    public function getVersion()
-    {
-        return $this->version;
-    }
-
-    /**
-     * 
-     * Normalizes and sanitizes a header label.
-     * 
-     * @param string $label The header label to be sanitized.
-     * 
-     * @return string The sanitized header label.
-     * 
-     */
-    protected function headerLabel($label)
-    {
-        $label = preg_replace('/[^a-zA-Z0-9-]/', '', $label);
-        $label = ucwords(strtolower(str_replace('-', ' ', $label)));
-        $label = str_replace(' ', '-', $label);
-        return $label;
-    }
-
-    /**
-     * 
-     * Sanitizes a header value.
-     * 
-     * @param string $value The header value to be sanitized.
-     * 
-     * @return string The sanitized header value.
-     * 
-     */
-    protected function headerValue($value)
-    {
-        return str_replace(["\r", "\n"], '', $value);
+        $transfer = clone $this;
+        $transfer->content->modifyTransfer($transfer);
+        $transfer->redirect->modifyTransfer($transfer);
+        $transfer->cache->modifyTransfer($transfer);
+        return (object) [
+            'status'  => $transfer->status->get(),
+            'headers' => $transfer->headers->get(),
+            'cookies' => $transfer->cookies->get(),
+            'content' => $transfer->content->get(),
+        ];
     }
 }
