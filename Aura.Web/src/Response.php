@@ -29,9 +29,9 @@ class Response
     protected $cache;
     protected $content;
     protected $cookies;
-    protected $data;
     protected $headers;
     protected $redirect;
+    protected $render;
     protected $status;
     
     public function __construct(PropertyFactory $property_factory)
@@ -39,19 +39,20 @@ class Response
         $this->cache    = $property_factory->newCache();
         $this->content  = $property_factory->newContent();
         $this->cookies  = $property_factory->newCookies();
-        $this->data     = $property_factory->newData();
         $this->headers  = $property_factory->newHeaders();
         $this->redirect = $property_factory->newRedirect();
+        $this->render   = $property_factory->newRender();
         $this->status   = $property_factory->newStatus();
     }
     
     public function __clone()
     {
+        $this->cache    = clone $this->cache;
         $this->content  = clone $this->content;
         $this->cookies  = clone $this->cookies;
-        $this->data     = clone $this->data;
         $this->headers  = clone $this->headers;
         $this->redirect = clone $this->redirect;
+        $this->render   = clone $this->render;
         $this->status   = clone $this->status;
     }
     

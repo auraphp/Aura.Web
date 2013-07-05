@@ -75,12 +75,8 @@ abstract class AbstractPage extends AbstractController
                       : null;
 
         // set the signal handlers
-        $this->signal->handler($this, 'pre_exec',        [$this, 'preExec']);
         $this->signal->handler($this, 'pre_action',      [$this, 'preAction']);
         $this->signal->handler($this, 'post_action',     [$this, 'postAction']);
-        $this->signal->handler($this, 'pre_render',      [$this, 'preRender']);
-        $this->signal->handler($this, 'post_render',     [$this, 'postRender']);
-        $this->signal->handler($this, 'post_exec',       [$this, 'postExec']);
 
         // the exception-catching signal handler on this class is intended as
         // a final fallback; other handlers most likely need to run before it.
@@ -159,33 +155,34 @@ abstract class AbstractPage extends AbstractController
     public function exec()
     {
         try {
-
-            // pre-exec signal
-            $this->signal->send($this, 'pre_exec', $this);
-
-            // the action cycle
+            // pre-action
             $this->signal->send($this, 'pre_action', $this);
-            $this->action($this->getAction());
+            
+            // determine the params for the action method
+            $args = [];
+            $method = new ReflectionMethod($this, 'action');
+            foreach ($method->getParameters() as $param) {
+                if (isset($this->params[$param->name])) {
+                    $args[] = $this->params[$param->name];
+                } elseif ($param->isDefaultValueAvailable()) {
+                    $args[] = $param->getDefaultValue();
+                } else {
+                    $args[] = null;
+                }
+            }
+            
+            // call the action method
+            call_user_func_array([$this, 'action'], $args);
+            
+            // post-action
             $this->signal->send($this, 'post_action', $this);
-
-            // the render cycle
-            $this->signal->send($this, 'pre_render', $this);
-            $this->render();
-            $this->signal->send($this, 'post_render', $this);
-
-            // post-exec signal
-            $this->signal->send($this, 'post_exec', $this);
-
+            
         } catch (Exception $exception) {
-
-            // set exception and send signal
+            
             $this->exception = $exception;
             $this->signal->send($this, 'catch_exception', $this);
-
+            
         }
-
-        // done!
-        return $this->getResponse();
     }
 
     /**
@@ -217,18 +214,6 @@ abstract class AbstractPage extends AbstractController
      */
     protected function invokeMethod($name)
     {
-        $args = [];
-        $method = new ReflectionMethod($this, $name);
-        foreach ($method->getParameters() as $param) {
-            if (isset($this->params[$param->name])) {
-                $args[] = $this->params[$param->name];
-            } elseif ($param->isDefaultValueAvailable()) {
-                $args[] = $param->getDefaultValue();
-            } else {
-                $args[] = null;
-            }
-        }
-        $method->invokeArgs($this, $args);
     }
 
     /**
@@ -295,17 +280,6 @@ abstract class AbstractPage extends AbstractController
      * 
      */
     public function postRender()
-    {
-    }
-
-    /**
-     * 
-     * Runs at the end of `exec()` after `postRender()`.
-     * 
-     * @return mixed
-     * 
-     */
-    public function postExec()
     {
     }
 

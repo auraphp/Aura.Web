@@ -20,9 +20,9 @@ class PropertyFactory
         return new Cookies;
     }
     
-    public function newData()
+    public function newRender()
     {
-        return new ArrayObject([]);
+        return new Render;
     }
     
     public function newHeaders()
