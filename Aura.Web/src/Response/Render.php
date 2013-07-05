@@ -3,7 +3,7 @@ namespace Aura\Web\Response;
 
 class Render
 {
-    protected $data = [];
+    protected $data;
     
     protected $layout;
     
@@ -12,6 +12,11 @@ class Render
     protected $view;
     
     protected $view_stack = [];
+    
+    public function __construct()
+    {
+        $this->data = (object) [];
+    }
     
     public function __get($key)
     {

@@ -17,9 +17,9 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf('Aura\Web\Response\Content',  $this->response->content);
         $this->assertInstanceOf('Aura\Web\Response\Cookies',  $this->response->cookies);
-        $this->assertInstanceOf('ArrayObject',                $this->response->data);
         $this->assertInstanceOf('Aura\Web\Response\Headers',  $this->response->headers);
         $this->assertInstanceOf('Aura\Web\Response\Redirect', $this->response->redirect);
+        $this->assertInstanceOf('Aura\Web\Response\Render',   $this->response->render);
         $this->assertInstanceOf('Aura\Web\Response\Status',   $this->response->status);
     }
     
