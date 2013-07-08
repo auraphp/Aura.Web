@@ -59,7 +59,7 @@ class Manager
         
         // are we still missing the object?
         if (! $this->object) {
-            throw new Exception('No object specified.');
+            throw new Exception\ObjectNotSpecified;
         }
     }
     
@@ -80,7 +80,7 @@ class Manager
         
         // are we still missing the method?
         if (! $this->method) {
-            throw new Exception('No method specified.');
+            throw new Exception\MethodNotSpecified;
         }
     }
 }
