@@ -3,7 +3,7 @@ namespace Aura\Web\Request;
 
 class Files extends Values
 {
-    public function __construct(array $files)
+    public function __construct(array $files = [])
     {
         $this->init($files, $this->data);
     }

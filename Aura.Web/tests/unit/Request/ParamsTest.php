@@ -6,7 +6,7 @@ class ParamsTest extends \PHPUnit_Framework_TestCase
     public function test()
     {
         $params = new Params;
-        $params->setData(['foo' => 'bar']);
+        $params->set(['foo' => 'bar']);
         
         $actual = $params->get('foo');
         $this->assertSame('bar', $actual);
