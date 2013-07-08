@@ -11,17 +11,17 @@ class PropertyFactory
     
     protected $types;
     
+    protected $method_field;
+    
     public function __construct(
         array $globals,
         array $agents = [],
-        $stream = null,
         array $decoders = [],
         array $types = [],
         $method_field = null
     ) {
         $this->globals      = $this->sanitize($globals);
         $this->agents       = $agents;
-        $this->stream       = $stream ? $stream : 'php://input';
         $this->decoders     = $decoders;
         $this->types        = $types;
         $this->method_field = $method_field;
