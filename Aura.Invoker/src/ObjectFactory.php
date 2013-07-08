@@ -1,5 +1,5 @@
 <?php
-namespace Aura\Web\Dispatcher;
+namespace Aura\Invoker;
 
 class ObjectFactory
 {

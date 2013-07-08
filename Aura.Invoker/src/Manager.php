@@ -1,9 +1,9 @@
 <?php
-namespace Aura\Web\Dispatcher;
+namespace Aura\Invoker;
 
 use Closure;
 
-class Dispatcher
+class Manager
 {
     use InvokeMethodTrait;
     

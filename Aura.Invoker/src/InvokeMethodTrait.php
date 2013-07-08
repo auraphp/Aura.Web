@@ -1,5 +1,5 @@
 <?php
-namespace Aura\Web\Dispatcher;
+namespace Aura\Invoker;
 
 use BadMethodCallException;
 use ReflectionMethod;
