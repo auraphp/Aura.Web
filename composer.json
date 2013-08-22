@@ -1,0 +1,22 @@
+{
+    "name": "aura/web",
+    "type": "library",
+    "description": "The Aura Web package provides tools to build web page controllers, including an AbstractPage for action methods, a Context class for disovering the request environment, and a Response transfer object that describes the eventual HTTP response.",
+    "keywords": [ "controller", "page controller", "web controller" ],
+    "homepage": "http://auraphp.com/Aura.Web",
+    "license": "BSD-2-Clause",
+    "authors": [
+        {
+            "name": "Aura Contributors",
+            "homepage": "https://github.com/auraphp/Aura.Web/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "Aura\\Web": "src/"
+        }
+    }
+}
