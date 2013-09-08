@@ -87,16 +87,6 @@ class Context
 
     /**
      * 
-     * The parsed http[accept*] headers with each header sorted
-     * by the quality factor
-     * 
-     * @var array
-     * 
-     */
-    protected $accept;
-
-    /**
-     * 
      * The value of `php://input`.
      * 
      * @var string
