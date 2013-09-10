@@ -649,7 +649,7 @@ class Context
      * @param array $src The source $_FILES array, perhaps from a sub-
      * element of that array/
      * 
-     * @param array &$tgt Where we will store the restructured data when we
+     * @param array $tgt Where we will store the restructured data when we
      * find it.
      * 
      * @return void

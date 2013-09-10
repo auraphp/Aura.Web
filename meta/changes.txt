@@ -1,1 +1,1 @@
-Typo fixes. Thanks, Pascal Borrelli.
+- [DOC] Update license, readme, and docblocks. Add PHP 5.5 to Travis build.
