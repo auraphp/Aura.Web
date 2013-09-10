@@ -196,7 +196,7 @@ class Response
      * 
      * Sets the Content-Type of the response.
      * 
-     * @param string The Content-Type of the response.
+     * @param string $type The Content-Type of the response.
      * 
      * @return void
      * 
