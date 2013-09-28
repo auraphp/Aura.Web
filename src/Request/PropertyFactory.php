@@ -104,7 +104,7 @@ class PropertyFactory
     {
         return isset($this->globals[$key])
              ? $this->globals[$key]
-             : [];
+             : array();
     }
     
     protected function sanitize($globals)

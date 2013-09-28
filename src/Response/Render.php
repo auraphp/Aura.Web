@@ -15,7 +15,7 @@ class Render
     
     public function __construct()
     {
-        $this->data = (object) [];
+        $this->data = (object) array();
     }
     
     public function __get($key)

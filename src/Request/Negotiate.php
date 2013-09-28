@@ -435,6 +435,6 @@ class Negotiate
         foreach ($available as $key => $val) {
             $available[$key] = strtolower($val);
         }
-        return [$acceptable, $available];
+        return array($acceptable, $available);
     }
 }
