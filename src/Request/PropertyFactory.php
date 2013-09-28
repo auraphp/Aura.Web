@@ -15,9 +15,9 @@ class PropertyFactory
     
     public function __construct(
         array $globals,
-        array $agents = [],
-        array $decoders = [],
-        array $types = [],
+        array $agents = array(),
+        array $decoders = array(),
+        array $types = array(),
         $method_field = null
     ) {
         $this->globals      = $this->sanitize($globals);
@@ -80,7 +80,7 @@ class PropertyFactory
         );
     }
     
-    public function newParams(array $data = [])
+    public function newParams(array $data = array())
     {
         return new Params($data);
     }

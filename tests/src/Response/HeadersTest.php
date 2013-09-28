@@ -15,10 +15,10 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $this->headers->set('foo-bar', 'baz');
         $this->headers->set('dib', 'zim');
         
-        $expect = [
+        $expect = array(
             'Foo-Bar' => 'baz',
             'Dib' => 'zim',
-        ];
+        );
         
         $actual = $this->headers->get();
         
@@ -31,9 +31,9 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $this->headers->add('foo', 'baz');
         $this->headers->add('foo', 'dib');
         
-        $expect = [
-            'Foo' => ['bar', 'baz', 'dib'],
-        ];
+        $expect = array(
+            'Foo' => array('bar', 'baz', 'dib'),
+        );
         
         $actual = $this->headers->get();
         
@@ -50,7 +50,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $actual = $this->headers->get('foo-bar');
         $this->assertSame($expect, $actual);
         
-        $expect = ['zim', 'gir'];
+        $expect = array('zim', 'gir');
         $actual = $this->headers->get('dib');
         $this->assertSame($expect, $actual);
         
@@ -64,10 +64,10 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $this->headers->add('dib', 'zim');
         $this->headers->add('dib', 'gir');
         
-        $expect = [
+        $expect = array(
             'Foo-Bar' => 'baz',
-            'Dib' => ['zim', 'gir'],
-        ];
+            'Dib' => array('zim', 'gir'),
+        );
         $actual = $this->headers->get();
         $this->assertSame($expect, $actual);
     }

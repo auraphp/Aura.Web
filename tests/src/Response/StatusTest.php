@@ -17,11 +17,11 @@ class StatusTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Not Found', $this->status->getPhrase());
         $this->assertSame(1.0, $this->status->getVersion());
         
-        $expect = [
+        $expect = array(
             'version' => 1.0,
             'code'    => 404,
             'phrase'  => 'Not Found',
-        ];
+        );
         
         $this->assertEquals($expect, $this->status->get());
     }

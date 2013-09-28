@@ -15,14 +15,14 @@ class CookiesTest extends \PHPUnit_Framework_TestCase
         $expire = time() + 3600;
         $this->cookies->set('foo', 'bar', $expire, '/path', 'example.com');
         
-        $expect = [
+        $expect = array(
           'value' => 'bar',
           'expire' => $expire,
           'path' => '/path',
           'domain' => 'example.com',
           'secure' => false,
           'httponly' => true,
-        ];
+        );
 
         $actual = $this->cookies->get('foo');
         
@@ -35,24 +35,24 @@ class CookiesTest extends \PHPUnit_Framework_TestCase
         $this->cookies->set('foo', 'bar', $expire, '/path', 'example.com');
         $this->cookies->set('baz', 'dib', date('Y-m-d H:i:s', $expire), '/path', 'example.com');
         
-        $expect = [
-            'foo' => [
+        $expect = array(
+            'foo' => array(
               'value' => 'bar',
               'expire' => $expire,
               'path' => '/path',
               'domain' => 'example.com',
               'secure' => false,
               'httponly' => true,
-            ],
-            'baz' => [
+            ),
+            'baz' => array(
               'value' => 'dib',
               'expire' => $expire,
               'path' => '/path',
               'domain' => 'example.com',
               'secure' => false,
               'httponly' => true,
-            ],
-        ];
+            ),
+        );
 
         $actual = $this->cookies->get();
         
@@ -67,14 +67,14 @@ class CookiesTest extends \PHPUnit_Framework_TestCase
         $expire = time() + 3600;
         $this->cookies->set('foo', 'bar', $expire, '/path', 'example.com');
         
-        $expect = [
+        $expect = array(
           'value' => 'bar',
           'expire' => $expire,
           'path' => '/path',
           'domain' => 'example.com',
           'secure' => false,
           'httponly' => false,
-        ];
+        );
 
         $actual = $this->cookies->get('foo');
         

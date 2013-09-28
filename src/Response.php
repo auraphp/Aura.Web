@@ -84,11 +84,11 @@ class Response
         $transfer->content->modifyTransfer($transfer);
         $transfer->redirect->modifyTransfer($transfer);
         $transfer->cache->modifyTransfer($transfer);
-        return (object) [
+        return (object) array(
             'status'  => $transfer->status->get(),
             'headers' => $transfer->headers->get(),
             'cookies' => $transfer->cookies->get(),
             'content' => $transfer->content->get(),
-        ];
+        );
     }
 }

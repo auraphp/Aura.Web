@@ -5,7 +5,7 @@ class ValuesTest extends \PHPUnit_Framework_TestCase
 {
     public function testGet()
     {
-        $values = new Values(['foo' => 'bar']);
+        $values = new Values(array('foo' => 'bar'));
         
         $actual = $values->get('foo');
         $this->assertSame('bar', $actual);
@@ -19,6 +19,6 @@ class ValuesTest extends \PHPUnit_Framework_TestCase
         
         // return all
         $actual = $values->get();
-        $this->assertSame(['foo' => 'bar'], $actual);
+        $this->assertSame(array('foo' => 'bar'), $actual);
     }
 }

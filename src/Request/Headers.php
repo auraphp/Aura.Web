@@ -3,7 +3,7 @@ namespace Aura\Web\Request;
 
 class Headers
 {
-    protected $data = [];
+    protected $data = array();
     
     public function __construct(array $server)
     {

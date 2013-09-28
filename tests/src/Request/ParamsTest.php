@@ -6,7 +6,7 @@ class ParamsTest extends \PHPUnit_Framework_TestCase
     public function test()
     {
         $params = new Params;
-        $params->set(['foo' => 'bar']);
+        $params->set(array('foo' => 'bar'));
         
         $actual = $params->get('foo');
         $this->assertSame('bar', $actual);
@@ -20,6 +20,6 @@ class ParamsTest extends \PHPUnit_Framework_TestCase
         
         // return all
         $actual = $params->get();
-        $this->assertSame(['foo' => 'bar'], $actual);
+        $this->assertSame(array('foo' => 'bar'), $actual);
     }
 }

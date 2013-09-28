@@ -5,7 +5,7 @@ class Values
 {
     protected $data;
     
-    public function __construct(array $data = [])
+    public function __construct(array $data = array())
     {
         $this->data = $data;
     }

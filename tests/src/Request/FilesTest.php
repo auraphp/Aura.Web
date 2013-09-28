@@ -3,7 +3,7 @@ namespace Aura\Web\Request;
 
 class FilesTest extends \PHPUnit_Framework_TestCase
 {
-    public function newFiles($filedata = [])
+    public function newFiles($filedata = array())
     {
         return new Files($filedata);
     }
@@ -11,36 +11,36 @@ class FilesTest extends \PHPUnit_Framework_TestCase
     public function testGetFiles()
     {
         // single file
-        $filedata['foo'] = [
+        $filedata['foo'] = array(
             'error'     => null,
             'name'      => 'bar',
             'size'      => null,
             'tmp_name'  => null,
             'type'      => null,
-        ];
+        );
         // bar[]
-        $filedata['bar'] = [
-            'error'     => [null, null],
-            'name'      => ['foo', 'fooz'],
-            'size'      => [null, null],
-            'tmp_name'  => [null, null],
-            'type'      => [null, null],
-        ];
+        $filedata['bar'] = array(
+            'error'     => array(null, null),
+            'name'      => array('foo', 'fooz'),
+            'size'      => array(null, null),
+            'tmp_name'  => array(null, null),
+            'type'      => array(null, null),
+        );
         // upload[file1]
-        $filedata['upload']['file1'] = [
+        $filedata['upload']['file1'] = array(
             'error'     => null,
             'name'      => 'file1.bar',
             'size'      => null,
             'tmp_name'  => null,
             'type'      => null,
-        ];
-        $filedata['upload']['file2'] = [
+        );
+        $filedata['upload']['file2'] = array(
             'error'     => null,
             'name'      => 'file2.bar',
             'size'      => null,
             'tmp_name'  => null,
             'type'      => null,
-        ];
+        );
         
         $files = $this->newFiles($filedata);
         

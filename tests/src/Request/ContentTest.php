@@ -16,22 +16,22 @@ class ContentTest extends \PHPUnit_Framework_TestCase
         stream_wrapper_restore('php');
     }
     
-    public function newContent($server = [], $decoders = [])
+    public function newContent($server = array(), $decoders = array())
     {
         return new Content($server, $decoders);
     }
     
     public function testGet()
     {
-        $object = (object) [
+        $object = (object) array(
             'foo' => 'bar',
             'baz' => 'dib',
             'zim' => 'gir',
-        ];
+        );
         $encode = json_encode($object);
         PhpStream::$content = $encode;
         
-        $server = ['HTTP_CONTENT_TYPE' => 'application/json'];
+        $server = array('HTTP_CONTENT_TYPE' => 'application/json');
         $content = $this->newContent($server);
         
         $actual = $content->get();

@@ -34,11 +34,11 @@ class Status
 
     public function get()
     {
-        return [
+        return array(
             'version' => $this->version,
             'code'    => $this->code,
             'phrase'  => $this->phrase,
-        ];
+        );
     }
     
     public function set($code, $phrase, $version = null)
@@ -92,7 +92,7 @@ class Status
      */
     public function setPhrase($phrase)
     {
-        $phrase = trim(str_replace(["\r", "\n"], '', $phrase));
+        $phrase = trim(str_replace(array("\r", "\n"), '', $phrase));
         $this->phrase = $phrase;
     }
 

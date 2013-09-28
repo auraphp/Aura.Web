@@ -3,7 +3,7 @@ namespace Aura\Web\Request;
 
 class MethodTest extends \PHPUnit_Framework_TestCase
 {
-    protected function newMethod($server = [], $post = [])
+    protected function newMethod($server = array(), $post = array())
     {
         return new Method($server, $post);
     }
@@ -119,19 +119,19 @@ class MethodTest extends \PHPUnit_Framework_TestCase
     public function testHttpMethodOverload()
     {
         // headers take precedence
-        $server = [
+        $server = array(
             'REQUEST_METHOD' => 'POST',
             'HTTP_X_HTTP_METHOD_OVERRIDE' => 'PUT',
-        ];
+        );
         $post['_method'] = 'header-takes-precedence';
         $method = $this->newMethod($server, $post);
         $actual = $method->get();
         $this->assertSame('PUT', $actual);
         
         // no header? look for field name
-        $server = [
+        $server = array(
             'REQUEST_METHOD' => 'POST',
-        ];
+        );
         $post['_method'] = 'DELETE';
         $method = $this->newMethod($server, $post);
         $actual = $method->get();

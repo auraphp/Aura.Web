@@ -3,7 +3,7 @@ namespace Aura\Web\Request;
 
 class UrlTest extends \PHPUnit_Framework_TestCase
 {
-    protected function newUrl($server = [])
+    protected function newUrl($server = array())
     {
         return new Url($server);
     }
@@ -24,11 +24,11 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $url = $this->newUrl();
         $this->assertFalse($url->isSsl());
         
-        $server = ['HTTPS' => 'on'];
+        $server = array('HTTPS' => 'on');
         $url = $this->newUrl($server);
         $this->assertTrue($url->isSsl());
         
-        $server = ['SERVER_PORT' => '443'];
+        $server = array('SERVER_PORT' => '443');
         $url = $this->newUrl($server);
         $this->assertTrue($url->isSsl());
     }    

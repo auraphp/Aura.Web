@@ -3,7 +3,7 @@ namespace Aura\Web\Request;
 
 class Client
 {
-    protected $forwarded_for = [];
+    protected $forwarded_for = array();
     protected $mobile;
     protected $crawler;
     protected $ip;
@@ -20,8 +20,8 @@ class Client
      * @var array
      * 
      */
-    protected $agents = [
-        'mobile' => [
+    protected $agents = array(
+        'mobile' => array(
             'Android',
             'BlackBerry',
             'Blazer',
@@ -48,8 +48,8 @@ class Client
             'Opera Mini',
             'webOS', // Palm devices
             'Windows CE',
-        ],
-        'crawler' => [
+        ),
+        'crawler' => array(
             'Ask',
             'Baidu',
             'Google',
@@ -83,12 +83,12 @@ class Client
             'Nutch',
             'WordPress',
             'Wget'
-        ],
-    ];
+        ),
+    );
 
     public function __construct(
         array $server,
-        array $agents = []
+        array $agents = array()
     ) {
         $this->agents = array_merge_recursive($this->agents, $agents);
 

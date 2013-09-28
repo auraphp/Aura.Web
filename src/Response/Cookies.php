@@ -10,7 +10,7 @@ class Cookies
      * @var array
      * 
      */
-    protected $cookies = [];
+    protected $cookies = array();
 
     /**
      * 
@@ -56,14 +56,14 @@ class Cookies
         $secure = false,
         $httponly = null
     ) {
-        $this->cookies[$name] = [
+        $this->cookies[$name] = array(
             'value'    => $value,
             'expire'   => $expire,
             'path'     => $path,
             'domain'   => $domain,
             'secure'   => $secure,
             'httponly' => $httponly,
-        ];
+        );
     }
 
     /**
@@ -78,7 +78,7 @@ class Cookies
     public function get($name = null)
     {
         if (! $name) {
-            $cookies = [];
+            $cookies = array();
             foreach ($this->cookies as $name => $cookie) {
                 $cookies[$name] = $this->get($name);
             }

@@ -3,7 +3,7 @@ namespace Aura\Web\Request;
 
 class HeadersTest extends \PHPUnit_Framework_TestCase
 {
-    protected function newHeaders($server = [])
+    protected function newHeaders($server = array())
     {
         return new Headers($server);
     }
@@ -23,7 +23,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $actual = $headers->get('baz', 'dib');
         $this->assertSame('dib', $actual);
         
-        $expect = ['foo' => 'bar', 'qux' => 'quux'];
+        $expect = array('foo' => 'bar', 'qux' => 'quux');
         $actual = $headers->get();
         $this->assertSame($expect, $actual);
     }

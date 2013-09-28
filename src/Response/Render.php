@@ -7,11 +7,11 @@ class Render
     
     protected $layout;
     
-    protected $layout_stack = [];
+    protected $layout_stack = array();
     
     protected $view;
     
-    protected $view_stack = [];
+    protected $view_stack = array();
     
     public function __construct()
     {

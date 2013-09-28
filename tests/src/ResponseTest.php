@@ -31,24 +31,24 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->response->content->setDisposition('attachment', 'filename.txt');
         $this->response->redirect->withoutCache('http://example.com');
         
-        $expect = (object) [
-            'status' => [
+        $expect = (object) array(
+            'status' => array(
                 'version' => 1.1,
                 'code' => 303,
                 'phrase' => 'See Other',
-            ],
-            'headers' => [
+            ),
+            'headers' => array(
                 'Content-Disposition' => 'attachment; filename=filename.txt',
                 'Content-Type' => 'text/plain; charset=utf-8',
                 'Location' => 'http://example.com',
                 'Pragma' => 'no-cache',
                 'Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0',
                 'Expires' => '1',
-            ],
-            'cookies' => [
-            ],
+            ),
+            'cookies' => array(
+            ),
             'content' => 'foo bar baz',
-        ];
+        );
         
         $actual = $this->response->getTransfer();
         

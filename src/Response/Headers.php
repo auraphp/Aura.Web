@@ -10,7 +10,7 @@ class Headers
      * @var array
      * 
      */
-    protected $headers = [];
+    protected $headers = array();
 
     /**
      * 
@@ -99,6 +99,6 @@ class Headers
      */
     protected function sanitizeValue($value)
     {
-        return str_replace(["\r", "\n"], '', $value);
+        return str_replace(array("\r", "\n"), '', $value);
     }
 }

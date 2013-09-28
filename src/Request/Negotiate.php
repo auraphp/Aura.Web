@@ -8,11 +8,11 @@ namespace Aura\Web\Request;
  */
 class Negotiate
 {
-    protected $accept = [];
-    protected $accept_charset = [];
-    protected $accept_encoding = [];
-    protected $accept_language = [];
-    protected $types = [
+    protected $accept = array();
+    protected $accept_charset = array();
+    protected $accept_encoding = array();
+    protected $accept_language = array();
+    protected $types = array(
         '.aif'      => 'audio/x-aiff',
         '.aifc'     => 'audio/x-aiff',
         '.aiff'     => 'audio/x-aiff',
@@ -94,21 +94,21 @@ class Negotiate
         '.xpm'      => 'image/x-xpixmap',
         '.xwd'      => 'image/x-xwindowdump',
         '.zip'      => 'application/zip',
-    ];
+    );
     
     // this is messy and has a high CRAP score. refactor to methods.
     public function __construct(
         array $server,
-        array $types = []
+        array $types = array()
     ) {
         $this->types = array_merge($this->types, $types);
         
-        $keys_vars = [
+        $keys_vars = array(
             'HTTP_ACCEPT'          => 'accept',
             'HTTP_ACCEPT_CHARSET'  => 'accept_charset',
             'HTTP_ACCEPT_ENCODING' => 'accept_encoding',
             'HTTP_ACCEPT_LANGUAGE' => 'accept_language',
-        ];
+        );
         
         // this is an unusual sort. normally we'd think a reverse-sort would
         // order the arary by q values from 1 to 0, but the problem is that
@@ -125,7 +125,7 @@ class Negotiate
                 continue;
             }
             
-            $bucket = [];
+            $bucket = array();
             $values = explode(',', $raw);
             
             // sort into q-value buckets
@@ -160,7 +160,7 @@ class Negotiate
         $name   = basename($path);
         $ext    = strrchr($name, '.');
         if ($ext && isset($this->types[$ext])) {
-            $this->accept = [$this->types[$ext] => 1.0];
+            $this->accept = array($this->types[$ext] => 1.0);
         }
         
         // fix charset
@@ -176,7 +176,7 @@ class Negotiate
             // charset iso-8859-1 is acceptable if not explictly mentioned
             if (! $found) {
                 $this->accept_charset = array_merge(
-                    ['ISO-8859-1' => 1.0],
+                    array('ISO-8859-1' => 1.0),
                     $this->accept_charset
                 );
             }
@@ -185,23 +185,23 @@ class Negotiate
     
     public function get(array $available)
     {
-        $result = [];
+        $result = array();
         
-        $base = [
+        $base = array(
             'charset'  => null,
             'encoding' => null,
             'language' => null,
             'media'    => null,
-        ];
+        );
         
         $available = array_merge($base, $available);
         
-        $list = [
+        $list = array(
             'charset'  => 'getCharset',
             'encoding' => 'getEncoding',
             'language' => 'getLanguage',
             'media'    => 'getMedia'
-        ];
+        );
         
         foreach ($list as $key => $method) {
             $result[$key] = $this->$method($available[$key]);
@@ -230,7 +230,7 @@ class Negotiate
         return $this->accept_language;
     }
     
-    public function getCharset(array $available = [])
+    public function getCharset(array $available = array())
     {
         if (! $available) {
             return false;
@@ -274,7 +274,7 @@ class Negotiate
         return false;
     }
     
-    public function getEncoding(array $available = [])
+    public function getEncoding(array $available = array())
     {
         if (! $available) {
             return false;
@@ -318,7 +318,7 @@ class Negotiate
         return false;
     }
     
-    public function getLanguage(array $available = [])
+    public function getLanguage(array $available = array())
     {
         if (! $available) {
             return false;
@@ -373,7 +373,7 @@ class Negotiate
         return false;
     }
     
-    public function getMedia(array $available = [])
+    public function getMedia(array $available = array())
     {
         if (! $available) {
             return false;
@@ -426,7 +426,7 @@ class Negotiate
     
     public function normalize($acceptable, $available)
     {
-        $normalized = [];
+        $normalized = array();
         foreach ($acceptable as $value => $q) {
             $value = strtolower($value);
             $normalized[$value] = $q;

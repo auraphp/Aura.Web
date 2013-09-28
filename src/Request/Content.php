@@ -3,10 +3,10 @@ namespace Aura\Web\Request;
 
 class Content
 {
-    protected $decoders = [
+    protected $decoders = array(
         'application/json' => 'json_decode',
         'application/x-www-form-urlencoded' => 'parse_str',
-    ];
+    );
     
     protected $type;
     
@@ -16,7 +16,7 @@ class Content
     
     public function __construct(
         array $server,
-        array $decoders = []
+        array $decoders = array()
     ) {
         $this->type = isset($server['HTTP_CONTENT_TYPE'])
                     ? strtolower($server['HTTP_CONTENT_TYPE'])
