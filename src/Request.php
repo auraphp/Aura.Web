@@ -1,7 +1,7 @@
 <?php
 /**
  * 
- * This file is part of the Aura project for PHP.
+ * This file is part of Aura for PHP.
  * 
  * @package Aura.Web
  * 
@@ -60,7 +60,7 @@ class Request
 
     /**
      * 
-     * An object representing $_GET values.
+     * An object representing $_FILES values.
      * 
      * @var Files
      * 
