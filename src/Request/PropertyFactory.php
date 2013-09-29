@@ -126,5 +126,6 @@ class PropertyFactory
         
         // further sanitize headers to remove HTTP_X_JSON headers
         unset($globals['_SERVER']['HTTP_X_JSON']);
+        return $globals;
     }
 }
