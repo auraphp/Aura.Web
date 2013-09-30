@@ -43,4 +43,54 @@ you notice compliance oversights, please send a patch via pull request.
 
 ## Getting Started
 
-TBD.
+### Request
+
+Instantiate the _Request_ object as below
+
+```php
+use Aura\Web\Request;
+use Aura\Web\Request\PropertyFactory;
+
+$property_factory = new PropertyFactory(array(
+    '_SERVER' => $_SERVER,
+    '_GET' => $_GET,
+    '_POST' => $_POST,
+    '_FILES' => $_FILES,
+    '_ENV' => $_ENV,
+    '_COOKIE' => $_COOKIE
+));
+$request = new Request($property_factory);
+```
+
+The request object contains client, environement, files, headers, 
+the raw input content, method, negotiate, params, post values, query values and
+server values.
+
+You can get the information of the requested method via `method` object
+inside the _Request_.
+
+- Available methods in _Method_ object are
+
+    - `get()` get the requested method value
+    - `isDelete` whether the requested method was delete
+    - `isGet` whether the requested method was get
+    - `isHead` whether the requested method was head
+    - `isOptions` whether the requested method was options
+    - `isPatch` whether the requested method was patch
+    - `isPut` whether the requested method was put
+    - `isPost` whether the requested method was post
+
+Example usage 
+    
+```php
+$request->method->isPost();
+```
+
+You can get `$_GET` values via _Query_ object in the _Request_ object
+
+```php
+// http://localhost/?name=Aura
+$name = $request->query->get('name', 'defaut value');
+```
+
+If there is no `name` you will get the `default value`.
