@@ -17,8 +17,11 @@ class Headers
                 $this->data[$label] = $value;
             }
         }
+        
+        // further sanitize headers to remove HTTP_X_JSON headers
+        unset($this->data['HTTP_X_JSON']);
     }
-    
+
     public function get($key = null, $alt = null)
     {
         if (! $key) {

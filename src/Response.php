@@ -33,16 +33,23 @@ class Response
     protected $redirect;
     protected $render;
     protected $status;
-    
-    public function __construct(PropertyFactory $property_factory)
-    {
-        $this->cache    = $property_factory->newCache();
-        $this->content  = $property_factory->newContent();
-        $this->cookies  = $property_factory->newCookies();
-        $this->headers  = $property_factory->newHeaders();
-        $this->redirect = $property_factory->newRedirect();
-        $this->render   = $property_factory->newRender();
-        $this->status   = $property_factory->newStatus();
+
+    public function __construct(
+        Response\Cache    $cache,
+        Response\Content  $content,
+        Response\Cookies  $cookies,
+        Response\Headers  $headers,
+        Response\Redirect $redirect,
+        Response\Render   $render,
+        Response\Status   $status
+    ) {
+        $this->cache    = $cache;
+        $this->content  = $content;
+        $this->cookies  = $cookies;
+        $this->headers  = $headers;
+        $this->redirect = $redirect;
+        $this->render   = $render;
+        $this->status   = $status;
     }
     
     public function __clone()

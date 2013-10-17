@@ -40,7 +40,6 @@ class Method
             if ($override) {
                 $this->value = strtoupper($override);
             }
-            
         }
     }
     

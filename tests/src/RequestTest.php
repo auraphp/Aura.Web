@@ -7,12 +7,16 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 {
     public function test__get()
     {
-        $request = new Request(new PropertyFactory(array(
+        $globals = array(
             '_SERVER' => array(
                 'HTTP_CONTENT_TYPE' => 'text/html',
                 'HTTP_X_JSON' => 'delete-me',
             )
-        )));
+        );
+        
+        $factory = new WebFactory($globals);
+        
+        $request = $factory->newRequest();
         $this->assertNotNull($request->cookies);
         $this->assertNotNull($request->env);
         $this->assertNotNull($request->files);
@@ -23,5 +27,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($request->post);
         $this->assertNotNull($request->query);
         $this->assertNotNull($request->server);
+        $this->assertNotNull($request->url);
     }
 }

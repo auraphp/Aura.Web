@@ -10,7 +10,9 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->response = new Response(new PropertyFactory);
+        $globals = array();
+        $factory = new WebFactory($globals);
+        $this->response = $factory->newResponse();
     }
     
     public function test__get()

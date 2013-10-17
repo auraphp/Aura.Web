@@ -132,26 +132,44 @@ class Request
 
     /**
      * 
+     * An object representing the URL.
+     * 
+     * @var Url
+     * 
+     */
+    protected $url;
+
+    /**
+     * 
      * Constructor.
      * 
      * @param PropertyFactory $property_factory A factory to create property
      * objects.
      * 
      */
-    public function __construct(PropertyFactory $property_factory)
-    {
-        $this->client    = $property_factory->newClient();
-        $this->cookies   = $property_factory->newCookies();
-        $this->env       = $property_factory->newEnv();
-        $this->files     = $property_factory->newFiles();
-        $this->headers   = $property_factory->newHeaders();
-        $this->content   = $property_factory->newContent();
-        $this->method    = $property_factory->newMethod();
-        $this->negotiate = $property_factory->newNegotiate();
-        $this->params    = $property_factory->newParams();
-        $this->post      = $property_factory->newPost();
-        $this->query     = $property_factory->newQuery();
-        $this->server    = $property_factory->newServer();
+    public function __construct(
+        Request\Client    $client,
+        Request\Content   $content,
+        Request\Globals   $globals,
+        Request\Headers   $headers,
+        Request\Method    $method,
+        Request\Negotiate $negotiate,
+        Request\Params    $params,
+        Request\Url       $url
+    ) {
+        $this->client    = $client;
+        $this->content   = $content;
+        $this->cookies   = $globals->cookies;
+        $this->env       = $globals->env;
+        $this->files     = $globals->files;
+        $this->headers   = $headers;
+        $this->method    = $method;
+        $this->negotiate = $negotiate;
+        $this->params    = $params;
+        $this->post      = $globals->post;
+        $this->query     = $globals->query;
+        $this->server    = $globals->server;
+        $this->url       = $url;
     }
 
     /**
