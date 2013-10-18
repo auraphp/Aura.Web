@@ -100,6 +100,43 @@ $file = $request->files->get('file_field', array());
 ```
 #### Client
 
+The `$request->client` object has these methods:
+
+- `getForwardedFor()` returns the values of the `X-Forwarded-For` headers as
+  an array.
+
+- `getReferer()` returns the value of the `Referer` header.
+
+- `getIp()` returns the value of `$_SEVER['REMOTE_ADDR']`, or the appropriate
+  value of `X-Forwarded-For`.
+
+- `getUserAgent()` return the value of the `User-Agent` header.
+
+- `isCrawler()` returns true if the `User-Agent` header matches one of a list
+  of bot/crawler/robot user agents (otherwise false).
+  
+- `isMobile()` returns true if the `User-Agent` header matches one of a list
+  of mobile user agents (otherwise false).
+
+To add to the list of recognized user agents, set up the `WebFactory` with
+them first, then create the _Request_ object afterwards.
+
+```
+<?php
+$web_factory->setMobileAgents(array(
+    'NewMobileAgent',
+    'AnotherNewMobile',
+));
+
+$web_factory->setCrawlerAgents(array(
+    'NewCrawler',
+    'AnotherNewCrawler',
+));
+
+$request = $web_factory->newRequest();
+?>
+```
+
 #### Content
 
 #### Headers
