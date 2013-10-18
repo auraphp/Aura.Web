@@ -43,54 +43,96 @@ you notice compliance oversights, please send a patch via pull request.
 
 ## Getting Started
 
-### Request
+### Request Object
 
-Instantiate the _Request_ object as below
-
-```php
-use Aura\Web\Request;
-use Aura\Web\Request\PropertyFactory;
-
-$property_factory = new PropertyFactory(array(
-    '_SERVER' => $_SERVER,
-    '_GET' => $_GET,
-    '_POST' => $_POST,
-    '_FILES' => $_FILES,
-    '_ENV' => $_ENV,
-    '_COOKIE' => $_COOKIE
-));
-$request = new Request($property_factory);
-```
-
-The request object contains client, environement, files, headers, 
-the raw input content, method, negotiate, params, post values, query values and
-server values.
-
-You can get the information of the requested method via `method` object
-inside the _Request_.
-
-- Available methods in _Method_ object are
-
-    - `get()` get the requested method value
-    - `isDelete` whether the requested method was delete
-    - `isGet` whether the requested method was get
-    - `isHead` whether the requested method was head
-    - `isOptions` whether the requested method was options
-    - `isPatch` whether the requested method was patch
-    - `isPut` whether the requested method was put
-    - `isPost` whether the requested method was post
-
-Example usage 
-    
-```php
-$request->method->isPost();
-```
-
-You can get `$_GET` values via _Query_ object in the _Request_ object
+Instantiate a _WebFactory_ and get new _Request_ object from it:
 
 ```php
-// http://localhost/?name=Aura
-$name = $request->query->get('name', 'defaut value');
+<?php
+use Aura\Web\WebFactory;
+
+$web_factory = new WebFactory($GLOBALS);
+$request = $web_factory->newRequest();
+?>
 ```
 
-If there is no `name` you will get the `default value`.
+The _Request_ object contains several property objects. Some represent a copy
+of the PHP superglobals ...
+
+- `$request->cookies` for $_COOKIES
+- `$request->env` for $_ENV
+- `$request->files` for $_FILES
+- `$request->post` for $_POST
+- `$request->query` for $_GET
+- `$request->server` for $_SERVER
+
+... and other represent more specific kinds of information about the request:
+
+- `$request->client` for the client making the request
+- `$request->content` for the raw body of the request
+- `$request->headers` for the request headers
+- `$request->method` for the request method
+- `$request->negotiate` for content negotiation
+- `$request->params` for path-info parameters
+- `$request->url` for the request URL
+
+The _Request_ object has only one method, `isXhr()`, to indicate if the
+request is an _XmlHttpRequest_ or not.
+
+#### Superglobals
+
+Each of the superglobal representation objects has a single method, `get()`,
+that returns the value of a key in the superglobal, or an alternative value
+if the key is not present.  The values here are read-only.
+
+```php
+<?php
+// returns the value of $_POST['field_name'], or 'not set' if 'field_name' is
+// not present in $_POST
+$field_name = $request->post->get('field_name', 'not set');
+
+// if no key is given, returns an array of all values in the superglobal
+$all_server_values = $request->server->get();
+
+// the $_FILES array has been rearranged to look like $_POST
+$file = $request->files->get('file_field', array());
+?>
+```
+#### Client
+
+#### Content
+
+#### Headers
+
+#### Method
+
+The `$request->method` methods are:
+
+- `get()`: return the request method value
+- `isDelete()`: Did the request use a DELETE method?
+- `isGet()`: Did the request use a GET method?
+- `isHead()`: Did the request use a HEAD method?
+- `isOptions()`: Did the request use an OPTIONS method?
+- `isPatch()`: Did the request use a PATCH method?
+- `isPut()`: Did the request use a PUT method?
+- `isPost()`: Did the request use a POST method?
+
+```php
+<?php
+if ($request->method->isPost()) {
+    // perform POST actions
+}
+?>
+```
+
+@todo Method override, is*() magic call
+
+#### Negotiate
+
+#### Params
+
+#### Url
+
+### Response Object
+
+TBD.
