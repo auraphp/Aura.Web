@@ -118,7 +118,7 @@ The `$request->client` object has these methods:
 - `isMobile()` returns true if the `User-Agent` header matches one of a list
   of mobile user agents (otherwise false).
 
-To add to the list of recognized user agents, set up the `WebFactory` with
+To add to the list of recognized user agents, set up the _WebFactory_ with
 them first, then create the _Request_ object afterwards.
 
 ```
