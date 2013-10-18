@@ -3,17 +3,46 @@ namespace Aura\Web;
 
 class WebFactory
 {
-    public function __construct(
-        array $globals,
-        array $agents = array(),
-        array $decoders = array(),
-        array $types = array(),
-        $method_field = null
-    ) {
+    protected $globals = array();
+    
+    protected $agents = array(
+        'mobile' => array(),
+        'crawler' => array(),
+    );
+    
+    protected $decoders = array();
+    
+    protected $types = array();
+    
+    protected $method_field;
+    
+    public function __construct(array $globals)
+    {
         $this->globals = $globals;
-        $this->agents = $agents;
+    }
+    
+    public function setMobileAgents(array $agents)
+    {
+        $this->agents['mobile'] = $agents;
+    }
+    
+    public function setCrawlerAgents(array $agents)
+    {
+        $this->agents['crawler'] = $agents;
+    }
+    
+    public function setDecoders(array $decoders)
+    {
         $this->decoders = $decoders;
+    }
+    
+    public function setTypes(array $types)
+    {
         $this->types = $types;
+    }
+    
+    public function setMethodField($method_field)
+    {
         $this->method_field = $method_field;
     }
     
