@@ -1,6 +1,9 @@
 <?php
 namespace Aura\Web\Request;
 
+/**
+ * @todo split mobile and crawler agents to their own arrays
+ */
 class Client
 {
     protected $forwarded_for = array();
