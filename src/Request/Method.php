@@ -6,7 +6,7 @@ use BadMethodCallException;
 class Method
 {
     protected $value;
-    
+
     public function __construct(
         array $server,
         array $post,

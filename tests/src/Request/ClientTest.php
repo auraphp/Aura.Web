@@ -45,22 +45,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
     
-    public function testIsXhr()
-    {
-        $client = $this->newClient();
-        $this->assertFalse($client->isXhr());
-        
-        $client = $this->newClient(array(
-            'HTTP_X_REQUESTED_WITH' => 'xxx',
-        ));
-        $this->assertFalse($client->isXhr());
-        
-        $client = $this->newClient(array(
-            'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest',
-        ));
-        $this->assertFalse($client->isXhr());
-    }
-
     public function testConstructorAgents()
     {
         $agents = array(

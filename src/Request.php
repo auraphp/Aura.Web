@@ -139,6 +139,8 @@ class Request
      */
     protected $url;
 
+    protected $xhr = false;
+    
     /**
      * 
      * Constructor.
@@ -170,6 +172,11 @@ class Request
         $this->query     = $globals->query;
         $this->server    = $globals->server;
         $this->url       = $url;
+
+        $with = strtolower($this->server->get('HTTP_X_REQUESTED_WITH'));
+        if ($with == 'xmlhttprequest') {
+            $this->xhr = true;
+        }
     }
 
     /**
@@ -184,5 +191,10 @@ class Request
     public function __get($key)
     {
         return $this->$key;
+    }
+    
+    public function isXhr()
+    {
+        return $this->xhr;
     }
 }

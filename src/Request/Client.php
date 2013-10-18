@@ -9,7 +9,6 @@ class Client
     protected $ip;
     protected $referer;
     protected $user_agent;
-    protected $xhr = false;
     
     /**
      * 
@@ -111,11 +110,6 @@ class Client
         $this->referer = isset($server['HTTP_REFERER'])
                        ? $server['HTTP_REFERER']
                        : null;
-        
-        if (isset($server['HTTP_X_REQUESTED_WITH'])) {
-            $value = $server['HTTP_X_REQUESTED_WITH'];
-            $this->xhr = ($value == 'xmlhttprequest');
-        }
     }
 
     public function getForwardedFor()
@@ -175,18 +169,6 @@ class Client
         return $this->mobile;
     }
 
-    /**
-     * 
-     * Is the client making an XmlHttpRequest?
-     * 
-     * @return bool
-     * 
-     */
-    public function isXhr()
-    {
-        return $this->xhr;
-    }
-    
     protected function matchAgent($key)
     {
         foreach ($this->agents[$key] as $regex) {
