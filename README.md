@@ -129,7 +129,7 @@ $web_factory->setMobileAgents(array(
 ));
 
 $web_factory->setCrawlerAgents(array(
-    'NewCrawler',
+    'NewCrawlerAgent',
     'AnotherNewCrawler',
 ));
 
@@ -139,13 +139,54 @@ $request = $web_factory->newRequest();
 
 #### Content
 
+The `$request->content` object has these methods:
+
+- `getType()` returns the content-type of the request body
+
+- `getRaw()` return the raw request body
+
+- `get()` returns the request body after decoding it based on the content type
+
+The _Content_ object has two decoders built in.
+If the request specified a content type of `application/json`,
+the `get()` method will automatically decode the body with `json_decode()`.
+Likewise, if the content type is `application/x-www-form-urlencoded`, the
+`get()` method will automatically decode the body with `parse_str()`.
+
+If you want to add or change content decoders, set up the _WebFactory_ with
+them first, then create the _Request_ object afterwards.
+
+```
+<?php
+// content-type => callable
+$web_factory->setDecoders(array(
+    'application/x-special-content-type' => function ($body) {
+        // decoding logic
+    },
+));
+
+$request = $web_factory->newRequest();
+?>
+```
+
 #### Headers
+
+The `$request->headers` object has a single method, `get()`, that returns the
+value of a particular header, or an alternative value if the key is not
+present. The values here are read-only.
+
+```php
+<?php
+// returns the value of 'X-Header' if present, or 'not set' if not
+$header_value = $request->post->get('X-Header', 'not set');
+?>
+```
 
 #### Method
 
-The `$request->method` methods are:
+The `$request->method` object has these methods:
 
-- `get()`: return the request method value
+- `get()`: returns the request method value
 - `isDelete()`: Did the request use a DELETE method?
 - `isGet()`: Did the request use a GET method?
 - `isHead()`: Did the request use a HEAD method?
@@ -162,7 +203,43 @@ if ($request->method->isPost()) {
 ?>
 ```
 
-@todo Method override, is*() magic call
+You can also call `is*()` on the _Method_ object; the part after `is` is
+treated as custom HTTP method name, and checks if the request was made using
+that HTTP method.
+
+```php
+<?php
+if ($request->method->isCustom()) {
+    // perform CUSTOM actions
+}
+?>
+```
+
+Sometimes forms use a special field to indicate a custom HTTP method on a
+POST. By default, the _Method_ object honors the `_method` form field.
+
+```php
+<?php
+// a POST with the field '_method' will use the _method value instead of POST
+$_SERVER['REQUEST_METHOD'] = 'POST';
+$_POST['_method'] = 'PUT';
+$request = $web_factory->newRequest();
+echo $request->method->get(); // PUT
+?>
+```
+
+To set the form field used to indicate a custom HTTP method on a POST, set up
+the _WebFactory_ with it first, then create the _Request_ object.
+
+```php
+<?php
+$_SERVER['REQUEST_METHOD'] = 'POST';
+$_POST['_http_method_override'] = 'DELETE';
+$web_factory->setMethodField('_http_method_override');
+$request = $web_factory->newRequest();
+echo $request->method->get(); // DELETE
+?>
+```
 
 #### Negotiate
 
