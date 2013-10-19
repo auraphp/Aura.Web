@@ -376,6 +376,13 @@ $all_params = $request->params->get();
 
 #### Url
 
+The `$request->url` object has two methods:
+
+- `get()` returns the full URL string with scheme, host, port, path, etc.
+
+- `isSecure()` indicates if the request is secure, whether via SSL, TLS, or
+  forwarded from a secure protocol
+
 ### Response Object
 
 TBD.
