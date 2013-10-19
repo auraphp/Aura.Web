@@ -66,7 +66,7 @@ of the PHP superglobals ...
 - `$request->query` for $_GET
 - `$request->server` for $_SERVER
 
-... and other represent more specific kinds of information about the request:
+... and others represent more specific kinds of information about the request:
 
 - `$request->client` for the client making the request
 - `$request->content` for the raw body of the request
@@ -98,6 +98,7 @@ $all_server_values = $request->server->get();
 $file = $request->files->get('file_field', array());
 ?>
 ```
+
 #### Client
 
 The `$request->client` object has these methods:
@@ -121,7 +122,7 @@ The `$request->client` object has these methods:
 To add to the list of recognized user agents, set up the _WebFactory_ with
 them first, then create the _Request_ object afterwards.
 
-```
+```php
 <?php
 $web_factory->setMobileAgents(array(
     'NewMobileAgent',
@@ -156,7 +157,7 @@ Likewise, if the content type is `application/x-www-form-urlencoded`, the
 If you want to add or change content decoders, set up the _WebFactory_ with
 them first, then create the _Request_ object afterwards.
 
-```
+```php
 <?php
 // content-type => callable
 $web_factory->setDecoders(array(
