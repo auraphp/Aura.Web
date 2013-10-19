@@ -341,10 +341,10 @@ $request = $web_factory->newRequest();
 
 #### Params
 
-Unlike most _Request_ property object, the _Params_ object is read-write (not
-read-only). The _Params_ object exists so that you can set application-
-specific parameters. These are typically discovered by parsing a URL path
-through a router of some sort (e.g. [Aura.Router][]).
+Unlike most _Request_ property objects, the _Params_ object is read-write (not
+read-only). The _Params_ object allows you to set application-specific
+parameter values. These are typically discovered by parsing a URL path through
+a router of some sort (e.g. [Aura.Router][]).
 
   [Aura.Router]: https://github.com/auraphp/Aura.Router
 
@@ -359,8 +359,8 @@ For example:
 <?php
 // parameter values discovered by a routing mechanism
 $values = array(
-    'controller' => 'foo',
-    'action' => 'bar',
+    'controller' => 'blog',
+    'action' => 'read',
     'id' => '88',
 );
 
