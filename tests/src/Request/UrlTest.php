@@ -17,6 +17,13 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expect = 'http://example.com/foo?bar=baz';
         $actual = $url->get();
         $this->assertSame($expect, $actual);
+        
+        $expect = '/foo';
+        $actual = $url->get(PHP_URL_PATH);
+        $this->assertSame($expect, $actual);
+        
+        $this->setExpectedException('Aura\Web\Exception');
+        $url->get('no such component');
     }
     
     public function testisSecure()

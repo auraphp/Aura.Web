@@ -1,6 +1,8 @@
 <?php
 namespace Aura\Web\Request;
 
+use Aura\Web\Exception;
+
 class Url
 {
     protected $string;
