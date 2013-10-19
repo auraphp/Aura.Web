@@ -16,9 +16,20 @@ class WebFactory
     
     protected $method_field;
     
-    public function __construct(array $globals)
-    {
+    public function __construct(
+        array $globals,
+        array $mobile_agents = array(),
+        array $crawler_agents = array(),
+        array $decoders = array(),
+        array $types = array(),
+        $method_field = null
+    ) {
         $this->globals = $globals;
+        $this->setMobileAgents($mobile_agents);
+        $this->setCrawlerAgents($crawler_agents);
+        $this->setDecoders($decoders);
+        $this->setTypes($types);
+        $this->setMethodField($method_field);
     }
     
     public function setMobileAgents(array $agents)
