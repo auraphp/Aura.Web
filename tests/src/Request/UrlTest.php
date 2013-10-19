@@ -19,17 +19,17 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
     
-    public function testIsSsl()
+    public function testisSecure()
     {
         $url = $this->newUrl();
-        $this->assertFalse($url->isSsl());
+        $this->assertFalse($url->isSecure());
         
         $server = array('HTTPS' => 'on');
         $url = $this->newUrl($server);
-        $this->assertTrue($url->isSsl());
+        $this->assertTrue($url->isSecure());
         
         $server = array('SERVER_PORT' => '443');
         $url = $this->newUrl($server);
-        $this->assertTrue($url->isSsl());
+        $this->assertTrue($url->isSecure());
     }    
 }

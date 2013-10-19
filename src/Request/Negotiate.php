@@ -111,7 +111,7 @@ class Negotiate
         );
         
         // this is an unusual sort. normally we'd think a reverse-sort would
-        // order the arary by q values from 1 to 0, but the problem is that
+        // order the array by q values from 1 to 0, but the problem is that
         // an implicit 1.0 on more than one value means that those values will
         // be reverse from what the header specifies, which seems unexpected
         // when negotiating later.

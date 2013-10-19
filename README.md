@@ -378,10 +378,29 @@ $all_params = $request->params->get();
 
 The `$request->url` object has two methods:
 
-- `get()` returns the full URL string with scheme, host, port, path, etc.
+- `get()` returns the full URL string; or, if a component constant is passed,
+  returns only that part of the URL
 
 - `isSecure()` indicates if the request is secure, whether via SSL, TLS, or
   forwarded from a secure protocol
+
+```php
+<?php
+// get the full URL string
+$string = $request->url->get();
+
+// get a particular part of the URL; for the component constants, see
+// http://php.net/parse-url
+$scheme   = $request->url->get(PHP_URL_SCHEME);
+$host     = $request->url->get(PHP_URL_HOST);
+$port     = $request->url->get(PHP_URL_PORT);
+$user     = $request->url->get(PHP_URL_USER);
+$pass     = $request->url->get(PHP_URL_PASS);
+$path     = $request->url->get(PHP_URL_PATH);
+$query    = $request->url->get(PHP_URL_QUERY);
+$fragment = $request->url->get(PHP_URL_FRAGMENT);
+?>
+```
 
 ### Response Object
 
