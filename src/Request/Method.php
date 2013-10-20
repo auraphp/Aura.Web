@@ -1,12 +1,39 @@
 <?php
+/**
+ * 
+ * This file is part of Aura for PHP.
+ * 
+ * @package Aura.Web
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 namespace Aura\Web\Request;
 
 use BadMethodCallException;
 
 class Method
 {
+    /**
+     * 
+     * the request method value
+     * 
+     * @var string
+     * 
+     */
     protected $value;
 
+    /**
+     * 
+     * Constructor
+     * 
+     * @param array $server server value
+     * 
+     * @param array $post An array of post values
+     * 
+     * @param string $method_field Special field to indicate a custom HTTP method
+     * 
+     */
     public function __construct(
         array $server,
         array $post,
@@ -53,41 +80,97 @@ class Method
         throw new BadMethodCallException($method);
     }
     
+    /**
+     * 
+     * Returns the request method value
+     * 
+     * @return string request method value
+     * 
+     */
     public function get()
     {
         return $this->value;
     }    
     
+    /**
+     * 
+     * Did the request use a DELETE method?
+     * 
+     * @return bool True|False
+     * 
+     */
     public function isDelete()
     {
         return $this->value == 'DELETE';
     }
     
+    /**
+     * 
+     * Did the request use a GET method?
+     * 
+     * @return bool True|False
+     * 
+     */
     public function isGet()
     {
         return $this->value == 'GET';
     }
     
+    /**
+     * 
+     * Did the request use a HEAD method?
+     * 
+     * @return bool True|False
+     * 
+     */
     public function isHead()
     {
         return $this->value == 'HEAD';
     }
     
+    /**
+     * 
+     * Did the request use an OPTIONS method?
+     * 
+     * @return bool True|False
+     * 
+     */
     public function isOptions()
     {
         return $this->value == 'OPTIONS';
     }
     
+    /**
+     * 
+     * Did the request use a PATCH method?
+     * 
+     * @return bool True|False
+     * 
+     */
     public function isPatch()
     {
         return $this->value == 'PATCH';
     }
     
+    /**
+     * 
+     * Did the request use a PUT method?
+     * 
+     * @return bool True|False
+     * 
+     */
     public function isPut()
     {
         return $this->value == 'PUT';
     }
     
+    /**
+     * 
+     * Did the request use a POST method?
+     * 
+     * @return bool True|False
+     * 
+     */
     public function isPost()
     {
         return $this->value == 'POST';

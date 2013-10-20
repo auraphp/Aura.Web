@@ -1,4 +1,13 @@
 <?php
+/**
+ * 
+ * This file is part of Aura for PHP.
+ * 
+ * @package Aura.Web
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 namespace Aura\Web\Response;
 
 use Aura\Web\Response;
@@ -14,10 +23,29 @@ class Redirect
      */
     protected $location;
     
+    /**
+     * 
+     * Status code
+     * 
+     * @var int
+     * 
+     */
     protected $status_code;
     
+    /**
+     * 
+     * Status text
+     * 
+     * @var string
+     * 
+     */
     protected $status_phrase;
     
+    /**
+     * 
+     * @var bool
+     * 
+     */
     protected $without_cache;
     
     
@@ -77,21 +105,47 @@ class Redirect
         return $this->location;
     }
 
+    /**
+     * 
+     * Status code
+     * 
+     * @return int
+     * 
+     */
     public function getStatusCode()
     {
         return $this->status_code;
     }
     
+    /**
+     * 
+     * Status text
+     * 
+     * @return string
+     * 
+     */
     public function getStatusPhrase()
     {
         return $this->status_phrase;
     }
     
+    /**
+     * 
+     * @return bool True / False
+     * 
+     */
     public function isWithoutCache()
     {
         return $this->without_cache;
     }
     
+    /**
+     * 
+     * Modify the Response object
+     * 
+     * @return void
+     * 
+     */
     public function modifyTransfer(Response $transfer)
     {
         if ($this->location) {
