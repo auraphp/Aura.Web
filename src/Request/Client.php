@@ -1,4 +1,13 @@
 <?php
+/**
+ * 
+ * This file is part of Aura for PHP.
+ * 
+ * @package Aura.Web
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 namespace Aura\Web\Request;
 
 /**
@@ -88,6 +97,15 @@ class Client
         ),
     );
 
+    /**
+     * 
+     * Constructor
+     * 
+     * @param array $server 
+     * 
+     * @param array $agents
+     * 
+     */
     public function __construct(
         array $server,
         array $agents = array()
@@ -115,6 +133,13 @@ class Client
                        : null;
     }
 
+    /**
+     * 
+     * Returns the values of the `X-Forwarded-For` headers as an array.
+     * 
+     * @return array
+     * 
+     */
     public function getForwardedFor()
     {
         return $this->forwarded_for;
@@ -132,11 +157,25 @@ class Client
         return $this->ip;
     }
     
+    /**
+     * 
+     * Returns the value of the HTTP_REFERER header.
+     * 
+     * @return string
+     * 
+     */
     public function getReferer()
     {
         return $this->referer;
     }
     
+    /**
+     * 
+     * Return the value of the HTTP_USER_AGENT header.
+     * 
+     * @return string
+     * 
+     */
     public function getUserAgent()
     {
         return $this->user_agent;
@@ -172,6 +211,15 @@ class Client
         return $this->mobile;
     }
 
+    /**
+     * 
+     * Match an agent based on the key provided
+     * 
+     * @param string $key
+     * 
+     * @return bool true / false
+     * 
+     */
     protected function matchAgent($key)
     {
         foreach ($this->agents[$key] as $regex) {

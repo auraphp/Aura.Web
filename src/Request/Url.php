@@ -1,16 +1,52 @@
 <?php
+/**
+ * 
+ * This file is part of Aura for PHP.
+ * 
+ * @package Aura.Web
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 namespace Aura\Web\Request;
 
 use Aura\Web\Exception;
 
+/**
+ * 
+ * A Url object from the server values passed
+ * 
+ * @package Aura.Web
+ * 
+ */
 class Url
 {
+    /**
+     * 
+     * @var string Url string
+     * 
+     */
     protected $string;
     
+    /**
+     * 
+     * @var array parts of the URL
+     * 
+     */
     protected $parts;
     
+    /**
+     * 
+     * @var bool Indicate whether the request is secure or not
+     * 
+     */
     protected $secure;
     
+    /**
+     * 
+     * @var array component constants, see http://php.net/parse-url
+     * 
+     */
     protected $keys = array(
         PHP_URL_SCHEME      => 'scheme',
         PHP_URL_HOST        => 'host',
@@ -22,6 +58,13 @@ class Url
         PHP_URL_FRAGMENT    => 'fragment',
     );
     
+    /**
+     * 
+     * Constructor
+     * 
+     * @param array An array of server values
+     * 
+     */
     public function __construct(array $server)
     {
         // explicit https scheme?
@@ -69,6 +112,16 @@ class Url
         $this->parts = parse_url($this->string);
     }
     
+    /**
+     * 
+     * Returns the full URL string; 
+     * or, if a component constant is passed, returns only that part of the URL
+     * 
+     * @param string $component
+     * 
+     * @return string
+     * 
+     */
     public function get($component = null)
     {
         if ($component === null) {
@@ -85,6 +138,14 @@ class Url
              : null;
     }
     
+    /**
+     * 
+     * Indicates if the request is secure, whether via SSL, TLS, or
+     * forwarded from a secure protocol
+     * 
+     * @return bool
+     * 
+     */
     public function isSecure()
     {
         return $this->secure;

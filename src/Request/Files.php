@@ -1,8 +1,24 @@
 <?php
+/**
+ * 
+ * This file is part of Aura for PHP.
+ * 
+ * @package Aura.Web
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 namespace Aura\Web\Request;
 
 class Files extends Values
 {
+    /**
+     * 
+     * Constructor
+     * 
+     * @param array $files
+     * 
+     */
     public function __construct(array $files = array())
     {
         $this->init($files, $this->data);
