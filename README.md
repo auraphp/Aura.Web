@@ -45,7 +45,12 @@ you notice compliance oversights, please send a patch via pull request.
 
 ### Request Object
 
-Instantiate a _WebFactory_ and get new _Request_ object from it:
+The _Request_ object describes the current web execution context for PHP. Note
+that it is **not** an HTTP request object proper, since it includes things
+like `$_ENV` and various non-HTTP `$_SERVER` keys.
+
+To create a _Request_ object, instantiate a _WebFactory_ and get new _Request_
+object from it:
 
 ```php
 <?php
@@ -59,12 +64,12 @@ $request = $web_factory->newRequest();
 The _Request_ object contains several property objects. Some represent a copy
 of the PHP superglobals ...
 
-- `$request->cookies` for $_COOKIES
-- `$request->env` for $_ENV
-- `$request->files` for $_FILES
-- `$request->post` for $_POST
-- `$request->query` for $_GET
-- `$request->server` for $_SERVER
+- `$request->cookies` for `$_COOKIES`
+- `$request->env` for `$_ENV`
+- `$request->files` for `$_FILES`
+- `$request->post` for `$_POST`
+- `$request->query` for `$_GET`
+- `$request->server` for `$_SERVER`
 
 ... and others represent more specific kinds of information about the request:
 
@@ -404,5 +409,100 @@ $fragment = $request->url->get(PHP_URL_FRAGMENT);
 ```
 
 ### Response Object
+
+The _Response_ object describes the web response that should be sent to the
+client. Note that it is **not** an HTTP response object proper; at best, it is
+a series of hints to be used when building the HTTP response. This means that
+setting values on the _Response_ object **does not** cause values to be sent
+to the client; it can be inspected during testing to see if the correct values
+have been set without generating output.
+
+To create a _Response_ object, instantiate a _WebFactory_ and get new
+_Request_ object from it:
+
+```php
+<?php
+use Aura\Web\WebFactory;
+
+$web_factory = new WebFactory($GLOBALS);
+$request = $web_factory->newResponse();
+?>
+```
+
+The _Response_ object is composed of several property objects representing
+different parts of the response:
+
+- `$response->status` for the status code, status phrase, and HTTP version
+
+- `$response->cookies` for cookie values
+
+- `$response->headers` for non-cookie headers
+
+- `$response->cache` for enabling/disabling HTTP cache headers (these will
+  override `$response->headers` values)
+  
+- `$response->redirect` for setting redirection location and status (these
+  will override `$headers` and `$status` values)
+  
+- `$response->render` to describe how content should be rendered
+
+- `$response->content` for describing the response content, type, charset,
+  disposition, and filename (these will override `$headers` values)
+
+The _Response_ object has only one method, `getTransfer()`, which returns a
+_StdClass_ object with four properties, one each to describe the status,
+the headers, the cookies, and the content.
+
+#### Status
+
+Use the `$response->status` object as follows:
+
+```php
+<?php
+// set the status code, phrase, and version at once
+$response->status->set('404', 'Not Found', '1.1');
+
+// set them individually
+$response->status->setCode('404');
+$response->status->setPhrase('Not Found');
+$response->status->setVersion('1.1');
+?>
+```
+
+#### Cookies
+
+The `$response->cookies` object has these methods:
+
+- `set()` sets a cookie, and mimics the [setcookie()](http://php.net/setcookie)
+  PHP function.
+
+- `get()` returns a cookie by name, or all the cookies in the object.
+
+- `setHttpOnly()` sets the default for whether or not cookies will be sent by
+  HTTP only.
+
+#### Headers
+
+The `$response->headers` object has these methods:
+
+- `set()` to set a header label and value
+
+- `add()` to add a value to an existing header
+
+- `get()` to get a single header or all headers
+
+#### Cache
+
+TBD.
+
+#### Redirect
+
+TBD.
+
+#### Render
+
+TBD.
+
+#### Content
 
 TBD.

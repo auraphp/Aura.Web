@@ -10,6 +10,12 @@
  */
 namespace Aura\Web\Response;
 
+/**
+ * 
+ * @todo Add setExpire(), setPath(), setDomain(), setSecure() to set
+ * default values.
+ * 
+ */
 class Cookies
 {
     /**

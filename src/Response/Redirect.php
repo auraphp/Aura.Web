@@ -10,8 +10,6 @@
  */
 namespace Aura\Web\Response;
 
-use Aura\Web\Response;
-
 class Redirect
 {
     /**

@@ -10,11 +10,12 @@
  */
 namespace Aura\Web\Response;
 
-use Aura\Web\Response;
-
-/*
-Accept-Ranges 	What partial content range types this server supports 	Accept-Ranges: bytes 	Permanent
-*/
+/**
+ * @todo Add the following:
+ * 
+ * Accept-Ranges -- what partial content range types this server supports
+ * Accept-Ranges: bytes
+ */
 
 class Content
 {
