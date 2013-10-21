@@ -1,4 +1,13 @@
 <?php
+/**
+ * 
+ * This file is part of Aura for PHP.
+ * 
+ * @package Aura.Web
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 namespace Aura\Web\Response;
 
 class Cookies
@@ -118,6 +127,15 @@ class Cookies
         $this->httponly = (bool) $flag;
     }
 
+    /**
+     * 
+     * When true, the cookie will be made accessible
+     * only through the HTTP protocol. This means that the cookie won't be
+     * accessible by scripting languages, such as JavaScript.
+     * 
+     * @return bool True/False
+     * 
+     */
     public function getHttponly()
     {
         return $this->httponly;

@@ -1,10 +1,31 @@
 <?php
+/**
+ * 
+ * This file is part of Aura for PHP.
+ * 
+ * @package Aura.Web
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 namespace Aura\Web\Request;
 
 class Headers
 {
+    /**
+     * 
+     * @var array
+     * 
+     */
     protected $data = array();
     
+    /**
+     * 
+     * Constructor
+     * 
+     * @param array $server Server values
+     * 
+     */
     public function __construct(array $server)
     {
         foreach ($server as $label => $value) {
@@ -22,6 +43,16 @@ class Headers
         unset($this->data['HTTP_X_JSON']);
     }
 
+    /**
+     * 
+     * Returns the value of a particular header, 
+     * or an alternative value if the key is not present. 
+     * 
+     * @param string $key
+     * 
+     * @param string $alt
+     * 
+     */
     public function get($key = null, $alt = null)
     {
         if (! $key) {

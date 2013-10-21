@@ -10,8 +10,6 @@
  */
 namespace Aura\Web;
 
-use Aura\Web\Response\PropertyFactory;
-
 /**
  * 
  * Data transfer object for an HTTP response.
@@ -26,14 +24,74 @@ use Aura\Web\Response\PropertyFactory;
  */
 class Response
 {
+    /**
+     * 
+     * @var Response\Cache
+     * 
+     */
     protected $cache;
+    
+    /**
+     * 
+     * @var Response\Content
+     * 
+     */
     protected $content;
+    
+    /**
+     * 
+     * @var Response\Cookies
+     * 
+     */
     protected $cookies;
+    
+    /**
+     * 
+     * @var Response\Headers
+     * 
+     */
     protected $headers;
+    
+    /**
+     * 
+     * @var Response\Redirect
+     * 
+     */
     protected $redirect;
+    
+    /**
+     * 
+     * @var Response\Render
+     * 
+     */
     protected $render;
+    
+    /**
+     * 
+     * @var Response\Status
+     * 
+     */
     protected $status;
 
+    /**
+     * 
+     * Constructor
+     * 
+     * @param Response\Cache $cache
+     * 
+     * @param Response\Content $cache
+     * 
+     * @param Response\Cookies $cookies
+     * 
+     * @param Response\Headers $headers
+     * 
+     * @param Response\Redirect $redirect
+     * 
+     * @param Response\Render $render
+     * 
+     * @param Response\Status $status
+     * 
+     */
     public function __construct(
         Response\Cache    $cache,
         Response\Content  $content,
@@ -91,7 +149,7 @@ class Response
             if ($charset) {
                 $type .= '; charset=' . $charset;
             }
-            $headers->set('Content-Type', $value);
+            $headers->set('Content-Type', $type);
         }
 
         // set the content disposition
@@ -126,10 +184,10 @@ class Response
         
         // return a transfer object
         return (object) array(
-            'status'  => $transfer->status->get(),
-            'headers' => $transfer->headers->get(),
-            'cookies' => $transfer->cookies->get(),
-            'content' => $transfer->content->get(),
+            'status'  => $status->get(),
+            'headers' => $headers->get(),
+            'cookies' => $cookies->get(),
+            'content' => $content->get(),
         );
     }
 }

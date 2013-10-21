@@ -1,4 +1,13 @@
 <?php
+/**
+ * 
+ * This file is part of Aura for PHP.
+ * 
+ * @package Aura.Web
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 namespace Aura\Web\Response;
 
 use Aura\Web\Exception;
@@ -32,6 +41,13 @@ class Status
      */
     protected $version = 1.1;
 
+    /**
+     * 
+     * Returns an array of status information
+     * 
+     * @return array
+     * 
+     */
     public function get()
     {
         return array(
@@ -41,6 +57,15 @@ class Status
         );
     }
     
+    /**
+     * 
+     * @param int $code
+     * 
+     * @param string $phrase
+     * 
+     * @param string $version
+     * 
+     */
     public function set($code, $phrase, $version = null)
     {
         $this->setCode($code);

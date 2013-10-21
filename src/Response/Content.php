@@ -1,4 +1,13 @@
 <?php
+/**
+ * 
+ * This file is part of Aura for PHP.
+ * 
+ * @package Aura.Web
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 namespace Aura\Web\Response;
 
 use Aura\Web\Response;
@@ -18,10 +27,31 @@ class Content
      */
     protected $content = null;
 
+    /**
+     * 
+     * The response characterset
+     * 
+     * @var string
+     * 
+     */
     protected $charset;
     
+    /**
+     * 
+     * Content disposition header
+     * 
+     * @var string
+     * 
+     */
     protected $disposition;
     
+    /**
+     * 
+     * Filename
+     * 
+     * @var string
+     * 
+     */
     protected $filename;
     
     /**
@@ -59,27 +89,68 @@ class Content
         return $this->content;
     }
 
+    /**
+     * 
+     * Set the characterset
+     * 
+     * @param string $charset
+     * 
+     * @return void
+     * 
+     */
     public function setCharset($charset)
     {
         $this->charset = $charset;
     }
     
+    /**
+     * 
+     * Get the character set
+     * 
+     * @return string
+     * 
+     */
     public function getCharset()
     {
         return $this->charset;
     }
     
+    /**
+     * 
+     * Set the content disposition header
+     * 
+     * @param string $disposition
+     * 
+     * @param string $filename
+     * 
+     * @return void
+     * 
+     */
     public function setDisposition($disposition, $filename = null)
     {
         $this->disposition = $disposition;
         $this->filename = basename($filename);
     }
     
+    /**
+     * 
+     * Get the content disposition header
+     * 
+     * @return string
+     * 
+     */
     public function getDisposition()
     {
         return $this->disposition;
     }
     
+    /**
+     * 
+     * Get the filename
+     * 
+     * @return string
+     * 
+     */
     public function getFilename()
     {
         return $this->filename;
