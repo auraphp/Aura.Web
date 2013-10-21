@@ -489,11 +489,16 @@ The `$response->headers` object has these methods:
 
 - `add()` to add a value to an existing header
 
-- `get()` to get a single header or all headers
+- `get()` to get a single header, or to get all headers
 
 #### Cache
 
-TBD.
+The `$response->cache` object has these methods:
+
+- `setDisabled()` to disable HTTP caching
+
+- `isDisabled()` to say if caching is disabled or not
+
 
 #### Redirect
 
