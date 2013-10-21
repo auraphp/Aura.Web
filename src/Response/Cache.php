@@ -15,14 +15,6 @@ class Cache
      * 
      * Should the response disable HTTP caching?
      * 
-     * When `true`, the `modifyTransfer()` method will set these headers:
-     * 
-     * {{code:
-     *     Pragma: no-cache
-     *     Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
-     *     Expires: 1
-     * }}
-     * 
      * @var bool
      * 
      */
@@ -52,14 +44,5 @@ class Cache
     public function isDisabled()
     {
         return $this->disabled;
-    }
-
-    public function modifyTransfer(Response $transfer)
-    {
-        if ($this->isDisabled()) {
-            $transfer->headers->set('Pragma', 'no-cache');
-            $transfer->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
-            $transfer->headers->set('Expires', '1');
-        }
     }
 }

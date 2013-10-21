@@ -91,15 +91,4 @@ class Redirect
     {
         return $this->without_cache;
     }
-    
-    public function modifyTransfer(Response $transfer)
-    {
-        if ($this->location) {
-            $transfer->status->set($this->status_code, $this->status_phrase);
-            $transfer->headers->set('Location', $this->location);
-            if ($this->without_cache) {
-                $transfer->cache->disable();
-            }
-        }
-    }
 }

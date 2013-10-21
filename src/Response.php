@@ -52,17 +52,6 @@ class Response
         $this->status   = $status;
     }
     
-    public function __clone()
-    {
-        $this->cache    = clone $this->cache;
-        $this->content  = clone $this->content;
-        $this->cookies  = clone $this->cookies;
-        $this->headers  = clone $this->headers;
-        $this->redirect = clone $this->redirect;
-        $this->render   = clone $this->render;
-        $this->status   = clone $this->status;
-    }
-    
     /**
      * 
      * Read-only access to property objects.
@@ -82,15 +71,60 @@ class Response
      * Creates and returns a data transfer object assembled from the response
      * properties.
      * 
-     * @return StdClass
+     * @return StdClass A StdClass object with properties $status, $headers,
+     * $cookies, and $content.
      * 
      */
     public function getTransfer()
     {
-        $transfer = clone $this;
-        $transfer->content->modifyTransfer($transfer);
-        $transfer->redirect->modifyTransfer($transfer);
-        $transfer->cache->modifyTransfer($transfer);
+        $status   = clone $this->status;
+        $headers  = clone $this->headers;
+        $cookies  = clone $this->cookies;
+        $content  = clone $this->content;
+        $cache    = clone $this->cache;
+        $redirect = clone $this->redirect;
+        
+        // set the content type
+        $type = $content->getType();
+        if ($type) {
+            $charset = $content->getCharset();
+            if ($charset) {
+                $type .= '; charset=' . $charset;
+            }
+            $headers->set('Content-Type', $value);
+        }
+
+        // set the content disposition
+        $disposition = $content->getDisposition();
+        if ($disposition) {
+            $filename = $content->getFilename();
+            if ($filename) {
+                $disposition .='; filename='. $filename;
+            }
+            $headers->set('Content-Disposition', $disposition);
+        }
+        
+        // set a redirect location
+        $location = $redirect->getLocation();
+        if ($location) {
+            $status->set(
+                $redirect->getStatusCode(),
+                $redirect->getStatusPhrase()
+            );
+            $headers->set('Location', $location);
+            if ($redirect->isWithoutCache()) {
+                $cache->disable();
+            }
+        }
+        
+        // disable the cache
+        if ($cache->isDisabled()) {
+            $headers->set('Pragma', 'no-cache');
+            $headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
+            $headers->set('Expires', '1');
+        }
+        
+        // return a transfer object
         return (object) array(
             'status'  => $transfer->status->get(),
             'headers' => $transfer->headers->get(),

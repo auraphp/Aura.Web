@@ -112,23 +112,4 @@ class Content
     {
         return $this->type;
     }
-    
-    public function modifyTransfer(Response $transfer)
-    {
-        if ($this->disposition) {
-            $value = $this->disposition;
-            if ($this->filename) {
-                $value .='; filename='. $this->filename;
-            }
-            $transfer->headers->set('Content-Disposition', $value);
-        }
-        
-        if ($this->type) {
-            $value = $this->type;
-            if ($this->charset) {
-                $value .= '; charset=' . $this->charset;
-            }
-            $transfer->headers->set('Content-Type', $value);
-        }
-    }
 }
