@@ -502,12 +502,49 @@ The `$response->cache` object has these methods:
 
 #### Redirect
 
-TBD.
+The `$response->redirect` object has these methods:
+
+- `to()` a location that the response should redirect to, along with a 
+  status code and status phrase.
+
+- `withoutCache()` a location that the response should redirect to, along with a 
+  status code and status phrase *and* disables cache.
+
+- `getLocation()` get the redirect location, if any.
+
+- `getStatusCode()` get the status code. See [status code and text](http://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
+
+- `getStatusPhrase()` get the status text. See [status code and text](http://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
+
+- `isWithoutCache()` return true when redirect is set via `withoutCache()`
+  else false if set via `to()`
 
 #### Render
 
-TBD.
+The `$response->render` object has these methods:
+
+- `__get` via which you can get `data`, `layout`, `layout_stack`, `view`, `view_stack`
+
+- `__set` via which you can set `data`, `layout`, `layout_stack`, `view`, `view_stack`
 
 #### Content
 
-TBD.
+The `$response->content` object has these methods:
+
+- `set()` set the body content of the response
+
+- `get()` get the body content of the response which has been set via `set()`
+
+- `setCharset()` set the characterset for the response
+
+- `getCharset()` get the characterset for the response set via `setCharset()`
+
+- `setDisposition()` set the content-disposition headers
+
+- `getDisposition()` returns the content-disposition headers set via `setDisposition`
+
+- `getFilename()` get the filename set via `setDisposition`
+
+- `setType()` set the Content-Type of the response.
+
+- `getType()` gets the Content-Type of the response.
