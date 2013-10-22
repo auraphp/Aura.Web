@@ -2,12 +2,9 @@
 namespace Aura\Web\Response;
 
 use DateTime;
-use Aura\Web\AssertHeadersTrait;
 
 class CacheTest extends \PHPUnit_Framework_TestCase
 {
-    use AssertHeadersTrait;
-    
     protected $cache;
     
     protected $headers;
@@ -16,6 +13,12 @@ class CacheTest extends \PHPUnit_Framework_TestCase
     {
         $this->headers = new Headers;
         $this->cache = new Cache($this->headers);
+    }
+    
+    protected function assertHeaders(array $expect)
+    {
+        $actual = $this->headers->get();
+        $this->assertSame($expect, $actual);
     }
     
     public function testReset()
@@ -125,6 +128,9 @@ class CacheTest extends \PHPUnit_Framework_TestCase
     
     public function testSetVary()
     {
-        
+        $this->cache->setVary(array('foo', 'bar'));
+        $this->assertHeaders(array(
+            'Vary' => 'foo, bar',
+        ));
     }
 }

@@ -2,12 +2,9 @@
 namespace Aura\Web;
 
 use Aura\Web\Response\PropertyFactory;
-use Aura\Web\AssertHeadersTrait;
 
 class ResponseTest extends \PHPUnit_Framework_TestCase
 {
-    use AssertHeadersTrait;
-    
     protected $response;
 
     protected $headers;
@@ -19,6 +16,12 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $factory = new WebFactory($globals);
         $this->response = $factory->newResponse();
         $this->headers = $this->response->headers;
+    }
+    
+    protected function assertHeaders(array $expect)
+    {
+        $actual = $this->headers->get();
+        $this->assertSame($expect, $actual);
     }
     
     public function test__get()
