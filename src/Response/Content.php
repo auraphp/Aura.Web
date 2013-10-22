@@ -39,7 +39,9 @@ class Content
      */
     protected $charset;
     
-    public function __construct($headers)
+    protected $type;
+    
+    public function __construct(Headers $headers)
     {
         $this->headers = $headers;
     }
@@ -48,7 +50,7 @@ class Content
      * 
      * Sets the content of the response.
      * 
-     * @param string $content The body content of the response.
+     * @param mixed $content The body content of the response.
      * 
      * @return null
      * 
@@ -62,7 +64,7 @@ class Content
      * 
      * Gets the content of the response.
      * 
-     * @return string The body content of the response.
+     * @return mixed The body content of the response.
      * 
      */
     public function get()
@@ -82,11 +84,7 @@ class Content
     public function setCharset($charset)
     {
         $this->charset = $charset;
-    }
-    
-    public function getCharset()
-    {
-        return $this->charset;
+        $this->setContentType();
     }
     
     /**
@@ -100,10 +98,21 @@ class Content
      */
     public function setType($type)
     {
-        if ($type && $this->charset) {
-            $type .= '; charset=' . $charset;
+        $this->type = $type;
+        $this->setContentType();
+    }
+    
+    protected function setContentType()
+    {
+        if (! $this->type) {
+            return;
         }
-        $this->headers->set('Content-Type', $type);
+        
+        $value = $this->type;
+        if ($this->charset) {
+            $value .= "; charset={$this->charset}";
+        }
+        $this->headers->set('Content-Type', $value);
     }
     
     public function setEncoding($encoding)

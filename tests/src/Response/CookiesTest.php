@@ -57,25 +57,40 @@ class CookiesTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
 
-    public function testGetDefault()
+    public function testDefault()
     {
-        $this->cookies->setHttponly(false);
-        $actual = $this->cookies->getDefault();
-        $this->assertFalse($actual['httponly']);
+        // set a cookie name and value
+        $this->cookies->set('foo', 'bar');
         
-        $this->cookies->set('foo', 'bar', '88', '/path', 'example.com');
-        
+        // get before defaults
         $expect = array(
-          'value' => 'bar',
+            'value' => 'bar',
+            'expire' => 0,
+            'path' => '',
+            'domain' => '',
+            'secure' => false,
+            'httponly' => true,
+        );
+        $actual = $this->cookies->get('foo');
+        $this->assertSame($expect, $actual);
+        
+        // set and get defaults
+        $this->cookies->setExpire(88);
+        $this->cookies->setPath('/path');
+        $this->cookies->setDomain('example.com');
+        $this->cookies->setSecure(true);
+        $this->cookies->setHttponly(false);
+
+        // get after defaults
+        $expect = array(
+          'value' => null,
           'expire' => 88,
           'path' => '/path',
           'domain' => 'example.com',
-          'secure' => false,
+          'secure' => true,
           'httponly' => false,
         );
-
-        $actual = $this->cookies->get('foo');
-        
+        $actual = $this->cookies->getDefault();
         $this->assertSame($expect, $actual);
     }
 

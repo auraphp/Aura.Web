@@ -17,21 +17,45 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     
     public function test__get()
     {
-        $this->assertInstanceOf('Aura\Web\Response\Content',  $this->response->content);
-        $this->assertInstanceOf('Aura\Web\Response\Cookies',  $this->response->cookies);
-        $this->assertInstanceOf('Aura\Web\Response\Headers',  $this->response->headers);
-        $this->assertInstanceOf('Aura\Web\Response\Redirect', $this->response->redirect);
-        $this->assertInstanceOf('Aura\Web\Response\Render',   $this->response->render);
         $this->assertInstanceOf('Aura\Web\Response\Status',   $this->response->status);
+        $this->assertInstanceOf('Aura\Web\Response\Headers',  $this->response->headers);
+        $this->assertInstanceOf('Aura\Web\Response\Cookies',  $this->response->cookies);
+        $this->assertInstanceOf('Aura\Web\Response\Content',  $this->response->content);
+        $this->assertInstanceOf('Aura\Web\Response\Cache',    $this->response->cache);
+    }
+    
+    public function testRedirect()
+    {
+        $this->response->redirect('http://example.com');
+        $this->assertSame(302, $this->response->status->getCode());
+        $this->assertSame('Found', $this->response->status->getPhrase());
+        $expect = array(
+            'Location' => 'http://example.com',
+        );
+        $this->assertSame($expect, $this->response->headers->get());
+    }
+    
+    public function testRedirectNoCache()
+    {
+        $this->response->redirectNoCache('http://example.com');
+        $this->assertSame(303, $this->response->status->getCode());
+        $this->assertSame('See Other', $this->response->status->getPhrase());
+        $expect = array(
+            'Location' => 'http://example.com',
+            'Cache-Control' => 'no-cache, no-store, must-revalidate, proxy-revalidate',
+            'Pragma' => 'no-cache',
+            'Expires' => 'Sat, 01 Jan 0000 06:00:00 GMT',
+        );
+        $this->assertSame($expect, $this->response->headers->get());
     }
     
     public function testGetTransfer()
     {
-        $this->response->content->set('foo bar baz');
+        $this->response->content->set(function () { return 'foo bar baz'; });
         $this->response->content->setCharset('utf-8');
         $this->response->content->setType('text/plain');
         $this->response->content->setDisposition('attachment', 'filename.txt');
-        $this->response->redirect->withoutCache('http://example.com');
+        $this->response->redirectNoCache('http://example.com');
         
         $expect = (object) array(
             'status' => array(
@@ -40,12 +64,12 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
                 'phrase' => 'See Other',
             ),
             'headers' => array(
-                'Content-Disposition' => 'attachment; filename=filename.txt',
+                'Content-Disposition' => 'attachment; filename="filename.txt"',
                 'Content-Type' => 'text/plain; charset=utf-8',
                 'Location' => 'http://example.com',
                 'Pragma' => 'no-cache',
-                'Cache-Control' => 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0',
-                'Expires' => '1',
+                'Cache-Control' => 'no-cache, no-store, must-revalidate, proxy-revalidate',
+                'Expires' => 'Sat, 01 Jan 0000 06:00:00 GMT',
             ),
             'cookies' => array(
             ),

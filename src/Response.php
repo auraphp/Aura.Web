@@ -50,20 +50,6 @@ class Response
     
     /**
      * 
-     * @var Response\Redirect
-     * 
-     */
-    protected $redirect;
-    
-    /**
-     * 
-     * @var Response\Render
-     * 
-     */
-    protected $render;
-    
-    /**
-     * 
      * @var Response\Status
      * 
      */
@@ -83,8 +69,6 @@ class Response
      * 
      * @param Response\Redirect $redirect
      * 
-     * @param Response\Render $render
-     * 
      * @param Response\Status $status
      * 
      */
@@ -93,14 +77,12 @@ class Response
         Response\Headers  $headers,
         Response\Cookies  $cookies,
         Response\Content  $content,
-        Response\Render   $render,
         Response\Cache    $cache
     ) {
         $this->status   = $status;
         $this->headers  = $headers;
         $this->cookies  = $cookies;
         $this->content  = $content;
-        $this->render   = $render;
         $this->cache    = $cache;
     }
     
@@ -161,20 +143,12 @@ class Response
         $this->cache->disable();
     }
     
-    public function setDone($done)
-    {
-        $this->done = (bool) $done;
-    }
-    
-    public function isDone()
-    {
-        return $this->done;
-    }
-    
     /**
      * 
      * Creates and returns a data transfer object assembled from the response
-     * properties.
+     * properties. If the content is a callable, it will be invoked to return
+     * the "real" content; depending on the callable, it may further modify
+     * response.
      * 
      * @return StdClass A StdClass object with properties $status, $headers,
      * $cookies, and $content.
@@ -182,18 +156,16 @@ class Response
      */
     public function getTransfer()
     {
-        $status   = clone $this->status;
-        $headers  = clone $this->headers;
-        $cookies  = clone $this->cookies;
-        $content  = clone $this->content;
-        $cache    = clone $this->cache;
+        $content = $this->content->get();
+        if (is_callable($content)) {
+            $content = $content();
+        }
         
-        // return a transfer object
         return (object) array(
-            'status'  => $status->get(),
-            'headers' => $headers->get(),
-            'cookies' => $cookies->get(),
-            'content' => $content->get(),
+            'status'  => $this->status->get(),
+            'headers' => $this->headers->get(),
+            'cookies' => $this->cookies->get(),
+            'content' => $content
         );
     }
 }

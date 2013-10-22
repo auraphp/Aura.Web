@@ -12,7 +12,7 @@ namespace Aura\Web\Response;
 
 use DateTime;
 use DateTimeZone;
-use RuntimeException;
+use Exception;
 
 /**
  * 
@@ -50,7 +50,7 @@ class Cache
     
     protected $headers;
     
-    public function __construct($headers)
+    public function __construct(Headers $headers)
     {
         $this->headers = $headers;
         $this->reset();
@@ -111,7 +111,12 @@ class Cache
     
     public function setAge($age)
     {
-        $this->headers->set('Age', (int) $age);
+        $age = trim($age);
+        if ($age === '') {
+            $this->headers->set('Age', null);
+        } else {
+            $this->headers->set('Age', (int) $age);
+        }
     }
     
     public function setControl(array $control)
@@ -126,7 +131,7 @@ class Cache
         }
         
         // shared max-age indicates public
-        if ($this->control['s_maxage']) {
+        if ($this->control['s-maxage']) {
             $this->control['public'] = true;
             $this->control['private'] = false;
         }
@@ -156,7 +161,11 @@ class Cache
     
     public function setEtag($etag)
     {
-        $this->headers->set('Etag', '"' . $etag . '"');
+        $etag = trim($etag);
+        if ($etag) {
+            $etag = '"' . $etag . '"';
+        }
+        $this->headers->set('Etag', $etag);
     }
     
     public function setExpires($expires)
@@ -176,7 +185,7 @@ class Cache
         ));
     }
     
-    public function setNoCache()
+    public function setNoCache($flag = true)
     {
         $this->setControl(array(
             'no-cache' => (bool) $flag
@@ -220,23 +229,34 @@ class Cache
     
     public function setWeakEtag($etag)
     {
-        $this->headers->set('Etag', 'W/"' . $etag . '"');
+        $etag = trim($etag);
+        if ($etag) {
+            $etag = 'W/"' . $etag . '"';
+        }
+        $this->headers->set('Etag', $etag);
     }
     
     protected function fixDate($date)
     {
         if ($date instanceof DateTime) {
             $date = clone $date;
-        } else {
-            try {
-                $date = new DateTime($date);
-            } catch (RuntimeException $e) {
-                // treat bad dates as being in the past
-                $date = new DateTime(1);
-            }
+            $date->setTimeZone(new DateTimeZone('UTC'));
+            return $date->format('D, d M Y H:i:s') . ' GMT';
         }
         
+        if (trim($date) === '') {
+            return null;
+        }
+        
+        try {
+            $date = new DateTime($date);
+        } catch (Exception $e) {
+            // treat bad dates as being in the past
+            $date = new DateTime('01 Jan 0000');
+        }
+
         $date->setTimeZone(new DateTimeZone('UTC'));
         return $date->format('D, d M Y H:i:s') . ' GMT';
+        
     }
 }

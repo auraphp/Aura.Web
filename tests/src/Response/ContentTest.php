@@ -4,10 +4,12 @@ namespace Aura\Web\Response;
 class ContentTest extends \PHPUnit_Framework_TestCase
 {
     protected $content;
+    protected $headers;
     
     protected function setUp()
     {
-        $this->content = new Content;
+        $this->headers = new Headers;
+        $this->content = new Content($this->headers);
     }
     
     public function testContent()
@@ -17,28 +19,38 @@ class ContentTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($content, $this->content->get());
     }
 
-    public function testType()
+    public function testTypeAndCharset()
     {
         $expect = 'application/json';
         $this->content->setType($expect);
-        $actual = $this->content->getType();
+        $actual = $this->headers->get('Content-Type');
         $this->assertSame($expect, $actual);
-    }
-
-    public function testCharset()
-    {
-        $expect = 'utf-8';
-        $this->content->setCharset($expect);
-        $actual = $this->content->getCharset();
+        
+        $this->content->setCharset('utf-8');
+        $expect = 'application/json; charset=utf-8';
+        $actual = $this->headers->get('Content-Type');
         $this->assertSame($expect, $actual);
     }
 
     public function testDisposition()
     {
         $disposition = 'attachment';
+        $this->content->setDisposition($disposition);
+        $expect = 'attachment';
+        $actual = $this->headers->get('Content-Disposition');
+        
         $filename = 'example.txt';
         $this->content->setDisposition($disposition, $filename);
-        $this->assertSame($disposition, $this->content->getDisposition());
-        $this->assertSame($filename, $this->content->getFilename());
+        $expect = 'attachment; filename="example.txt"';
+        $actual = $this->headers->get('Content-Disposition');
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testEncoding()
+    {
+        $this->content->setEncoding('gzip');
+        $expect = 'gzip';
+        $actual = $this->headers->get('Content-Encoding');
+        $this->assertSame($expect, $actual);
     }
 }

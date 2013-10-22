@@ -68,12 +68,6 @@ class Headers
         }
     }
 
-    public function has($label)
-    {
-        $label = $this->sanitizeLabel($label);
-        return isset($this->headers[$label]);
-    }
-    
     /**
      * 
      * Normalizes and sanitizes a header label.

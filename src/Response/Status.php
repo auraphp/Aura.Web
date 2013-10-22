@@ -169,7 +169,7 @@ class Status
         }
         $this->code = $code;
         if (isset($this->code_phrase[$code])) {
-            $this->setPhrase($this->code_phrase[$code])''
+            $this->setPhrase($this->code_phrase[$code]);
         } else {
             $this->setPhrase(null);
         }

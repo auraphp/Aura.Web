@@ -365,14 +365,12 @@ class WebFactory
         $headers = $this->newResponseHeaders();
         $cookies = $this->newResponseCookies();
         $content = $this->newResponseContent($headers);
-        $render  = $this->newResponseRender();
         $cache   = $this->newResponseCache($headers);
         return new Response(
             $status,
             $headers,
             $cookies,
             $content,
-            $render,
             $cache
         );
     }
@@ -384,7 +382,7 @@ class WebFactory
      * @return object Aura\Web\Response\Cache
      * 
      */
-    public function newResponseCache($headers)
+    public function newResponseCache(Response\Headers $headers)
     {
         return new Response\Cache($headers);
     }
@@ -396,7 +394,7 @@ class WebFactory
      * @return object Aura\Web\Response\Content
      * 
      */
-    public function newResponseContent($headers)
+    public function newResponseContent(Response\Headers $headers)
     {
         return new Response\Content($headers);
     }
@@ -411,18 +409,6 @@ class WebFactory
     public function newResponseCookies()
     {
         return new Response\Cookies;
-    }
-    
-    /**
-     * 
-     * Return a renderer object
-     * 
-     * @return object Aura\Web\Response\Render
-     * 
-     */
-    public function newResponseRender()
-    {
-        return new Response\Render;
     }
     
     /**
