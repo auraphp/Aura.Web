@@ -29,13 +29,68 @@ class Cookies
 
     /**
      * 
-     * Whether or not cookies should default to being sent by HTTP only.
+     * Default cookie values.
      * 
-     * @var bool
+     * @var array
      * 
      */
-    protected $httponly = true;
+    protected $default = array(
+        'value' => null,
+        'expire' => 0,
+        'path' => '',
+        'domain' => '',
+        'secure' => false,
+        'httponly' => true,
+    );
 
+    public function setExpire($expire)
+    {
+        $this->default['expire'] = $expire;
+    }
+    
+    public function setPath($path)
+    {
+        $this->default['path'] = $path;
+    }
+    
+    public function setDomain($domain)
+    {
+        $this->default['domain'] = $domain;
+    }
+    
+    public function setSecure($secure)
+    {
+        $this->default['secure'] = (bool) $secure;
+    }
+    
+
+    /**
+     * 
+     * By default, should cookies be sent by HTTP only?
+     * 
+     * @param bool $flag True to send by HTTP only, false to send by any
+     * method.
+     * 
+     * @return null
+     * 
+     */
+    public function setHttponly($flag)
+    {
+        $this->default['httponly'] = (bool) $flag;
+    }
+
+    /**
+     * 
+     * Returns the default meta-descriptors for cookies.
+     * 
+     * @return array
+     * 
+     */
+    public function getDefault()
+    {
+        return $this->default;
+    }
+    
     /**
      * 
      * Sets a cookie value in `$cookies`.
@@ -59,26 +114,28 @@ class Cookies
      * only through the HTTP protocol. This means that the cookie won't be
      * accessible by scripting languages, such as JavaScript.
      * 
-     * @return void
+     * @return null
      * 
      */
     public function set(
         $name,
-        $value = '',
-        $expire = 0,
-        $path = '',
-        $domain = '',
-        $secure = false,
+        $value,
+        $expire = null,
+        $path = null,
+        $domain = null,
+        $secure = null,
         $httponly = null
     ) {
         $this->cookies[$name] = array(
             'value'    => $value,
-            'expire'   => $expire,
-            'path'     => $path,
-            'domain'   => $domain,
-            'secure'   => $secure,
-            'httponly' => $httponly,
         );
+        
+        $vars = array('expire', 'path', 'domain', 'secure', 'httponly');
+        foreach ($vars as $var) {
+            if ($$var !== null) {
+                $this->cookies[$name][$var] = $$var;
+            }
+        }
     }
 
     /**
@@ -100,50 +157,19 @@ class Cookies
             return $cookies;
         }
         
-        $cookie = $this->cookies[$name];
-
-        // was httponly set for this cookie?  if not,
-        // use the default.
-        $cookie['httponly'] = ($cookie['httponly'] === null)
-                            ? $this->httponly
-                            : (bool) $cookie['httponly'];
+        // merge with defaults
+        $cookie = array_merge($this->default, $this->cookies[$name]);
 
         // try to allow for times not in unix-timestamp format
         if (! is_numeric($cookie['expire'])) {
             $cookie['expire'] = strtotime($cookie['expire']);
         }
 
+        // force to certain types
         $cookie['expire'] = (int) $cookie['expire'];
         $cookie['secure']  = (bool) $cookie['secure'];
+        
+        // done
         return $cookie;
-    }
-
-    /**
-     * 
-     * By default, should cookies be sent by HTTP only?
-     * 
-     * @param bool $flag True to send by HTTP only, false to send by any
-     * method.
-     * 
-     * @return void
-     * 
-     */
-    public function setHttponly($flag)
-    {
-        $this->httponly = (bool) $flag;
-    }
-
-    /**
-     * 
-     * When true, the cookie will be made accessible
-     * only through the HTTP protocol. This means that the cookie won't be
-     * accessible by scripting languages, such as JavaScript.
-     * 
-     * @return bool True/False
-     * 
-     */
-    public function getHttponly()
-    {
-        return $this->httponly;
     }
 }

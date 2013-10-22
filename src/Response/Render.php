@@ -14,12 +14,16 @@ class Render
 {
     /**
      * 
+     * Data to be rendered into the view and layout.
+     * 
      * @var array
      * 
      */
-    protected $data;
+    protected $data = array();
     
     /**
+     * 
+     * The name of the layout to wrap around the view.
      * 
      * @var string
      * 
@@ -28,12 +32,16 @@ class Render
     
     /**
      * 
+     * The stack of locations for layouts.
+     * 
      * @var array
      * 
      */
     protected $layout_stack = array();
     
     /**
+     * 
+     * The view to render data into.
      * 
      * @var string
      * 
@@ -42,6 +50,8 @@ class Render
     
     /**
      * 
+     * The stack of locations for views.
+     * 
      * @var array
      * 
      */
@@ -49,20 +59,11 @@ class Render
     
     /**
      * 
-     * Constructor
+     * Returns object properties by name.
      * 
+     * @param string $key The property to return.
      * 
-     */
-    public function __construct()
-    {
-        $this->data = (object) array();
-    }
-    
-    /**
-     * 
-     * Magic getter
-     * 
-     * @return mixed
+     * @return mixed The property.
      * 
      */
     public function __get($key)
@@ -72,11 +73,13 @@ class Render
     
     /**
      * 
-     * Magic setter
+     * Sets object properties by name.
      * 
-     * @param string $key
+     * @param string $key The object property to set.
      * 
-     * @param string $val
+     * @param string $val The value to set it to.
+     * 
+     * @return null
      * 
      */
     public function __set($key, $val)

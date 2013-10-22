@@ -12,12 +12,11 @@ class CookiesTest extends \PHPUnit_Framework_TestCase
 
     public function testSetAndGet()
     {
-        $expire = time() + 3600;
-        $this->cookies->set('foo', 'bar', $expire, '/path', 'example.com');
+        $this->cookies->set('foo', 'bar', '88', '/path', 'example.com');
         
         $expect = array(
           'value' => 'bar',
-          'expire' => $expire,
+          'expire' => 88,
           'path' => '/path',
           'domain' => 'example.com',
           'secure' => false,
@@ -31,14 +30,13 @@ class CookiesTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAll()
     {
-        $expire = time() + 3600;
-        $this->cookies->set('foo', 'bar', $expire, '/path', 'example.com');
-        $this->cookies->set('baz', 'dib', date('Y-m-d H:i:s', $expire), '/path', 'example.com');
+        $this->cookies->set('foo', 'bar', '88', '/path', 'example.com');
+        $this->cookies->set('baz', 'dib', date('Y-m-d H:i:s', '88'), '/path', 'example.com');
         
         $expect = array(
             'foo' => array(
               'value' => 'bar',
-              'expire' => $expire,
+              'expire' => 88,
               'path' => '/path',
               'domain' => 'example.com',
               'secure' => false,
@@ -46,7 +44,7 @@ class CookiesTest extends \PHPUnit_Framework_TestCase
             ),
             'baz' => array(
               'value' => 'dib',
-              'expire' => $expire,
+              'expire' => 88,
               'path' => '/path',
               'domain' => 'example.com',
               'secure' => false,
@@ -59,17 +57,17 @@ class CookiesTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
 
-    public function testHttponly()
+    public function testGetDefault()
     {
         $this->cookies->setHttponly(false);
-        $this->assertFalse($this->cookies->getHttponly());
+        $actual = $this->cookies->getDefault();
+        $this->assertFalse($actual['httponly']);
         
-        $expire = time() + 3600;
-        $this->cookies->set('foo', 'bar', $expire, '/path', 'example.com');
+        $this->cookies->set('foo', 'bar', '88', '/path', 'example.com');
         
         $expect = array(
           'value' => 'bar',
-          'expire' => $expire,
+          'expire' => 88,
           'path' => '/path',
           'domain' => 'example.com',
           'secure' => false,

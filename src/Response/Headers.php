@@ -10,6 +10,9 @@
  */
 namespace Aura\Web\Response;
 
+/**
+ * https://en.wikipedia.org/wiki/List_of_HTTP_headers
+ */
 class Headers
 {
     /**
@@ -25,61 +28,52 @@ class Headers
      * 
      * Sets a header value in `$headers`.
      * 
-     * @param string $key The header label.
+     * @param string $label The header label.
      * 
-     * @param string $val The value for the header.
+     * @param string $value The value for the header; an empty-string/null/
+     * false value will unset the header (although a zero will not).
      * 
-     * @return void
+     * @return null
      * 
      */
-    public function set($key, $val)
+    public function set($label, $value)
     {
-        $key = $this->sanitizeLabel($key);
-        $val = $this->sanitizeValue($val);
-        $this->headers[$key] = $val;
+        $label = $this->sanitizeLabel($label);
+        $value = $this->sanitizeValue(trim($value));
+        if ($value === '') {
+            unset($this->headers[$label]);
+            return;
+        }
+        $this->headers[$label] = $value;
     }
 
     /**
      * 
-     * Adds to a header value in $this->headers.
+     * Returns the value of a single header, or all headers.
      * 
-     * @param string $key The header label.
+     * @param string $label The header name.
      * 
-     * @param string $val The value for the header.
-     * 
-     * @return void
+     * @return string The header value.
      * 
      */
-    public function add($key, $val)
+    public function get($label = null)
     {
-        $key = $this->sanitizeLabel($key);
-        $val = $this->sanitizeValue($val);
-        $this->headers[$key][] = $val;
-    }
-
-    /**
-     * 
-     * Returns the value of a single header.
-     * 
-     * @param string $key The header name.
-     * 
-     * @return string|array A string if the header has only one value, or an
-     * array if the header has multiple values, or null if the header does not
-     * exist.
-     * 
-     */
-    public function get($key = null)
-    {
-        if (! $key) {
+        if (! $label) {
             return $this->headers;
         }
         
-        $key = $this->sanitizeLabel($key);
-        if (isset($this->headers[$key])) {
-            return $this->headers[$key];
+        $label = $this->sanitizeLabel($label);
+        if (isset($this->headers[$label])) {
+            return $this->headers[$label];
         }
     }
 
+    public function has($label)
+    {
+        $label = $this->sanitizeLabel($label);
+        return isset($this->headers[$label]);
+    }
+    
     /**
      * 
      * Normalizes and sanitizes a header label.
