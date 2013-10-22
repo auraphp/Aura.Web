@@ -55,36 +55,4 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
             'Expires' => 'Mon, 01 Jan 0001 00:00:00 GMT',
         ));
     }
-    
-    public function testGetTransfer()
-    {
-        $this->response->content->set(function () { return 'foo bar baz'; });
-        $this->response->content->setCharset('utf-8');
-        $this->response->content->setType('text/plain');
-        $this->response->content->setDisposition('attachment', 'filename.txt');
-        $this->response->redirectNoCache('http://example.com');
-        
-        $expect = (object) array(
-            'status' => array(
-                'version' => 1.1,
-                'code' => 303,
-                'phrase' => 'See Other',
-            ),
-            'headers' => array(
-                'Content-Disposition' => 'attachment; filename="filename.txt"',
-                'Content-Type' => 'text/plain; charset=utf-8',
-                'Location' => 'http://example.com',
-                'Pragma' => 'no-cache',
-                'Cache-Control' => 'no-cache, no-store, must-revalidate, proxy-revalidate',
-                'Expires' => 'Mon, 01 Jan 0001 00:00:00 GMT',
-            ),
-            'cookies' => array(
-            ),
-            'content' => 'foo bar baz',
-        );
-        
-        $actual = $this->response->getTransfer();
-        
-        $this->assertEquals($expect, $actual);
-    }
 }

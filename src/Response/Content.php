@@ -105,6 +105,7 @@ class Content
     protected function setContentType()
     {
         if (! $this->type) {
+            $this->headers->set('Content-Type', null);
             return;
         }
         

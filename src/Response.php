@@ -142,30 +142,4 @@ class Response
         $this->redirect($location, $code, $phrase);
         $this->cache->disable();
     }
-    
-    /**
-     * 
-     * Creates and returns a data transfer object assembled from the response
-     * properties. If the content is a callable, it will be invoked to return
-     * the "real" content; depending on the callable, it may further modify
-     * response.
-     * 
-     * @return StdClass A StdClass object with properties $status, $headers,
-     * $cookies, and $content.
-     * 
-     */
-    public function getTransfer()
-    {
-        $content = $this->content->get();
-        if (is_callable($content)) {
-            $content = $content();
-        }
-        
-        return (object) array(
-            'status'  => $this->status->get(),
-            'headers' => $this->headers->get(),
-            'cookies' => $this->cookies->get(),
-            'content' => $content
-        );
-    }
 }

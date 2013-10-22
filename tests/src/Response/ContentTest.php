@@ -30,6 +30,9 @@ class ContentTest extends \PHPUnit_Framework_TestCase
         $expect = 'application/json; charset=utf-8';
         $actual = $this->headers->get('Content-Type');
         $this->assertSame($expect, $actual);
+        
+        $this->content->setType(null);
+        $this->assertNull($this->headers->get('Content-Type'));
     }
 
     public function testDisposition()
