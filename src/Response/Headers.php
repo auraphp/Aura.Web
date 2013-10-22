@@ -12,6 +12,9 @@ namespace Aura\Web\Response;
 
 /**
  * https://en.wikipedia.org/wiki/List_of_HTTP_headers
+ * 
+ * @todo automatically handle dates
+ * 
  */
 class Headers
 {
@@ -39,7 +42,7 @@ class Headers
     public function set($label, $value)
     {
         $label = $this->sanitizeLabel($label);
-        $value = $this->sanitizeValue(trim($value));
+        $value = $this->sanitizeValue($value);
         if ($value === '') {
             unset($this->headers[$label]);
             return;
@@ -96,6 +99,6 @@ class Headers
      */
     protected function sanitizeValue($value)
     {
-        return str_replace(array("\r", "\n"), '', $value);
+        return str_replace(array("\r", "\n"), '', trim($value));
     }
 }

@@ -14,38 +14,8 @@ use DateTime;
 use DateTimeZone;
 use Exception;
 
-/**
- * 
- * @todo Add the following:
- * 
- * Cache-Control -- tells all caching mechanisms from server to client whether
- * they may cache this object. It is measured in seconds.
- * Cache-Control: max-age=3600 Permanent
- * 
- * Expires -- gives the date/time after which the response is considered
- * stale.
- * Expires: Thu, 01 Dec 1994 16:00:00 GMT 
- * 
- * Last-Modified -- The last modified date for the requested object, in RFC
- * 2822 format.
- * Last-Modified: Tue, 15 Nov 1994 12:45:26 GMT
- * 
- * Vary -- tells downstream proxies how to match future request headers to
- * decide whether the cached response can be used rather than requesting a
- * fresh one from the origin server.
- * 
- */
 class Cache
 {
-    /**
-     * 
-     * Should the response disable HTTP caching?
-     * 
-     * @var bool
-     * 
-     */
-    protected $disabled = false;
-
     protected $control = array();
     
     protected $headers;
@@ -170,12 +140,12 @@ class Cache
     
     public function setExpires($expires)
     {
-        $this->headers->set('Expires', $this->fixDate($expires));
+        $this->headers->set('Expires', $this->httpDate($expires));
     }
     
     public function setLastModified($last_modified)
     {
-        $this->headers->set('Last-Modified', $this->fixDate($last_modified));
+        $this->headers->set('Last-Modified', $this->httpDate($last_modified));
     }
     
     public function setMaxAge($max_age)
@@ -236,7 +206,7 @@ class Cache
         $this->headers->set('Etag', $etag);
     }
     
-    protected function fixDate($date)
+    protected function httpDate($date)
     {
         if ($date instanceof DateTime) {
             $date = clone $date;
@@ -249,14 +219,16 @@ class Cache
         }
         
         try {
+            // create the date in the current time zone ...
             $date = new DateTime($date);
+            // ... then convert to UTC
+            $date->setTimeZone(new DateTimeZone('UTC'));
         } catch (Exception $e) {
             // treat bad dates as being in the past
-            $date = new DateTime('01 Jan 0000');
+            $date = new DateTime('0001-01-01', new DateTimeZone('UTC'));
         }
 
-        $date->setTimeZone(new DateTimeZone('UTC'));
+        // return the http formatted date
         return $date->format('D, d M Y H:i:s') . ' GMT';
-        
     }
 }

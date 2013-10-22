@@ -2,17 +2,23 @@
 namespace Aura\Web;
 
 use Aura\Web\Response\PropertyFactory;
+use Aura\Web\AssertHeadersTrait;
 
 class ResponseTest extends \PHPUnit_Framework_TestCase
 {
+    use AssertHeadersTrait;
+    
     protected $response;
 
+    protected $headers;
+    
     protected function setUp()
     {
         parent::setUp();
         $globals = array();
         $factory = new WebFactory($globals);
         $this->response = $factory->newResponse();
+        $this->headers = $this->response->headers;
     }
     
     public function test__get()
@@ -29,10 +35,9 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->response->redirect('http://example.com');
         $this->assertSame(302, $this->response->status->getCode());
         $this->assertSame('Found', $this->response->status->getPhrase());
-        $expect = array(
+        $this->assertHeaders(array(
             'Location' => 'http://example.com',
-        );
-        $this->assertSame($expect, $this->response->headers->get());
+        ));
     }
     
     public function testRedirectNoCache()
@@ -40,13 +45,12 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->response->redirectNoCache('http://example.com');
         $this->assertSame(303, $this->response->status->getCode());
         $this->assertSame('See Other', $this->response->status->getPhrase());
-        $expect = array(
+        $this->assertHeaders(array(
             'Location' => 'http://example.com',
             'Cache-Control' => 'no-cache, no-store, must-revalidate, proxy-revalidate',
             'Pragma' => 'no-cache',
-            'Expires' => 'Sat, 01 Jan 0000 06:00:00 GMT',
-        );
-        $this->assertSame($expect, $this->response->headers->get());
+            'Expires' => 'Mon, 01 Jan 0001 00:00:00 GMT',
+        ));
     }
     
     public function testGetTransfer()
@@ -69,7 +73,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
                 'Location' => 'http://example.com',
                 'Pragma' => 'no-cache',
                 'Cache-Control' => 'no-cache, no-store, must-revalidate, proxy-revalidate',
-                'Expires' => 'Sat, 01 Jan 0000 06:00:00 GMT',
+                'Expires' => 'Mon, 01 Jan 0001 00:00:00 GMT',
             ),
             'cookies' => array(
             ),
