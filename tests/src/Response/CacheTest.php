@@ -7,14 +7,8 @@ class CacheTest extends \PHPUnit_Framework_TestCase
     
     protected function setUp()
     {
-        $this->cache = new Cache;
-    }
-    
-    public function test()
-    {
-        $this->assertFalse($this->cache->isDisabled());
-        $this->cache->disable();
-        $this->assertTrue($this->cache->isDisabled());
+        $this->headers = new Headers;
+        $this->cache = new Cache($this->headers);
     }
 }
 

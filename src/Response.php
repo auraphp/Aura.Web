@@ -12,12 +12,8 @@ namespace Aura\Web;
 
 /**
  * 
- * Data transfer object for an HTTP response.
- * 
- * @todo Add a "finished" method to indicate that controllers should return
- * the response without further processing?
- * 
- * https://en.wikipedia.org/wiki/List_of_HTTP_headers
+ * Descriptors for building an HTTP response; note that this is not itself an
+ * HTTP response.
  * 
  * @package Aura.Web
  * 
@@ -54,20 +50,6 @@ class Response
     
     /**
      * 
-     * @var Response\Redirect
-     * 
-     */
-    protected $redirect;
-    
-    /**
-     * 
-     * @var Response\Render
-     * 
-     */
-    protected $render;
-    
-    /**
-     * 
      * @var Response\Status
      * 
      */
@@ -87,27 +69,21 @@ class Response
      * 
      * @param Response\Redirect $redirect
      * 
-     * @param Response\Render $render
-     * 
      * @param Response\Status $status
      * 
      */
     public function __construct(
-        Response\Cache    $cache,
-        Response\Content  $content,
-        Response\Cookies  $cookies,
+        Response\Status   $status,
         Response\Headers  $headers,
-        Response\Redirect $redirect,
-        Response\Render   $render,
-        Response\Status   $status
+        Response\Cookies  $cookies,
+        Response\Content  $content,
+        Response\Cache    $cache
     ) {
-        $this->cache    = $cache;
-        $this->content  = $content;
-        $this->cookies  = $cookies;
-        $this->headers  = $headers;
-        $this->redirect = $redirect;
-        $this->render   = $render;
         $this->status   = $status;
+        $this->headers  = $headers;
+        $this->cookies  = $cookies;
+        $this->content  = $content;
+        $this->cache    = $cache;
     }
     
     /**
@@ -126,8 +102,53 @@ class Response
     
     /**
      * 
+     * Set a location that the response should redirect to, along with a
+     * a status code and status phrase.
+     * 
+     * @param string $location The URI to redirect to.
+     * 
+     * @param int $code The HTTP status code to redirect with; default
+     * is `302`.
+     * 
+     * @param string $phrase The HTTP status phrase; default is `'Found'`.
+     * 
+     * @return null
+     * 
+     */
+    public function redirect($location, $code = 302, $phrase = 'Found')
+    {
+        $this->headers->set('Location', $location);
+        $this->status->setCode($code);
+        $this->status->setPhrase($phrase);
+    }
+
+    /**
+     * 
+     * Set a location that the response should redirect to, along with a
+     * a status code and status phrase, *and* disables cache.
+     * 
+     * @param string $location The URL to redirect to.
+     * 
+     * @param int|string $code The HTTP status code to redirect with; default
+     * is `303`.
+     * 
+     * @param string $phrase The HTTP status phrase; default is `'See Other'`.
+     * 
+     * @return null
+     * 
+     */
+    public function redirectNoCache($location, $code = 303, $phrase = 'See Other')
+    {
+        $this->redirect($location, $code, $phrase);
+        $this->cache->disable();
+    }
+    
+    /**
+     * 
      * Creates and returns a data transfer object assembled from the response
-     * properties.
+     * properties. If the content is a callable, it will be invoked to return
+     * the "real" content; depending on the callable, it may further modify
+     * response.
      * 
      * @return StdClass A StdClass object with properties $status, $headers,
      * $cookies, and $content.
@@ -135,59 +156,16 @@ class Response
      */
     public function getTransfer()
     {
-        $status   = clone $this->status;
-        $headers  = clone $this->headers;
-        $cookies  = clone $this->cookies;
-        $content  = clone $this->content;
-        $cache    = clone $this->cache;
-        $redirect = clone $this->redirect;
-        
-        // set the content type
-        $type = $content->getType();
-        if ($type) {
-            $charset = $content->getCharset();
-            if ($charset) {
-                $type .= '; charset=' . $charset;
-            }
-            $headers->set('Content-Type', $type);
-        }
-
-        // set the content disposition
-        $disposition = $content->getDisposition();
-        if ($disposition) {
-            $filename = $content->getFilename();
-            if ($filename) {
-                $disposition .='; filename='. $filename;
-            }
-            $headers->set('Content-Disposition', $disposition);
+        $content = $this->content->get();
+        if (is_callable($content)) {
+            $content = $content();
         }
         
-        // set a redirect location
-        $location = $redirect->getLocation();
-        if ($location) {
-            $status->set(
-                $redirect->getStatusCode(),
-                $redirect->getStatusPhrase()
-            );
-            $headers->set('Location', $location);
-            if ($redirect->isWithoutCache()) {
-                $cache->disable();
-            }
-        }
-        
-        // disable the cache
-        if ($cache->isDisabled()) {
-            $headers->set('Pragma', 'no-cache');
-            $headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
-            $headers->set('Expires', '1');
-        }
-        
-        // return a transfer object
         return (object) array(
-            'status'  => $status->get(),
-            'headers' => $headers->get(),
-            'cookies' => $cookies->get(),
-            'content' => $content->get(),
+            'status'  => $this->status->get(),
+            'headers' => $this->headers->get(),
+            'cookies' => $this->cookies->get(),
+            'content' => $content
         );
     }
 }

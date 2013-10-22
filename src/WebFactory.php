@@ -361,14 +361,17 @@ class WebFactory
      */
     public function newResponse()
     {
+        $status  = $this->newResponseStatus();
+        $headers = $this->newResponseHeaders();
+        $cookies = $this->newResponseCookies();
+        $content = $this->newResponseContent($headers);
+        $cache   = $this->newResponseCache($headers);
         return new Response(
-            $this->newResponseCache(),
-            $this->newResponseContent(),
-            $this->newResponseCookies(),
-            $this->newResponseHeaders(),
-            $this->newResponseRedirect(),
-            $this->newResponseRender(),
-            $this->newResponseStatus()
+            $status,
+            $headers,
+            $cookies,
+            $content,
+            $cache
         );
     }
     
@@ -379,9 +382,9 @@ class WebFactory
      * @return object Aura\Web\Response\Cache
      * 
      */
-    public function newResponseCache()
+    public function newResponseCache(Response\Headers $headers)
     {
-        return new Response\Cache;
+        return new Response\Cache($headers);
     }
     
     /**
@@ -391,9 +394,9 @@ class WebFactory
      * @return object Aura\Web\Response\Content
      * 
      */
-    public function newResponseContent()
+    public function newResponseContent(Response\Headers $headers)
     {
-        return new Response\Content;
+        return new Response\Content($headers);
     }
     
     /**
@@ -410,18 +413,6 @@ class WebFactory
     
     /**
      * 
-     * Return a renderer object
-     * 
-     * @return object Aura\Web\Response\Render
-     * 
-     */
-    public function newResponseRender()
-    {
-        return new Response\Render;
-    }
-    
-    /**
-     * 
      * Return a Aura\Web\Response\Headers object
      * 
      * @return object Aura\Web\Response\Headers
@@ -432,18 +423,6 @@ class WebFactory
         return new Response\Headers;
     }
     
-    /**
-     * 
-     * Return a Aura\Web\Response\Redirect object
-     * 
-     * @return object Aura\Web\Response\Redirect
-     * 
-     */
-    public function newResponseRedirect()
-    {
-        return new Response\Redirect;
-    }
-
     /**
      * 
      * Returns the Response Status

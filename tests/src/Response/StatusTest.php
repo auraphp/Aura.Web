@@ -32,6 +32,9 @@ class StatusTest extends \PHPUnit_Framework_TestCase
         $this->status->setCode($expect);
         $actual = $this->status->getCode();
         $this->assertSame($expect, $actual);
+        
+        $this->status->setCode('555');
+        $this->assertSame('', $this->status->getPhrase());
     }
     
     public function testSetCodeWrong()

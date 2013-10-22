@@ -33,7 +33,7 @@ class Files extends Values
      * @param array &$tgt Where we will store the restructured data when we
      * find it.
      * 
-     * @return void
+     * @return null
      * 
      */
     protected function init($src, &$tgt)

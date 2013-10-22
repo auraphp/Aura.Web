@@ -469,27 +469,56 @@ $response->status->setVersion('1.1');
 ?>
 ```
 
-#### Cookies
-
-The `$response->cookies` object has these methods:
-
-- `set()` sets a cookie, and mimics the [setcookie()](http://php.net/setcookie)
-  PHP function.
-
-- `get()` returns a cookie by name, or all the cookies in the object.
-
-- `setHttpOnly()` sets the default for whether or not cookies will be sent by
-  HTTP only.
-
 #### Headers
 
 The `$response->headers` object has these methods:
 
-- `set()` to set a header label and value
+- `set()` to set a single header, resetting previous values on that header
 
-- `add()` to add a value to an existing header
+- `add()` to add another entry for an existing header
 
 - `get()` to get a single header, or to get all headers
+
+```php
+<?php
+// X-Header-Value: foo
+$response->headers->set('X-Header-Value', 'foo');
+
+// X-Header-Value: bar
+$response->headers->set('X-Header-Value', 'bar');
+
+// X-Header-Value: bar
+// X-Header-Value: baz
+$response->headers->add('X-Header-Value', 'baz');
+
+// get the X-Header-Value
+$value = $response->headers->get('X-Header-Value');
+
+// get all headers
+$all_headers = $response->headers->get();
+?>
+```
+
+#### Cookies
+
+The `$response->cookies` object has these methods:
+
+- `set()` sets a cookie name and value along with its meta-data; this method
+  mimics the [setcookie()](http://php.net/setcookie) PHP function
+
+- `get()` returns a cookie by name, or all the cookies in the response
+
+- `setExpire()` sets the default expiration for cookies
+
+- `setPath()` sets the default path for cookies
+
+- `setDomain()` sets the default domain for cookies
+
+- `setSecure()` sets the default secure value for cookies
+
+- `setHttpOnly()` sets the default for whether or not cookies will be sent by
+  HTTP only.
+
 
 #### Cache
 
