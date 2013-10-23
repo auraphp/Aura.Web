@@ -361,17 +361,19 @@ class WebFactory
      */
     public function newResponse()
     {
-        $status  = $this->newResponseStatus();
-        $headers = $this->newResponseHeaders();
-        $cookies = $this->newResponseCookies();
-        $content = $this->newResponseContent($headers);
-        $cache   = $this->newResponseCache($headers);
+        $status   = $this->newResponseStatus();
+        $headers  = $this->newResponseHeaders();
+        $cookies  = $this->newResponseCookies();
+        $content  = $this->newResponseContent($headers);
+        $cache    = $this->newResponseCache($headers);
+        $redirect = $this->newResponseRedirect($status, $headers, $cache);
         return new Response(
             $status,
             $headers,
             $cookies,
             $content,
-            $cache
+            $cache,
+            $redirect
         );
     }
     
@@ -433,6 +435,21 @@ class WebFactory
     public function newResponseStatus()
     {
         return new Response\Status;
+    }
+    
+    /**
+     * 
+     * Returns the Response Redirect
+     * 
+     * @return object Aura\Web\Response\Redirect
+     * 
+     */
+    public function newResponseRedirect(
+        Response\Status $status,
+        Response\Headers $headers,
+        Response\Cache $cache
+    ) {
+        return new Response\Redirect($status, $headers, $cache);
     }
     
     /**

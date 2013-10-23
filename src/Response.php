@@ -77,13 +77,15 @@ class Response
         Response\Headers  $headers,
         Response\Cookies  $cookies,
         Response\Content  $content,
-        Response\Cache    $cache
+        Response\Cache    $cache,
+        Response\Redirect $redirect
     ) {
         $this->status   = $status;
         $this->headers  = $headers;
         $this->cookies  = $cookies;
         $this->content  = $content;
         $this->cache    = $cache;
+        $this->redirect = $redirect;
     }
     
     /**
@@ -98,48 +100,5 @@ class Response
     public function __get($key)
     {
         return $this->$key;
-    }
-    
-    /**
-     * 
-     * Set a location that the response should redirect to, along with a
-     * a status code and status phrase.
-     * 
-     * @param string $location The URI to redirect to.
-     * 
-     * @param int $code The HTTP status code to redirect with; default
-     * is `302`.
-     * 
-     * @param string $phrase The HTTP status phrase; default is `'Found'`.
-     * 
-     * @return null
-     * 
-     */
-    public function redirect($location, $code = 302, $phrase = 'Found')
-    {
-        $this->headers->set('Location', $location);
-        $this->status->setCode($code);
-        $this->status->setPhrase($phrase);
-    }
-
-    /**
-     * 
-     * Set a location that the response should redirect to, along with a
-     * a status code and status phrase, *and* disables cache.
-     * 
-     * @param string $location The URL to redirect to.
-     * 
-     * @param int|string $code The HTTP status code to redirect with; default
-     * is `303`.
-     * 
-     * @param string $phrase The HTTP status phrase; default is `'See Other'`.
-     * 
-     * @return null
-     * 
-     */
-    public function redirectNoCache($location, $code = 303, $phrase = 'See Other')
-    {
-        $this->redirect($location, $code, $phrase);
-        $this->cache->disable();
     }
 }
