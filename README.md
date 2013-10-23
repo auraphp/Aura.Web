@@ -94,5 +94,8 @@ By way of overview, the _Request_ object has these sub-objects ...
 - [$response->redirect](README-RESPONSE.md#redirect) for convenience methods
   related to Location and Status
 
+Once you have built a _Response_ you can send it with any HTTP mechanism you
+prefer, [including plain PHP](README-RESPONSE.md#sending-the-response).
+
 Be sure to read the [Request](README-REQUEST.md) and
 [Response](README-RESPONSE.md) pages for more detailed information.

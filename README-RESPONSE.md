@@ -46,14 +46,17 @@ Use the `$response->status` object as follows:
 ```php
 <?php
 // set the status code, phrase, and version at once
-$response->status->set(404, 'Not Found', 1.1);
+$response->status->set('404', 'Not Found', '1.1');
 
 // set them individually
-$response->status->setCode(404);
+$response->status->setCode('404');
 $response->status->setPhrase('Not Found');
-$response->status->setVersion(1.1);
+$response->status->setVersion('1.1');
 
-// get the status values
+// get the full status line
+$status = $response->status->get(); // "HTTP/1.1 404 Not Found"
+
+// get the status values individually
 $code    = $response->status->getCode();
 $phrase  = $response->status->getPhrase();
 $version = $response->status->getVersion();
@@ -257,3 +260,37 @@ status and `Location` headers for redirection.
 
 - `permanentRedirect($location)` redirects to `$location` with `308 Permanent Redirect`
 
+
+## Sending The Response
+
+Because the _Response_ object is not an HTTP reponse object proper, you will
+need to use some other mechanism to convert it to an HTTP response. The
+easiest way to do this is with plain PHP:
+
+```php
+<?php
+// send status line
+header($response->status->get(), true, $response->status->getCode());
+
+// send non-cookie headers
+foreach ($response->headers->get() as $label => $value) {
+    header($label, $value);
+}
+
+// send cookies
+foreach ($response->cookies->get() as $name => $cookie) {
+    setcookie(
+        $name,
+        $cookie['value'],
+        $cookie['expire'],
+        $cookie['path'],
+        $cookie['domain'],
+        $cookie['secure'],
+        $cookie['httponly']
+    );
+}
+
+// send content
+echo $response->content->get();
+?>
+```

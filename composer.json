@@ -2,7 +2,7 @@
     "name": "aura/web",
     "type": "library",
     "description": "Provides web Request and Response objects for use by web controllers. These are representations of the PHP web environment, not HTTP request and response objects proper.",
-    "keywords": [ "controller", "page controller", "web controller" ],
+    "keywords": [ "request", "response" ],
     "homepage": "http://auraphp.com/Aura.Web",
     "license": "BSD-2-Clause",
     "authors": [

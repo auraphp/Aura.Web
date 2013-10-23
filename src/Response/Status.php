@@ -117,6 +117,11 @@ class Status
      */
     protected $version = 1.1;
 
+    public function get()
+    {
+        return "HTTP/{$this->version} {$this->code} {$this->phrase}";
+    }
+    
     /**
      * 
      * @param int $code
@@ -210,8 +215,7 @@ class Status
      */
     public function setVersion($version)
     {
-        $version = (float) $version;
-        if ($version != 1.0 && $version != 1.1) {
+        if ($version !== '1.0' && $version != '1.1') {
             throw new Exception\InvalidVersion($version);
         }
         $this->version = $version;

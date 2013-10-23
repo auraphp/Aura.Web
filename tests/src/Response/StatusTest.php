@@ -12,10 +12,10 @@ class StatusTest extends \PHPUnit_Framework_TestCase
     
     public function testSetAndGet()
     {
-        $this->status->set(404, 'Not Found', 1.0);
-        $this->assertSame(1.0, $this->status->getVersion());
-        $this->assertSame(404, $this->status->getCode());
-        $this->assertSame('Not Found', $this->status->getPhrase());
+        $this->status->set(404, 'Not Found', '1.0');
+        $actual = $this->status->get();
+        $expect = 'HTTP/1.0 404 Not Found';
+        $this->assertSame($expect, $actual);
     }
     
     public function testSetAndGetCode()
