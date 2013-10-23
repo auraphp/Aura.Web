@@ -61,3 +61,38 @@ $response = $web_factory->newResponse();
 Because each object contains so much functionality, we have split up the
 documentation into a [Request](README-REQUEST.md) page and a
 [Response](README-RESPONSE.md) page.
+
+By way of overview, the _Request_ object has these sub-objects ...
+
+- [$request->cookies](README-REQUEST.md#superglobals) for $_COOKIES
+- [$request->env](README-REQUEST.md#superglobals) for $_ENV
+- [$request->files](README-REQUEST.md#superglobals) for $_FILES
+- [$request->post](README-REQUEST.md#superglobals) for $_POST
+- [$request->query](README-REQUEST.md#superglobals) for $_GET
+- [$request->server](README-REQUEST.md#superglobals) for $_SERVER
+- [$request->client](README-REQUEST.md#client) for the client making the
+  request
+- [$request->content](README-REQUEST.md#content) for the raw body of the
+  request
+- [$request->headers](README-REQUEST.md#headers) for the request headers
+- [$request->method](README-REQUEST.md#method) for the request method
+- [$request->negotiate](README-REQUEST.md#negotiate) for content negotiation
+- [$request->params](README-REQUEST.md#params) for path-info parameters
+- [$request->url](README-REQUEST.md#url) for the request URL
+
+... and the _Response_ object has these sub-objects:
+
+- [$response->status](README-RESPONSE.md#status) for the status code, status
+  phrase, and HTTP version
+- [$response->headers](README-RESPONSE.md#headers) for non-cookie headers
+- [$response->cookies](README-RESPONSE.md#cookies) for cookie headers
+- [$response->content](README-RESPONSE.md#content) for describing the response
+  content, and for convenience methods related to content type, charset,
+  disposition, and filename
+- [$response->cache](README-RESPONSE.md#cache) for convenience methods related
+  to cache headers
+- [$response->redirect](README-RESPONSE.md#redirect) for convenience methods
+  related to Location and Status
+
+Be sure to read the [Request](README-REQUEST.md) and
+[Response](README-RESPONSE.md) pages for more detailed information.

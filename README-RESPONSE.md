@@ -10,14 +10,14 @@ to the client. The _Response_ can be inspected during testing to see if the
 correct values have been set without generating output.
 
 To create a _Response_ object, instantiate a _WebFactory_ and get new
-_Request_ object from it:
+_Response_ object from it:
 
 ```php
 <?php
 use Aura\Web\WebFactory;
 
 $web_factory = new WebFactory($GLOBALS);
-$request = $web_factory->newResponse();
+$response = $web_factory->newResponse();
 ?>
 ```
 
