@@ -119,22 +119,6 @@ class Status
 
     /**
      * 
-     * Returns an array of status information
-     * 
-     * @return array
-     * 
-     */
-    public function get()
-    {
-        return array(
-            'version' => $this->version,
-            'code'    => $this->code,
-            'phrase'  => $this->phrase,
-        );
-    }
-    
-    /**
-     * 
      * @param int $code
      * 
      * @param string $phrase

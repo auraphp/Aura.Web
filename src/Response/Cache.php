@@ -38,9 +38,9 @@ class Cache
         $this->setAge(null);
         $this->setControl(array(
             'public' => false,
-            'private' => true,
+            'private' => false,
             'max-age' => 0,
-            's-maxage' => 0,
+            's-maxage' => null,
             'no-cache' => true,
             'no-store' => true,
             'must-revalidate' => true,
@@ -66,8 +66,8 @@ class Cache
         $this->setControl(array(
             'public' => false,
             'private' => false,
-            'max-age' => 0,
-            's-maxage' => 0,
+            'max-age' => null,
+            's-maxage' => null,
             'no-cache' => false,
             'no-store' => false,
             'must-revalidate' => false,
@@ -112,7 +112,7 @@ class Cache
             if ($val === true) {
                 // flag
                 $control[] = $key;
-            } elseif ($val) {
+            } elseif ($val !== null && $val !== false) {
                 // value
                 $control[] = "$key=$val";
             }

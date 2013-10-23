@@ -31,6 +31,14 @@ class ContentTest extends \PHPUnit_Framework_TestCase
         $actual = $this->headers->get('Content-Type');
         $this->assertSame($expect, $actual);
         
+        $actual = $this->content->getType();
+        $expect = 'application/json';
+        $this->assertSame($expect, $actual);
+        
+        $actual = $this->content->getCharset();
+        $expect = 'utf-8';
+        $this->assertSame($expect, $actual);
+        
         $this->content->setType(null);
         $this->assertNull($this->headers->get('Content-Type'));
     }

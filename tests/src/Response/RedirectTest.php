@@ -44,7 +44,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('See Other', $this->status->getPhrase());
         $this->assertHeaders(array(
             'Location' => 'http://example.com',
-            'Cache-Control' => 'no-cache, no-store, must-revalidate, proxy-revalidate',
+            'Cache-Control' => 'max-age=0, no-cache, no-store, must-revalidate, proxy-revalidate',
             'Pragma' => 'no-cache',
             'Expires' => 'Mon, 01 Jan 0001 00:00:00 GMT',
         ));
@@ -83,7 +83,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(303, $this->status->getCode());
         $this->assertHeaders(array(
             'Location' => 'http://example.com',
-            'Cache-Control' => 'no-cache, no-store, must-revalidate, proxy-revalidate',
+            'Cache-Control' => 'max-age=0, no-cache, no-store, must-revalidate, proxy-revalidate',
             'Pragma' => 'no-cache',
             'Expires' => 'Mon, 01 Jan 0001 00:00:00 GMT',
         ));

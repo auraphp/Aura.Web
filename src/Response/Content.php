@@ -102,6 +102,25 @@ class Content
         $this->setContentType();
     }
     
+    // works even if set directly via $headers
+    public function getType()
+    {
+        $parts = explode(';', $this->headers->get('Content-Type'));
+        $type = array_shift($parts);
+        return trim($type);
+    }
+    
+    // works even if set directly via $headers
+    public function getCharset()
+    {
+        $parts = explode(';', $this->headers->get('Content-Type'));
+        $type = array_shift($parts);
+        $charset = array_shift($parts);
+        $charset = str_replace(' ', '', $charset);
+        $charset = str_replace('charset=', '', $charset);
+        return $charset;
+    }
+    
     protected function setContentType()
     {
         if (! $this->type) {

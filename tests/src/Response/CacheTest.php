@@ -31,7 +31,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
     {
         $this->cache->disable();
         $this->assertHeaders(array(
-            'Cache-Control' => 'no-cache, no-store, must-revalidate, proxy-revalidate',
+            'Cache-Control' => 'max-age=0, no-cache, no-store, must-revalidate, proxy-revalidate',
             'Pragma' => 'no-cache',
             'Expires' => 'Mon, 01 Jan 0001 00:00:00 GMT',
         ));
