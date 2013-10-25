@@ -11,7 +11,6 @@
 namespace Aura\Web\Controller;
 
 use Aura\Web\Exception as WebException;
-use Aura\Web\Renderer\RendererInterface;
 use Exception;
 use ReflectionMethod;
 
