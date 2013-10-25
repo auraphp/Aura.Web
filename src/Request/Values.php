@@ -10,6 +10,8 @@
  */
 namespace Aura\Web\Request;
 
+use ArrayObject;
+
 /**
  * 
  * A factory for creating Context and Stdio objects.
@@ -17,37 +19,25 @@ namespace Aura\Web\Request;
  * @package Aura.Web
  * 
  */
-class Values
+class Values extends ArrayObject
 {
-    protected $data;
-    
-    /**
-     * 
-     * @param array $data
-     * 
-     */
-    public function __construct(array $data = array())
-    {
-        $this->data = $data;
-    }
-    
     /**
      * 
      * @param string $key
      * 
      * @param string $alt
      * 
-     * @return string $alt
+     * @return string
      * 
      */
     public function get($key = null, $alt = null)
     {
         if (! $key) {
-            return $this->data;
+            return $this->getArrayCopy();
         }
         
-        if (array_key_exists($key, $this->data)) {
-            return $this->data[$key];
+        if (isset($this[$key])) {
+            return $this[$key];
         }
         
         return $alt;

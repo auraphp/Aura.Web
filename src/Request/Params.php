@@ -19,8 +19,8 @@ namespace Aura\Web\Request;
  */
 class Params extends Values
 {
-    public function set(array $data)
+    public function set(array $params)
     {
-        $this->data = $data;
+        $this->exchangeArray($params);
     }
 }

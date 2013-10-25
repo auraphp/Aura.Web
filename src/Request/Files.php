@@ -19,9 +19,11 @@ class Files extends Values
      * @param array $files
      * 
      */
-    public function __construct(array $files = array())
+    public function __construct(array $input = array())
     {
-        $this->init($files, $this->data);
+        $files = array();
+        $this->init($input, $files);
+        return parent::__construct($files);
     }
     
     /**
