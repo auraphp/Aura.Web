@@ -12,11 +12,18 @@ namespace Aura\Web\Request;
 
 use BadMethodCallException;
 
+/**
+ * 
+ * A representation of the request method.
+ * 
+ * @package Aura.Web
+ * 
+ */
 class Method
 {
     /**
      * 
-     * the request method value
+     * The request method value.
      * 
      * @var string
      * 
@@ -25,13 +32,14 @@ class Method
 
     /**
      * 
-     * Constructor
+     * Constructor.
      * 
-     * @param array $server server value
+     * @param array $server $_SERVER values.
      * 
-     * @param array $post An array of post values
+     * @param array $post $_POST values.
      * 
-     * @param string $method_field Special field to indicate a custom HTTP method
+     * @param string $method_field A special field to indicate a custom HTTP
+     * method in place of 'POST'.
      * 
      */
     public function __construct(
@@ -70,14 +78,24 @@ class Method
         }
     }
     
-    // allow for new methods
-    public function __call($method, $params)
+    /**
+     * 
+     * Magic call to allow for custom is*() HTTP methods.
+     * 
+     * @param string $func The called function.
+     * 
+     * @param array $args The passed arguments.
+     * 
+     * @return mixed
+     * 
+     */
+    public function __call($func, $args)
     {
-        if (substr($method, 0, 2) == 'is') {
-            return $this->value == strtoupper(substr($method, 2));
+        if (substr($func, 0, 2) == 'is') {
+            return $this->value == strtoupper(substr($func, 2));
         }
         
-        throw new BadMethodCallException($method);
+        throw new BadMethodCallException($func);
     }
     
     /**

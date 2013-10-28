@@ -12,7 +12,7 @@ namespace Aura\Web\Request;
 
 /**
  * 
- * The raw body of the request
+ * Representation of the request content.
  * 
  * @package Aura.Web
  * 
@@ -21,7 +21,9 @@ class Content
 {
     /**
      * 
-     * @var array built in decoders
+     * Content decoder callables.
+     * 
+     * @var array
      * 
      */
     protected $decoders = array(
@@ -31,12 +33,16 @@ class Content
     
     /**
      * 
+     * The content-type.
+     * 
      * @var string
      * 
      */
     protected $type;
     
     /**
+     * 
+     * The decoded content.
      * 
      * @var mixed
      * 
@@ -45,6 +51,8 @@ class Content
     
     /**
      * 
+     * The raw content.
+     * 
      * @var mixed
      * 
      */
@@ -52,11 +60,11 @@ class Content
     
     /**
      * 
-     * Constructor
+     * Constructor.
      * 
-     * @param array $server 
+     * @param array $server An array of $_SERVER values.
      * 
-     * @param array $decoders
+     * @param array $decoders Additional content decoder callables.
      * 
      */
     public function __construct(
@@ -72,9 +80,9 @@ class Content
     
     /**
      * 
-     * Request body after decoding it based on the content type
+     * Request body after decoding it based on the content type.
      * 
-     * @return string The request body after decoding it based on the content type
+     * @return string The decoded request body.
      * 
      */
     public function get()
@@ -92,9 +100,9 @@ class Content
     
     /**
      * 
-     * The raw request body
+     * The raw request body.
      * 
-     * @return string Raw request body
+     * @return string Raw request body.
      * 
      */
     public function getRaw()
@@ -107,7 +115,7 @@ class Content
     
     /**
      * 
-     * the content-type of the request body
+     * The content-type of the request body.
      * 
      * @return string
      * 

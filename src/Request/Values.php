@@ -14,7 +14,7 @@ use ArrayObject;
 
 /**
  * 
- * A factory for creating Context and Stdio objects.
+ * A representation of read-only values, generally superglobal values.
  * 
  * @package Aura.Web
  * 
@@ -23,11 +23,14 @@ class Values extends ArrayObject
 {
     /**
      * 
-     * @param string $key
+     * Returns the value of an array key, or an alternative value if not set.
      * 
-     * @param string $alt
+     * @param string $key The array key to return.
      * 
-     * @return string
+     * @param string $alt The alternative value if the key is not set.
+     * 
+     * @return mixed The value of the array key, or the alternative value if
+     * not set.
      * 
      */
     public function get($key = null, $alt = null)

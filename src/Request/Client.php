@@ -11,15 +11,66 @@
 namespace Aura\Web\Request;
 
 /**
- * @todo split mobile and crawler agents to their own arrays
+ * 
+ * Information about the client.
+ * 
+ * @package Aura.Web
+ * 
  */
 class Client
 {
+    /**
+     * 
+     * The list of 'X-Forwarded-For' values.
+     * 
+     * @var array
+     * 
+     */
     protected $forwarded_for = array();
-    protected $mobile;
+    
+    /**
+     * 
+     * Is the 'User-Agent' recognized as a mobile agent?
+     * 
+     * @var bool
+     * 
+     */
+    protected $mobile = null;
+    
+    /**
+     * 
+     * Is the 'User-Agent' recognizes as a crawler robot?
+     * 
+     * @var bool
+     * 
+     */
     protected $crawler;
+    
+    /**
+     * 
+     * The client IP address.
+     * 
+     * @var string
+     * 
+     */
     protected $ip;
+    
+    /**
+     * 
+     * The 'Referer' value.
+     * 
+     * @var string
+     * 
+     */
     protected $referer;
+    
+    /**
+     * 
+     * The 'User-Agent' string.
+     * 
+     * @var string
+     * 
+     */
     protected $user_agent;
     
     /**
@@ -60,6 +111,15 @@ class Client
         'Windows CE',
     );
     
+    /**
+     * 
+     * User-Agent strings used in matching crawler robot clients.
+     *
+     * @see isCrawler()
+     * 
+     * @var array
+     * 
+     */
     protected $crawler_agents = array(
         'Ask',
         'Baidu',
@@ -98,11 +158,13 @@ class Client
 
     /**
      * 
-     * Constructor
+     * Constructor.
      * 
-     * @param array $server 
+     * @param array $server An array of $_SERVER values.
      * 
-     * @param array $agents
+     * @param array $mobile_agents Additional mobile agent strings.
+     * 
+     * @param array $crawler_agents Additiona crawler agent strings.
      * 
      */
     public function __construct(
@@ -167,7 +229,7 @@ class Client
     
     /**
      * 
-     * Returns the value of the HTTP_REFERER header.
+     * Returns the value of the 'Referer' header.
      * 
      * @return string
      * 
@@ -179,7 +241,7 @@ class Client
     
     /**
      * 
-     * Returns the value of the HTTP_USER_AGENT header.
+     * Returns the value of the 'User-Agent' header.
      * 
      * @return string
      * 

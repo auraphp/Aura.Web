@@ -10,11 +10,18 @@
  */
 namespace Aura\Web\Request;
 
+/**
+ * 
+ * A collection of objects representing superglobals.
+ * 
+ * @package Aura.Web
+ * 
+ */
 class Globals
 {
     /**
      * 
-     * Cookies object
+     * Object representing $_COOKIES values.
      * 
      * @var Values
      * 
@@ -23,12 +30,16 @@ class Globals
     
     /**
      * 
+     * Object representing $_ENV values.
+     * 
      * @var Values
      * 
      */
     protected $env;
     
     /**
+     * 
+     * Object representing $_FILES values.
      * 
      * @var Files
      * 
@@ -37,12 +48,16 @@ class Globals
     
     /**
      * 
+     * Object representing $_POST values.
+     * 
      * @var Values
      * 
      */
     protected $post;
     
     /**
+     * 
+     * Object representing $_GET values.
      * 
      * @var Values
      * 
@@ -51,6 +66,8 @@ class Globals
     
     /**
      * 
+     * Object representing $_SERVER values.
+     * 
      * @var Values
      * 
      */
@@ -58,19 +75,19 @@ class Globals
 
     /**
      * 
-     * Constructor
+     * Constructor.
      * 
-     * @param Values $cookies
+     * @param Values $cookies A $_COOKIES representation.
      * 
-     * @param Values $env
+     * @param Values $env A $_ENV representation.
      * 
-     * @param Files $files
+     * @param Files $files A $_FILES representation.
      * 
-     * @param Values $post
+     * @param Values $post A $_POST representation.
      * 
-     * @param Values $query
+     * @param Values $query A $_GET representation.
      * 
-     * @param Values $server
+     * @param Values $server A $_SERVER representation.
      * 
      */
     public function __construct(
@@ -91,9 +108,11 @@ class Globals
 
     /**
      * 
-     * Magic method get
+     * Returns a property object.
      * 
-     * @return mixed
+     * @param string $key The property object to return.
+     * 
+     * @return Values|Files The property object.
      * 
      */
     public function __get($key)

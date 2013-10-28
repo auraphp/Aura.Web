@@ -10,13 +10,20 @@
  */
 namespace Aura\Web\Request;
 
+/**
+ * 
+ * A representation of $_FILES.
+ * 
+ * @package Aura.Web
+ * 
+ */
 class Files extends Values
 {
     /**
      * 
-     * Constructor
+     * Constructor.
      * 
-     * @param array $files
+     * @param array $input The original $_FILES value.
      * 
      */
     public function __construct(array $input = array())
@@ -32,8 +39,7 @@ class Files extends Values
      * 
      * @param array $src The source array.
      * 
-     * @param array &$tgt Where we will store the restructured data when we
-     * find it.
+     * @param array $tgt Where we will store the restructured data.
      * 
      * @return null
      * 

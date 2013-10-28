@@ -10,9 +10,18 @@
  */
 namespace Aura\Web\Request;
 
+/**
+ * 
+ * A read-only representation of HTTP headers.
+ * 
+ * @package Aura.Web
+ * 
+ */
 class Headers
 {
     /**
+     * 
+     * The headers data.
      * 
      * @var array
      * 
@@ -21,9 +30,9 @@ class Headers
     
     /**
      * 
-     * Constructor
+     * Constructor.
      * 
-     * @param array $server Server values
+     * @param array $server $_SERVER values.
      * 
      */
     public function __construct(array $server)
@@ -45,12 +54,14 @@ class Headers
 
     /**
      * 
-     * Returns the value of a particular header, 
-     * or an alternative value if the key is not present. 
+     * Returns the value of a particular header, or an alternative value if
+     * the header is not present. 
      * 
-     * @param string $key
+     * @param string $key The header value to return.
      * 
-     * @param string $alt
+     * @param string $alt The alternative value.
+     * 
+     * @return mixed
      * 
      */
     public function get($key = null, $alt = null)
