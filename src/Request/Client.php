@@ -31,70 +31,69 @@ class Client
      * @var array
      * 
      */
-    protected $agents = array(
-        'mobile' => array(
-            'Android',
-            'BlackBerry',
-            'Blazer',
-            'Brew',
-            'Fennec',
-            'IEMobile',
-            'iPad',
-            'iPhone',
-            'iPod',
-            'KDDI',
-            'Kindle',
-            'Maemo',
-            'MOT-', // Motorola Internet Browser
-            'NetFront',
-            'Nokia',
-            'Playstation',
-            'Polaris',
-            'PS2',
-            'SEMC',
-            'SymbianOS',
-            'UP.Browser', // Openwave Mobile Browser
-            'UP.Link',
-            'Opera Mobi',
-            'Opera Mini',
-            'webOS', // Palm devices
-            'Windows CE',
-        ),
-        'crawler' => array(
-            'Ask',
-            'Baidu',
-            'Google',
-            'AdsBot',
-            'gsa-crawler',
-            'adidxbot',
-            'librabot',
-            'llssbot',
-            'bingbot',
-            'Danger hiptop',
-            'MSMOBOT',
-            'MSNBot',
-            'MSR-ISRCCrawler',
-            'MSRBOT',
-            'Vancouver',
-            'Y!J',
-            'Yahoo',
-            'mp3Spider',
-            'Mp3Bot',
-            'Scooter',
-            'slurp',
-            'Y!OASIS',
-            'YRL_ODP_CRAWLER',
-            'Yandex',
-            'Fast',
-            'Lycos',
-            'heritrix',
-            'ia_archiver',
-            'InternetArchive',
-            'archive.org_bot',
-            'Nutch',
-            'WordPress',
-            'Wget'
-        ),
+    protected $mobile_agents = array(
+        'Android',
+        'BlackBerry',
+        'Blazer',
+        'Brew',
+        'Fennec',
+        'IEMobile',
+        'iPad',
+        'iPhone',
+        'iPod',
+        'KDDI',
+        'Kindle',
+        'Maemo',
+        'MOT-', // Motorola Internet Browser
+        'NetFront',
+        'Nokia',
+        'Playstation',
+        'Polaris',
+        'PS2',
+        'SEMC',
+        'SymbianOS',
+        'UP.Browser', // Openwave Mobile Browser
+        'UP.Link',
+        'Opera Mobi',
+        'Opera Mini',
+        'webOS', // Palm devices
+        'Windows CE',
+    );
+    
+    protected $crawler_agents = array(
+        'Ask',
+        'Baidu',
+        'Google',
+        'AdsBot',
+        'gsa-crawler',
+        'adidxbot',
+        'librabot',
+        'llssbot',
+        'bingbot',
+        'Danger hiptop',
+        'MSMOBOT',
+        'MSNBot',
+        'MSR-ISRCCrawler',
+        'MSRBOT',
+        'Vancouver',
+        'Y!J',
+        'Yahoo',
+        'mp3Spider',
+        'Mp3Bot',
+        'Scooter',
+        'slurp',
+        'Y!OASIS',
+        'YRL_ODP_CRAWLER',
+        'Yandex',
+        'Fast',
+        'Lycos',
+        'heritrix',
+        'ia_archiver',
+        'InternetArchive',
+        'archive.org_bot',
+        'Nutch',
+        'WordPress',
+        'Wget'
     );
 
     /**
@@ -108,9 +107,18 @@ class Client
      */
     public function __construct(
         array $server,
-        array $agents = array()
+        array $mobile_agents = array(),
+        array $crawler_agents = array()
     ) {
-        $this->agents = array_merge_recursive($this->agents, $agents);
+        $this->mobile_agents = array_merge(
+            $this->mobile_agents,
+            $mobile_agents
+        );
+
+        $this->crawler_agents = array_merge(
+            $this->crawler_agents,
+            $crawler_agents
+        );
 
         if (isset($server['REMOTE_ADDR'])) {
             $this->ip = $server['REMOTE_ADDR'];
@@ -171,7 +179,7 @@ class Client
     
     /**
      * 
-     * Return the value of the HTTP_USER_AGENT header.
+     * Returns the value of the HTTP_USER_AGENT header.
      * 
      * @return string
      * 
@@ -182,7 +190,7 @@ class Client
     }
     
     /**
-     *  
+     * 
      * Is the client a crawler?
      * 
      * @return bool
@@ -191,13 +199,20 @@ class Client
     public function isCrawler()
     {
         if ($this->crawler === null) {
-            $this->crawler = $this->matchAgent('crawler');
+            $this->crawler = false;
+            foreach ($this->crawler_agents as $regex) {
+                $regex = preg_quote($regex);
+                if (preg_match("/$regex/i", $this->user_agent)) {
+                    $this->crawler = true;
+                    break;
+                }
+            }
         }
         return $this->crawler;
     }
     
     /**
-     *  
+     * 
      * Is the client a mobile device?
      * 
      * @return bool
@@ -206,29 +221,15 @@ class Client
     public function isMobile()
     {
         if ($this->mobile === null) {
-            $this->mobile = $this->matchAgent('mobile');
-        }
-        return $this->mobile;
-    }
-
-    /**
-     * 
-     * Match an agent based on the key provided
-     * 
-     * @param string $key
-     * 
-     * @return bool true / false
-     * 
-     */
-    protected function matchAgent($key)
-    {
-        foreach ($this->agents[$key] as $regex) {
-            $regex = preg_quote($regex);
-            $match = preg_match("/$regex/i", $this->user_agent);
-            if ($match) {
-                return true;
+            $this->mobile = false;
+            foreach ($this->mobile_agents as $regex) {
+                $regex = preg_quote($regex);
+                if (preg_match("/$regex/i", $this->user_agent)) {
+                    $this->mobile = true;
+                    break;
+                }
             }
         }
-        return false;
+        return $this->mobile;
     }
 }

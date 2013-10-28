@@ -3,9 +3,12 @@ namespace Aura\Web\Request;
 
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
-    protected function newClient($server = array(), $agents = array())
-    {
-        return new Client($server, $agents);
+    protected function newClient(
+        $server = array(),
+        $mobile_agents = array(),
+        $crawler_agents = array()
+    ) {
+        return new Client($server, $mobile_agents, $crawler_agents);
     }
     
     public function testGetForwardedFor()
@@ -47,17 +50,15 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     
     public function testConstructorAgents()
     {
-        $agents = array(
-            'mobile' => array('foo'),
-            'crawler' => array('bar'),
-        );
+        $mobile_agents = array('foo');
+        $crawler_agents = array('bar');
         
         $server['HTTP_USER_AGENT'] = 'foo';
-        $client = $this->newClient($server, $agents);
+        $client = $this->newClient($server, $mobile_agents, $crawler_agents);
         $this->assertTrue($client->isMobile());
         
         $server['HTTP_USER_AGENT'] = 'bar';
-        $client = $this->newClient($server, $agents);
+        $client = $this->newClient($server, $mobile_agents, $crawler_agents);
         $this->assertTrue($client->isCrawler());
     }
     

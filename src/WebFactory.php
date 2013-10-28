@@ -24,10 +24,9 @@ class WebFactory
      * @var array
      * 
      */
-    protected $agents = array(
-        'mobile' => array(),
-        'crawler' => array(),
-    );
+    protected $mobile_agents = array();
+    
+    protected $crawler_agents = array();
     
     /**
      * 
@@ -85,26 +84,26 @@ class WebFactory
     
     /**
      * 
-     * Set the mobile agent
+     * Set the mobile agents.
      * 
-     * @param array $agents
+     * @param array $mobile_agents
      * 
      */
-    public function setMobileAgents(array $agents)
+    public function setMobileAgents(array $mobile_agents)
     {
-        $this->agents['mobile'] = $agents;
+        $this->mobile_agents = $mobile_agents;
     }
     
     /**
      * 
-     * Set the crawler agent
+     * Set the crawler agents.
      * 
-     * @param array $agents
+     * @param array $crawler_agents
      * 
      */
-    public function setCrawlerAgents(array $agents)
+    public function setCrawlerAgents(array $crawler_agents)
     {
-        $this->agents['crawler'] = $agents;
+        $this->crawler_agents = $crawler_agents;
     }
     
     /**
@@ -175,7 +174,8 @@ class WebFactory
     {
         return new Request\Client(
             $this->get('_SERVER'),
-            $this->agents
+            $this->mobile_agents,
+            $this->crawler_agents
         );
     }
     
