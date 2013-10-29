@@ -20,7 +20,7 @@ namespace Aura\Web\Request;
  * @todo figure out what to do when matching to * when the result has an explicit q=0 value.
  * @todo identity encoding is always acceptable unless set explictly to q=0
  */
-class Negotiate
+class Accept
 {
     /**
      * 

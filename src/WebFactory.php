@@ -157,7 +157,7 @@ class WebFactory
             $this->newRequestGlobals(),
             $this->newRequestHeaders(),
             $this->newRequestMethod(),
-            $this->newRequestNegotiate(),
+            $this->newRequestAccept(),
             $this->newRequestParams(),
             $this->newRequestUrl()
         );
@@ -279,14 +279,14 @@ class WebFactory
     
     /**
      * 
-     * Return a Aura\Web\Request\Negotiate object
+     * Return a Aura\Web\Request\Accept object
      * 
-     * @return object Aura\Web\Request\Negotiate
+     * @return object Aura\Web\Request\Accept
      * 
      */
-    public function newRequestNegotiate()
+    public function newRequestAccept()
     {
-        return new Request\Negotiate(
+        return new Request\Accept(
             $this->get('_SERVER'),
             $this->types
         );

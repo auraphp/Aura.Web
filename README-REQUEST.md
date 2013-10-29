@@ -32,7 +32,7 @@ of the PHP superglobals ...
 - `$request->content` for the raw body of the request
 - `$request->headers` for the request headers
 - `$request->method` for the request method
-- `$request->negotiate` for content negotiation
+- `$request->accept` for content negotiation
 - `$request->params` for path-info parameters
 - `$request->url` for the request URL
 
@@ -202,12 +202,12 @@ echo $request->method->get(); // DELETE
 ?>
 ```
 
-## Negotiate
+## Accept
 
-The _Negotiate_ object helps with negotiating acceptable media (content)
+The _Accept_ object helps with negotiating acceptable media (content)
 types, character sets, encodings, and languages.
 
-These `$request->negotiate` methods return the values indicated by the
+These `$request->accept` methods return the values indicated by the
 request:
 
 - `getAccept()` returns the `Accept` header value converted to an array
@@ -250,12 +250,12 @@ $available = array(
 
 // get the best match between what the request finds acceptable and what we
 // have available; the result in this case is 'text/csv'
-$content_type = $request->negotiate->getMedia($available);
+$content_type = $request->accept->getMedia($available);
 ?>
 ```
 
 If the requested URL ends in a recognized file extension for a content type,
-the _Negotiate_ object will use that file extension instead of the explicit
+the _Accept_ object will use that file extension instead of the explicit
 `Accept` header value to determine the acceptable content type for the
 request.
 
@@ -281,11 +281,11 @@ $available = array(
 // get the best match between what the request finds acceptable and what we
 // have available; the result in this case is 'application/json' because of
 // the file extenstion overriding the Accept header values
-$content_type = $request->negotiate->getMedia($available);
+$content_type = $request->accept->getMedia($available);
 ?>
 ```
 
-See the _Negotiate_ class file for the list of what file extensions map to 
+See the _Accept_ class file for the list of what file extensions map to 
 what content types. To set your own mappings, set up the _WebFactory_ object
 first, then create the _Request_ object.
 

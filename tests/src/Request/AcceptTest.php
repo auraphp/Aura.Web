@@ -1,16 +1,16 @@
 <?php
 namespace Aura\Web\Request;
 
-class NegotiateTest extends \PHPUnit_Framework_TestCase
+class AcceptTest extends \PHPUnit_Framework_TestCase
 {
-    protected function newNegotiate($server = array())
+    protected function newAccept($server = array())
     {
-        return new Negotiate($server);
+        return new Accept($server);
     }
     
     public function testGetAccept()
     {
-        $negotiate = $this->newNegotiate(array(
+        $accept = $this->newAccept(array(
             'HTTP_ACCEPT' => 'text/*;q=0.9, text/html, text/xhtml;q=0.8',
         ));
         
@@ -20,14 +20,14 @@ class NegotiateTest extends \PHPUnit_Framework_TestCase
             'text/xhtml' => 0.8,
         );
         
-        $actual = $negotiate->getAccept();
+        $actual = $accept->getAccept();
         
         $this->assertSame($expect, $actual);
     }
     
     public function testGetAcceptCharset()
     {
-        $negotiate = $this->newNegotiate(array(
+        $accept = $this->newAccept(array(
             'HTTP_ACCEPT_CHARSET' => 'iso-8859-5, unicode-1-1;q=0.8',
         ));
         
@@ -37,14 +37,14 @@ class NegotiateTest extends \PHPUnit_Framework_TestCase
             'unicode-1-1' => 0.8,
         );
         
-        $actual = $negotiate->getAcceptCharset();
+        $actual = $accept->getAcceptCharset();
         
         $this->assertSame($expect, $actual);
     }
     
     public function testGetAcceptEncoding()
     {
-        $negotiate = $this->newNegotiate(array(
+        $accept = $this->newAccept(array(
             'HTTP_ACCEPT_ENCODING' => 'compress;q=0.5, gzip;q=1.0',
         ));
         
@@ -53,14 +53,14 @@ class NegotiateTest extends \PHPUnit_Framework_TestCase
             'compress' => 0.5,
         );
         
-        $actual = $negotiate->getAcceptEncoding();
+        $actual = $accept->getAcceptEncoding();
         
         $this->assertSame($expect, $actual);
     }
     
     public function testGetAcceptLanguage()
     {
-        $negotiate = $this->newNegotiate(array(
+        $accept = $this->newAccept(array(
             'HTTP_ACCEPT_LANGUAGE' => 'en-US, en-GB, en, *',
         ));
         
@@ -71,25 +71,25 @@ class NegotiateTest extends \PHPUnit_Framework_TestCase
             '*' => 1.0
         );
         
-        $actual = $negotiate->getAcceptLanguage();
+        $actual = $accept->getAcceptLanguage();
         
         $this->assertSame($expect, $actual);
     }
     
     public function testGetCharset()
     {
-        $negotiate = $this->newNegotiate(array(
+        $accept = $this->newAccept(array(
             'HTTP_ACCEPT_CHARSET' => 'iso-8859-5, unicode-1-1, *',
         ));
         
         // nothing available
         $expect = false;
-        $actual = $negotiate->getCharset(array());
+        $actual = $accept->getCharset(array());
         $this->assertSame($expect, $actual);
         
         // explicitly accepts *, and no matching charset available
         $expect = 'foo';
-        $actual = $negotiate->getCharset(array('foo', 'bar'));
+        $actual = $accept->getCharset(array('foo', 'bar'));
         $this->assertSame($expect, $actual);
         
         // explictly accepts unicode-1-1, which is explictly available.
@@ -97,38 +97,38 @@ class NegotiateTest extends \PHPUnit_Framework_TestCase
         // by the developer, not the acceptable value, which is determined
         // by the user/client/headers.
         $expect = 'UniCode-1-1';
-        $actual = $negotiate->getCharset(array('foo', 'UniCode-1-1'));
+        $actual = $accept->getCharset(array('foo', 'UniCode-1-1'));
         $this->assertSame($expect, $actual);
         
         // no acceptable charset specified, use first available
-        $negotiate = $this->newNegotiate();
+        $accept = $this->newAccept();
         $expect = 'ISO-8859-5';
-        $actual = $negotiate->getCharset(array('ISO-8859-5', 'foo'));
+        $actual = $accept->getCharset(array('ISO-8859-5', 'foo'));
         $this->assertSame($expect, $actual);
         
         // charset is available but quality level is not acceptable
-        $negotiate = $this->newNegotiate(array(
+        $accept = $this->newAccept(array(
             'HTTP_ACCEPT_CHARSET' => 'ISO-8859-1, baz;q=0',
         ));
         $expect = false;
-        $actual = $negotiate->getCharset(array('baz'));
+        $actual = $accept->getCharset(array('baz'));
         $this->assertSame($expect, $actual);
     }
     
     public function testGetEncoding()
     {
-        $negotiate = $this->newNegotiate(array(
+        $accept = $this->newAccept(array(
             'HTTP_ACCEPT_ENCODING' => 'gzip, compress, *',
         ));
         
         // nothing available
         $expect = false;
-        $actual = $negotiate->getEncoding(array());
+        $actual = $accept->getEncoding(array());
         $this->assertSame($expect, $actual);
         
         // explicitly accepts *, and no matching encoding available
         $expect = 'foo';
-        $actual = $negotiate->getEncoding(array('foo', 'bar'));
+        $actual = $accept->getEncoding(array('foo', 'bar'));
         $this->assertSame($expect, $actual);
         
         // explictly accepts compress, which is explictly available.
@@ -136,38 +136,38 @@ class NegotiateTest extends \PHPUnit_Framework_TestCase
         // by the developer, not the acceptable value, which is determined
         // by the user/client/headers.
         $expect = 'GZIP';
-        $actual = $negotiate->getEncoding(array('foo', 'GZIP'));
+        $actual = $accept->getEncoding(array('foo', 'GZIP'));
         $this->assertSame($expect, $actual);
         
         // no acceptable encoding specified, use first available
-        $negotiate = $this->newNegotiate();
+        $accept = $this->newAccept();
         $expect = 'gzip';
-        $actual = $negotiate->getEncoding(array('gzip', 'compress'));
+        $actual = $accept->getEncoding(array('gzip', 'compress'));
         $this->assertSame($expect, $actual);
         
         // encoding is available but quality level is not acceptable
-        $negotiate = $this->newNegotiate(array(
+        $accept = $this->newAccept(array(
             'HTTP_ACCEPT_ENCODING' => 'gzip, compress, foo;q=0',
         ));
         $expect = false;
-        $actual = $negotiate->getEncoding(array('foo'));
+        $actual = $accept->getEncoding(array('foo'));
         $this->assertSame($expect, $actual);
     }
     
     public function testGetLanguage()
     {
-        $negotiate = $this->newNegotiate(array(
+        $accept = $this->newAccept(array(
             'HTTP_ACCEPT_LANGUAGE' => 'en-US, en-GB, en, *',
         ));
         
         // nothing available
         $expect = false;
-        $actual = $negotiate->getLanguage(array());
+        $actual = $accept->getLanguage(array());
         $this->assertSame($expect, $actual);
         
         // explicitly accepts *, and no matching language available
         $expect = 'foo-bar';
-        $actual = $negotiate->getLanguage(array('foo-bar', 'baz-dib'));
+        $actual = $accept->getLanguage(array('foo-bar', 'baz-dib'));
         $this->assertSame($expect, $actual);
         
         // explictly accepts en-gb, which is explictly available.
@@ -175,43 +175,43 @@ class NegotiateTest extends \PHPUnit_Framework_TestCase
         // by the developer, not the acceptable value, which is determined
         // by the user/client/headers.
         $expect = 'en-gb';
-        $actual = $negotiate->getLanguage(array('en-gb', 'fr-FR'));
+        $actual = $accept->getLanguage(array('en-gb', 'fr-FR'));
         $this->assertSame($expect, $actual);
         
         // a subtype is available
         $expect = 'en-zo';
-        $actual = $negotiate->getLanguage(array('foo-bar', 'en-zo', 'baz-qux'));
+        $actual = $accept->getLanguage(array('foo-bar', 'en-zo', 'baz-qux'));
         $this->assertSame($expect, $actual);
         
         // no acceptable language specified, use first available
-        $negotiate = $this->newNegotiate();
+        $accept = $this->newAccept();
         $expect = 'en-us';
-        $actual = $negotiate->getLanguage(array('en-us', 'en-gb'));
+        $actual = $accept->getLanguage(array('en-us', 'en-gb'));
         $this->assertSame($expect, $actual);
         
         // language is available but quality level is not acceptable
-        $negotiate = $this->newNegotiate(array(
+        $accept = $this->newAccept(array(
             'HTTP_ACCEPT_LANGUAGE' => 'en-us, en-gb, en, foo-bar;q=0',
         ));
         $expect = false;
-        $actual = $negotiate->getLanguage(array('foo-bar'));
+        $actual = $accept->getLanguage(array('foo-bar'));
         $this->assertSame($expect, $actual);
     }
     
     public function testGetMedia()
     {
-        $negotiate = $this->newNegotiate(array(
+        $accept = $this->newAccept(array(
             'HTTP_ACCEPT' => 'application/json, application/xml, text/*, */*',
         ));
         
         // nothing available
         $expect = false;
-        $actual = $negotiate->getMedia(array());
+        $actual = $accept->getMedia(array());
         $this->assertSame($expect, $actual);
         
         // explicitly accepts */*, and no matching media are available
         $expect = 'foo/bar';
-        $actual = $negotiate->getMedia(array('foo/bar', 'baz/dib'));
+        $actual = $accept->getMedia(array('foo/bar', 'baz/dib'));
         $this->assertSame($expect, $actual);
         
         // explictly accepts application/xml, which is explictly available.
@@ -219,35 +219,35 @@ class NegotiateTest extends \PHPUnit_Framework_TestCase
         // by the developer, not the acceptable value, which is determined
         // by the user/client/headers.
         $expect = 'application/XML';
-        $actual = $negotiate->getMedia(array('application/XML', 'text/csv'));
+        $actual = $accept->getMedia(array('application/XML', 'text/csv'));
         $this->assertSame($expect, $actual);
         
         // a subtype is available
         $expect = 'text/csv';
-        $actual = $negotiate->getMedia(array('foo/bar', 'text/csv', 'baz/qux'));
+        $actual = $accept->getMedia(array('foo/bar', 'text/csv', 'baz/qux'));
         $this->assertSame($expect, $actual);
         
         // no acceptable media specified, use first available
-        $negotiate = $this->newNegotiate();
+        $accept = $this->newAccept();
         $expect = 'application/json';
-        $actual = $negotiate->getMedia(array('application/json', 'application/xml'));
+        $actual = $accept->getMedia(array('application/json', 'application/xml'));
         $this->assertSame($expect, $actual);
         
         // media is available but quality level is not acceptable
-        $negotiate = $this->newNegotiate(array(
+        $accept = $this->newAccept(array(
             'HTTP_ACCEPT' => 'application/json, application/xml, text/*, foo/bar;q=0',
         ));
         $expect = false;
-        $actual = $negotiate->getMedia(array('foo/bar'));
+        $actual = $accept->getMedia(array('foo/bar'));
         $this->assertSame($expect, $actual);
         
         // override with file extension
-        $negotiate = $this->newNegotiate(array(
+        $accept = $this->newAccept(array(
             'HTTP_ACCEPT' => 'text/html, text/xhtml, text/plain',
             'REQUEST_URI' => '/path/to/resource.json',
         ));
         $expect = 'application/json';
-        $actual = $negotiate->getMedia(array('text/html', 'application/json'));
+        $actual = $accept->getMedia(array('text/html', 'application/json'));
         $this->assertSame($expect, $actual);
     }
 }

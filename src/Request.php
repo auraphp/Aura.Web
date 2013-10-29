@@ -89,10 +89,10 @@ class Request
      * 
      * An object representing negotiable "accept" values.
      * 
-     * @var Negotiate
+     * @var Accept
      * 
      */
-    protected $negotiate;
+    protected $accept;
     
     /**
      * 
@@ -150,28 +150,28 @@ class Request
      * 
      */
     public function __construct(
-        Request\Client    $client,
-        Request\Content   $content,
-        Request\Globals   $globals,
-        Request\Headers   $headers,
-        Request\Method    $method,
-        Request\Negotiate $negotiate,
-        Request\Params    $params,
-        Request\Url       $url
+        Request\Client  $client,
+        Request\Content $content,
+        Request\Globals $globals,
+        Request\Headers $headers,
+        Request\Method  $method,
+        Request\Accept  $accept,
+        Request\Params  $params,
+        Request\Url     $url
     ) {
-        $this->client    = $client;
-        $this->content   = $content;
-        $this->cookies   = $globals->cookies;
-        $this->env       = $globals->env;
-        $this->files     = $globals->files;
-        $this->headers   = $headers;
-        $this->method    = $method;
-        $this->negotiate = $negotiate;
-        $this->params    = $params;
-        $this->post      = $globals->post;
-        $this->query     = $globals->query;
-        $this->server    = $globals->server;
-        $this->url       = $url;
+        $this->client  = $client;
+        $this->content = $content;
+        $this->cookies = $globals->cookies;
+        $this->env     = $globals->env;
+        $this->files   = $globals->files;
+        $this->headers = $headers;
+        $this->method  = $method;
+        $this->accept  = $accept;
+        $this->params  = $params;
+        $this->post    = $globals->post;
+        $this->query   = $globals->query;
+        $this->server  = $globals->server;
+        $this->url     = $url;
 
         $with = strtolower($this->server->get('HTTP_X_REQUESTED_WITH'));
         if ($with == 'xmlhttprequest') {
