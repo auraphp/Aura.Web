@@ -12,15 +12,59 @@ namespace Aura\Web\Request;
 
 /**
  * Trying real hard to adhere to <http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>.
+ * 
+ * Rename this to $accept and change getMedia() etc to negotiateMedia() ? Or
+ * make getMedia() return the array, and getMedia($available) return the
+ * negotiated value?
+ * 
  * @todo figure out what to do when matching to * when the result has an explicit q=0 value.
  * @todo identity encoding is always acceptable unless set explictly to q=0
  */
 class Negotiate
 {
+    /**
+     * 
+     * The `Accept` header values as an array sorted by quality level.
+     * 
+     * @var array
+     * 
+     */
     protected $accept = array();
+    
+    /**
+     * 
+     * The `Accept-Charset` header values as an array sorted by quality level.
+     * 
+     * @var array
+     * 
+     */
     protected $accept_charset = array();
+    
+    /**
+     * 
+     * The `Accept-Encoding` header values as an array sorted by quality level.
+     * 
+     * @var array
+     * 
+     */
     protected $accept_encoding = array();
+    
+    /**
+     * 
+     * The `Accept-Language` header values as an array sorted by quality level.
+     * 
+     * @var array
+     * 
+     */
     protected $accept_language = array();
+    
+    /**
+     * 
+     * A map of file .extensions to Content-Type values.
+     * 
+     * @var array
+     * 
+     */
     protected $types = array(
         '.aif'      => 'audio/x-aiff',
         '.aifc'     => 'audio/x-aiff',
@@ -105,62 +149,95 @@ class Negotiate
         '.zip'      => 'application/zip',
     );
     
-    // this is messy and has a high CRAP score. refactor to methods.
-    public function __construct(
-        array $server,
-        array $types = array()
-    ) {
+    /**
+     * 
+     * Constructor.
+     * 
+     * @param array $server An array of $_SERVER values.
+     * 
+     * @param array $types Additional extension to Content-Type mappings.
+     * 
+     */
+    public function __construct(array $server, array $types = array())
+    {
+        // merge the media type maps
         $this->types = array_merge($this->types, $types);
         
-        $keys_vars = array(
-            'HTTP_ACCEPT'          => 'accept',
-            'HTTP_ACCEPT_CHARSET'  => 'accept_charset',
-            'HTTP_ACCEPT_ENCODING' => 'accept_encoding',
-            'HTTP_ACCEPT_LANGUAGE' => 'accept_language',
-        );
+        // set the "accept" properties
+        $this->accept          = $this->qualitySort($server, 'HTTP_ACCEPT');
+        $this->accept_charset  = $this->qualitySort($server, 'HTTP_ACCEPT_CHARSET');
+        $this->accept_encoding = $this->qualitySort($server, 'HTTP_ACCEPT_ENCODING');
+        $this->accept_language = $this->qualitySort($server, 'HTTP_ACCEPT_LANGUAGE');
         
-        // this is an unusual sort. normally we'd think a reverse-sort would
-        // order the array by q values from 1 to 0, but the problem is that
-        // an implicit 1.0 on more than one value means that those values will
-        // be reverse from what the header specifies, which seems unexpected
-        // when negotiating later.
-        foreach ($keys_vars as $key => $var) {
-            
-            $raw = isset($server[$key])
-                 ? $server[$key]
-                 : null;
-            
-            if (! $raw) {
-                continue;
-            }
-            
-            $bucket = array();
-            $values = explode(',', $raw);
-            
-            // sort into q-value buckets
-            foreach ($values as $value) {
-                $value = trim($value);
-                if (strpos($value, ';q=') === false) {
-                    $bucket['1.0'][] = $value;
-                } else {
-                    list($value, $q) = explode(';q=', $value);
-                    $bucket[$q][] = $value;
-                }
-            }
-            
-            // reverse-sort the buckets so that q=1 is first and q=0 is last,
-            // but the values in the buckets stay in the original order.
-            krsort($bucket);
-            
-            // flatten the buckets into the property
-            foreach ($bucket as $q => $values) {
-                foreach ($values as $value) {
-                    $this->{$var}[$value] = (float) $q;
-                }
-            }
-            
+        // fix the "accept" properties
+        $this->fixAccept($server);
+        $this->fixAcceptCharset();
+    }
+    
+    /**
+     * 
+     * Sorts an Accept header value set according to quality levels.
+     * 
+     * This is an unusual sort. Normally we'd think a reverse-sort would
+     * order the array by q values from 1 to 0, but the problem is that
+     * an implicit 1.0 on more than one value means that those values will
+     * be reverse from what the header specifies, which seems unexpected
+     * when negotiating later.
+     * 
+     * @param array $server An array of $_SERVER values.
+     * 
+     * @param string $key The key to look up in $_SERVER.
+     * 
+     * @return array An array of values sorted by quality level.
+     * 
+     */
+    protected function qualitySort($server, $key)
+    {
+        if (! isset($server[$key])) {
+            return array();
         }
         
+        $raw    = $server[$key];
+        $var    = array();
+        $bucket = array();
+        $values = explode(',', $raw);
+        
+        // sort into q-value buckets
+        foreach ($values as $value) {
+            $value = trim($value);
+            if (strpos($value, ';q=') === false) {
+                $bucket['1.0'][] = $value;
+            } else {
+                list($value, $q) = explode(';q=', $value);
+                $bucket[$q][] = $value;
+            }
+        }
+        
+        // reverse-sort the buckets so that q=1 is first and q=0 is last,
+        // but the values in the buckets stay in the original order.
+        krsort($bucket);
+        
+        // flatten the buckets into the var
+        foreach ($bucket as $q => $values) {
+            foreach ($values as $value) {
+                $var[$value] = (float) $q;
+            }
+        }
+        
+        return $var;
+    }
+    
+    /**
+     * 
+     * Modify the $accept property based on a URI file extension.
+     * 
+     * @param array $server An array of $_SERVER values.
+     * 
+     * @return null
+     * 
+     */
+    protected function fixAccept($server)
+    {
         // override the accept media if a file extension exists in the path
         $request_uri = isset($server['REQUEST_URI'])
                      ? $server['REQUEST_URI']
@@ -171,74 +248,98 @@ class Negotiate
         if ($ext && isset($this->types[$ext])) {
             $this->accept = array($this->types[$ext] => 1.0);
         }
-        
-        // fix charset
-        if ($this->accept_charset) {
-            // look for ISO-8859-1, case insensitive
-            $found = false;
-            foreach ($this->accept_charset as $charset => $q) {
-                if (strtolower($charset) == 'iso-8859-1') {
-                    $found = true;
-                    break;
-                }
-            }
-            // charset iso-8859-1 is acceptable if not explictly mentioned
-            if (! $found) {
-                $this->accept_charset = array_merge(
-                    array('ISO-8859-1' => 1.0),
-                    $this->accept_charset
-                );
-            }
-        }
     }
     
-    public function get(array $available)
+    /**
+     * 
+     * Modify the $accept_charset property for ISO-8859-1 acceptability.
+     * 
+     * @return null
+     * 
+     */
+    protected function fixAcceptCharset()
     {
-        $result = array();
-        
-        $base = array(
-            'charset'  => null,
-            'encoding' => null,
-            'language' => null,
-            'media'    => null,
-        );
-        
-        $available = array_merge($base, $available);
-        
-        $list = array(
-            'charset'  => 'getCharset',
-            'encoding' => 'getEncoding',
-            'language' => 'getLanguage',
-            'media'    => 'getMedia'
-        );
-        
-        foreach ($list as $key => $method) {
-            $result[$key] = $this->$method($available[$key]);
+        // no charset values were specified
+        if (! $this->accept_charset) {
+            return;
         }
         
-        return $result;
+        // look for ISO-8859-1, case insensitive
+        foreach ($this->accept_charset as $charset => $q) {
+            if (strtolower($charset) == 'iso-8859-1') {
+                return;
+            }
+        }
+        
+        // charset iso-8859-1 is acceptable if not explictly mentioned
+        $this->accept_charset = array_merge(
+            array('ISO-8859-1' => 1.0),
+            $this->accept_charset
+        );
     }
     
+    /**
+     * 
+     * Returns the value of the `Accept` header as an array sorted by quality
+     * level.
+     * 
+     * @return array
+     * 
+     */
     public function getAccept()
     {
         return $this->accept;
     }
     
+    /**
+     * 
+     * Returns the value of the `Accept-Charset` header as an array sorted by quality
+     * level.
+     * 
+     * @return array
+     * 
+     */
     public function getAcceptCharset()
     {
         return $this->accept_charset;
     }
     
+    /**
+     * 
+     * Returns the value of the `Accept-Encoding` header as an array sorted by quality
+     * level.
+     * 
+     * @return array
+     * 
+     */
     public function getAcceptEncoding()
     {
         return $this->accept_encoding;
     }
     
+    /**
+     * 
+     * Returns the value of the `Accept-Language` header as an array sorted by quality
+     * level.
+     * 
+     * @return array
+     * 
+     */
     public function getAcceptLanguage()
     {
         return $this->accept_language;
     }
     
+    /**
+     * 
+     * Returns a charset negotiated between acceptable and available values.
+     * 
+     * @param array $available Available values in preference order.
+     * 
+     * @return string|bool The negotiated value, or false if negotiation
+     * failed.
+     * 
+     */
     public function getCharset(array $available = array())
     {
         if (! $available) {
@@ -283,6 +384,16 @@ class Negotiate
         return false;
     }
     
+    /**
+     * 
+     * Returns an encoding negotiated between acceptable and available values.
+     * 
+     * @param array $available Available values in preference order.
+     * 
+     * @return string|bool The negotiated value, or false if negotiation
+     * failed.
+     * 
+     */
     public function getEncoding(array $available = array())
     {
         if (! $available) {
@@ -327,6 +438,16 @@ class Negotiate
         return false;
     }
     
+    /**
+     * 
+     * Returns a language negotiated between acceptable and available values.
+     * 
+     * @param array $available Available values in preference order.
+     * 
+     * @return string|bool The negotiated value, or false if negotiation
+     * failed.
+     * 
+     */
     public function getLanguage(array $available = array())
     {
         if (! $available) {
@@ -382,6 +503,16 @@ class Negotiate
         return false;
     }
     
+    /**
+     * 
+     * Returns a media type negotiated between acceptable and available values.
+     * 
+     * @param array $available Available values in preference order.
+     * 
+     * @return string|bool The negotiated value, or false if negotiation
+     * failed.
+     * 
+     */
     public function getMedia(array $available = array())
     {
         if (! $available) {
@@ -433,6 +564,18 @@ class Negotiate
         return false;
     }
     
+    /**
+     * 
+     * Normalized available and acceptable value arrays.
+     * 
+     * @param array $acceptable Acceptable values in preference order.
+     * 
+     * @param array $available Available values in preference order.
+     * 
+     * @return array An array where element 0 is the normalized acceptable
+     * values and element 1 is the normalized available values.
+     * 
+     */
     public function normalize($acceptable, $available)
     {
         $normalized = array();
