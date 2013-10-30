@@ -204,33 +204,43 @@ echo $request->method->get(); // DELETE
 
 ## Accept
 
-The _Accept_ object helps with negotiating acceptable media (content)
-types, character sets, encodings, and languages.
+The _Accept_ object helps with negotiating acceptable media types, character
+sets, encodings, and languages.
 
 These `$request->accept` methods return the values indicated by the
 request:
 
-- `getAccept()` returns the `Accept` header value converted to an array
+- `getCharset()` returns the `Accept-Charset` header value converted
+  to an array arranged by quality level
+
+- `getEncoding()` returns the `Accept-Encoding` header value converted
+  to an array arranged by quality level
+
+- `getLanguage()` returns the `Accept-Language` header value converted
+  to an array arranged by quality level
+
+- `getMedia()` returns the `Accept` header value converted to an array
   arranged by quality level (this is for media types)
-  
-- `getAcceptCharset()` returns the `Accept-Charset` header value converted
-  to an array arranged by quality level
-
-- `getAcceptEncoding()` returns the `Accept-Encoding` header value converted
-  to an array arranged by quality level
-
-- `getAcceptLanguage()` returns the `Accept-Language` header value converted
-  to an array arranged by quality level
-
-You can negotiate between the what you have available, and what the request
-indicates is acceptable, using the approprate `get*()` method.
-
-- `getMedia()` negotiates the content type
-- `getCharset()` negoatiates the character set
-- `getLangauge()` negotiates the langauge code
-- `getEncoding()` negotiates the encoding
 
 For example:
+
+```php
+<?php
+// assume the request indicates these Accept values (XML is best, then CSV,
+// then anything else)
+$_SERVER['HTTP_ACCEPT'] = 'application/xml;q=1.0,text/csv;q=0.5,*;q=0.1';
+
+// create the request object
+$request = $web_factory->newRequest();
+
+// get the `Accept` header values as an array
+$acceptable_media = $request->accept->getMedia();
+?>
+```
+
+If you pass an array of available values to any of the `get*()` methods, the
+method will negotiate between the acceptable values and the available ones to
+return the highest-quality value that matches both:
 
 ```php
 <?php
@@ -250,14 +260,14 @@ $available = array(
 
 // get the best match between what the request finds acceptable and what we
 // have available; the result in this case is 'text/csv'
-$content_type = $request->accept->getMedia($available);
+$media_type = $request->accept->getMedia($available);
 ?>
 ```
 
 If the requested URL ends in a recognized file extension for a content type,
 the _Accept_ object will use that file extension instead of the explicit
 `Accept` header value to determine the acceptable content type for the
-request.
+request:
 
 ```php
 <?php
@@ -281,13 +291,13 @@ $available = array(
 // get the best match between what the request finds acceptable and what we
 // have available; the result in this case is 'application/json' because of
 // the file extenstion overriding the Accept header values
-$content_type = $request->accept->getMedia($available);
+$media_type = $request->accept->getMedia($available);
 ?>
 ```
 
 See the _Accept_ class file for the list of what file extensions map to 
 what content types. To set your own mappings, set up the _WebFactory_ object
-first, then create the _Request_ object.
+first, then create the _Request_ object:
 
 ```php
 <?php
