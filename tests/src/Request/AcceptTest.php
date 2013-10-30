@@ -8,24 +8,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
         return new Accept($server);
     }
     
-    public function testGetAccept()
-    {
-        $accept = $this->newAccept(array(
-            'HTTP_ACCEPT' => 'text/*;q=0.9, text/html, text/xhtml;q=0.8',
-        ));
-        
-        $expect = array(
-            'text/html'  => 1.0,
-            'text/*'     => 0.9,
-            'text/xhtml' => 0.8,
-        );
-        
-        $actual = $accept->getAccept();
-        
-        $this->assertSame($expect, $actual);
-    }
-    
-    public function testGetAcceptCharset()
+    public function testGetCharset()
     {
         $accept = $this->newAccept(array(
             'HTTP_ACCEPT_CHARSET' => 'iso-8859-5, unicode-1-1;q=0.8',
@@ -37,12 +20,12 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
             'unicode-1-1' => 0.8,
         );
         
-        $actual = $accept->getAcceptCharset();
+        $actual = $accept->getCharset();
         
         $this->assertSame($expect, $actual);
     }
     
-    public function testGetAcceptEncoding()
+    public function testGetEncoding()
     {
         $accept = $this->newAccept(array(
             'HTTP_ACCEPT_ENCODING' => 'compress;q=0.5, gzip;q=1.0',
@@ -53,12 +36,12 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
             'compress' => 0.5,
         );
         
-        $actual = $accept->getAcceptEncoding();
+        $actual = $accept->getEncoding();
         
         $this->assertSame($expect, $actual);
     }
     
-    public function testGetAcceptLanguage()
+    public function testGetLanguage()
     {
         $accept = $this->newAccept(array(
             'HTTP_ACCEPT_LANGUAGE' => 'en-US, en-GB, en, *',
@@ -71,12 +54,29 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
             '*' => 1.0
         );
         
-        $actual = $accept->getAcceptLanguage();
+        $actual = $accept->getLanguage();
         
         $this->assertSame($expect, $actual);
     }
     
-    public function testGetCharset()
+    public function testGetMedia()
+    {
+        $accept = $this->newAccept(array(
+            'HTTP_ACCEPT' => 'text/*;q=0.9, text/html, text/xhtml;q=0.8',
+        ));
+        
+        $expect = array(
+            'text/html'  => 1.0,
+            'text/*'     => 0.9,
+            'text/xhtml' => 0.8,
+        );
+        
+        $actual = $accept->getMedia();
+        
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testGetCharset_negotiate()
     {
         $accept = $this->newAccept(array(
             'HTTP_ACCEPT_CHARSET' => 'iso-8859-5, unicode-1-1, *',
@@ -115,7 +115,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
     
-    public function testGetEncoding()
+    public function testGetEncoding_negotiate()
     {
         $accept = $this->newAccept(array(
             'HTTP_ACCEPT_ENCODING' => 'gzip, compress, *',
@@ -154,7 +154,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
     
-    public function testGetLanguage()
+    public function testGetLanguage_negotiate()
     {
         $accept = $this->newAccept(array(
             'HTTP_ACCEPT_LANGUAGE' => 'en-US, en-GB, en, *',
@@ -198,7 +198,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
     
-    public function testGetMedia()
+    public function testGetMedia_negotiate()
     {
         $accept = $this->newAccept(array(
             'HTTP_ACCEPT' => 'application/json, application/xml, text/*, */*',

@@ -13,10 +13,6 @@ namespace Aura\Web\Request;
 /**
  * Trying real hard to adhere to <http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>.
  * 
- * Rename this to $accept and change getMedia() etc to negotiateMedia() ? Or
- * make getMedia() return the array, and getMedia($available) return the
- * negotiated value?
- * 
  * @todo figure out what to do when matching to * when the result has an explicit q=0 value.
  * @todo identity encoding is always acceptable unless set explictly to q=0
  */
@@ -29,7 +25,7 @@ class Accept
      * @var array
      * 
      */
-    protected $accept = array();
+    protected $media = array();
     
     /**
      * 
@@ -38,7 +34,7 @@ class Accept
      * @var array
      * 
      */
-    protected $accept_charset = array();
+    protected $charset = array();
     
     /**
      * 
@@ -47,7 +43,7 @@ class Accept
      * @var array
      * 
      */
-    protected $accept_encoding = array();
+    protected $encoding = array();
     
     /**
      * 
@@ -56,11 +52,11 @@ class Accept
      * @var array
      * 
      */
-    protected $accept_language = array();
+    protected $language = array();
     
     /**
      * 
-     * A map of file .extensions to Content-Type values.
+     * A map of file .extensions to media types.
      * 
      * @var array
      * 
@@ -163,15 +159,15 @@ class Accept
         // merge the media type maps
         $this->types = array_merge($this->types, $types);
         
-        // set the "accept" properties
-        $this->accept          = $this->qualitySort($server, 'HTTP_ACCEPT');
-        $this->accept_charset  = $this->qualitySort($server, 'HTTP_ACCEPT_CHARSET');
-        $this->accept_encoding = $this->qualitySort($server, 'HTTP_ACCEPT_ENCODING');
-        $this->accept_language = $this->qualitySort($server, 'HTTP_ACCEPT_LANGUAGE');
+        // set the properties
+        $this->media    = $this->qualitySort($server, 'HTTP_ACCEPT');
+        $this->charset  = $this->qualitySort($server, 'HTTP_ACCEPT_CHARSET');
+        $this->encoding = $this->qualitySort($server, 'HTTP_ACCEPT_ENCODING');
+        $this->language = $this->qualitySort($server, 'HTTP_ACCEPT_LANGUAGE');
         
-        // fix the "accept" properties
-        $this->fixAccept($server);
-        $this->fixAcceptCharset();
+        // fix the properties
+        $this->fixMedia($server);
+        $this->fixCharset();
     }
     
     /**
@@ -229,16 +225,16 @@ class Accept
     
     /**
      * 
-     * Modify the $accept property based on a URI file extension.
+     * Modify the $media property based on a URI file extension.
      * 
      * @param array $server An array of $_SERVER values.
      * 
      * @return null
      * 
      */
-    protected function fixAccept($server)
+    protected function fixMedia($server)
     {
-        // override the accept media if a file extension exists in the path
+        // override the media if a file extension exists in the path
         $request_uri = isset($server['REQUEST_URI'])
                      ? $server['REQUEST_URI']
                      : null;
@@ -246,108 +242,61 @@ class Accept
         $name   = basename($path);
         $ext    = strrchr($name, '.');
         if ($ext && isset($this->types[$ext])) {
-            $this->accept = array($this->types[$ext] => 1.0);
+            $this->media = array($this->types[$ext] => 1.0);
         }
     }
     
     /**
      * 
-     * Modify the $accept_charset property for ISO-8859-1 acceptability.
+     * Modify the $charset property for ISO-8859-1 acceptability.
      * 
      * @return null
      * 
      */
-    protected function fixAcceptCharset()
+    protected function fixCharset()
     {
         // no charset values were specified
-        if (! $this->accept_charset) {
+        if (! $this->charset) {
             return;
         }
         
         // look for ISO-8859-1, case insensitive
-        foreach ($this->accept_charset as $charset => $q) {
+        foreach ($this->charset as $charset => $q) {
             if (strtolower($charset) == 'iso-8859-1') {
                 return;
             }
         }
         
         // charset iso-8859-1 is acceptable if not explictly mentioned
-        $this->accept_charset = array_merge(
+        $this->charset = array_merge(
             array('ISO-8859-1' => 1.0),
-            $this->accept_charset
+            $this->charset
         );
     }
     
     /**
      * 
-     * Returns the value of the `Accept` header as an array sorted by quality
-     * level.
+     * Returns the `Accept-Charset` value as an array; or, if available values
+     * are passed, returns a negotiated value.
      * 
-     * @return array
+     * @param array $available Available values in preference order, if any.
      * 
-     */
-    public function getAccept()
-    {
-        return $this->accept;
-    }
-    
-    /**
-     * 
-     * Returns the value of the `Accept-Charset` header as an array sorted by quality
-     * level.
-     * 
-     * @return array
+     * @return mixed The header values as an array, or the negotiated value
+     * (false indicates negotiation failed).
      * 
      */
-    public function getAcceptCharset()
+    public function getCharset(array $available = null)
     {
-        return $this->accept_charset;
-    }
-    
-    /**
-     * 
-     * Returns the value of the `Accept-Encoding` header as an array sorted by quality
-     * level.
-     * 
-     * @return array
-     * 
-     */
-    public function getAcceptEncoding()
-    {
-        return $this->accept_encoding;
-    }
-    
-    /**
-     * 
-     * Returns the value of the `Accept-Language` header as an array sorted by quality
-     * level.
-     * 
-     * @return array
-     * 
-     */
-    public function getAcceptLanguage()
-    {
-        return $this->accept_language;
-    }
-    
-    /**
-     * 
-     * Returns a charset negotiated between acceptable and available values.
-     * 
-     * @param array $available Available values in preference order.
-     * 
-     * @return string|bool The negotiated value, or false if negotiation
-     * failed.
-     * 
-     */
-    public function getCharset(array $available = array())
-    {
+        if ($available === null) {
+            return $this->charset;
+        }
+        
         if (! $available) {
             return false;
         }
         
         // get acceptable charsets
-        $acceptable = $this->accept_charset;
+        $acceptable = $this->charset;
         
         // if no acceptable charset specified, use first available
         if (! $acceptable) {
@@ -388,20 +337,24 @@ class Accept
      * 
      * Returns an encoding negotiated between acceptable and available values.
      * 
-     * @param array $available Available values in preference order.
+     * @param array $available Available values in preference order, if any.
      * 
-     * @return string|bool The negotiated value, or false if negotiation
-     * failed.
+     * @return mixed The header values as an array, or the negotiated value
+     * (false indicates negotiation failed).
      * 
      */
-    public function getEncoding(array $available = array())
+    public function getEncoding(array $available = null)
     {
+        if ($available === null) {
+            return $this->encoding;
+        }
+        
         if (! $available) {
             return false;
         }
         
         // get acceptable encodings
-        $acceptable = $this->accept_encoding;
+        $acceptable = $this->encoding;
         
         // if no acceptable encoding specified, use first available
         if (! $acceptable) {
@@ -442,20 +395,24 @@ class Accept
      * 
      * Returns a language negotiated between acceptable and available values.
      * 
-     * @param array $available Available values in preference order.
+     * @param array $available Available values in preference order, if any.
      * 
-     * @return string|bool The negotiated value, or false if negotiation
-     * failed.
+     * @return mixed The header values as an array, or the negotiated value
+     * (false indicates negotiation failed).
      * 
      */
-    public function getLanguage(array $available = array())
+    public function getLanguage(array $available = null)
     {
+        if ($available === null) {
+            return $this->language;
+        }
+        
         if (! $available) {
             return false;
         }
         
         // get acceptable language
-        $acceptable = $this->accept_language;
+        $acceptable = $this->language;
         
         // if no acceptable language specified, use first available
         if (! $acceptable) {
@@ -507,20 +464,24 @@ class Accept
      * 
      * Returns a media type negotiated between acceptable and available values.
      * 
-     * @param array $available Available values in preference order.
+     * @param array $available Available values in preference order, if any.
      * 
-     * @return string|bool The negotiated value, or false if negotiation
-     * failed.
+     * @return mixed The header values as an array, or the negotiated value
+     * (false indicates negotiation failed).
      * 
      */
-    public function getMedia(array $available = array())
+    public function getMedia(array $available = null)
     {
+        if ($available === null) {
+            return $this->media;
+        }
+        
         if (! $available) {
             return false;
         }
         
         // get acceptable media
-        $acceptable = $this->accept;
+        $acceptable = $this->media;
         
         // if no acceptable media specified, use first available
         if (! $acceptable) {
