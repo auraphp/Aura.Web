@@ -10,9 +10,18 @@
  */
 namespace Aura\Web;
 
+/**
+ * 
+ * A factory to create Request and Response objects.
+ * 
+ * @package Aura.Web
+ * 
+ */
 class WebFactory
 {
     /**
+     * 
+     * A copy of $GLOBALS.
      * 
      * @var array
      * 
@@ -21,14 +30,25 @@ class WebFactory
     
     /**
      * 
+     * Additional mobile agent values for the request.
+     * 
      * @var array
      * 
      */
     protected $mobile_agents = array();
     
+    /**
+     * 
+     * Additional crawler agent values for the request.
+     * 
+     * @var array
+     * 
+     */
     protected $crawler_agents = array();
     
     /**
+     * 
+     * Additional content decoder callables for the request.
      * 
      * @var array
      * 
@@ -37,12 +57,16 @@ class WebFactory
     
     /**
      * 
+     * Additional file .extension mappings to media types for the request.
+     * 
      * @var array
      * 
      */
     protected $types = array();
     
     /**
+     * 
+     * The HTTP method override field name for the request.
      * 
      * @var string
      * 
@@ -51,19 +75,24 @@ class WebFactory
     
     /**
      * 
-     * Constructor
+     * Constructor.
      * 
-     * @param array $globals
+     * @param array $globals A copy of $GLOBALS.
      * 
-     * @param array $mobile_agents
+     * @param array $mobile_agents Additional mobile agent values for the
+     * request.
      * 
-     * @param array $crawler_agents
+     * @param array $crawler_agents Additional crawler agent values for the
+     * request.
      * 
-     * @param array $decoders
+     * @param array $decoders Additional content decoder callables for the
+     * request.
      * 
-     * @param array $types
+     * @param array $types Additional file .extension mappings to content
+     * types for the request.
      * 
-     * @param string $method_field
+     * @param string $method_field The HTTP method override field name for the
+     * request.
      * 
      */
     public function __construct(
@@ -84,9 +113,11 @@ class WebFactory
     
     /**
      * 
-     * Set the mobile agents.
+     * Sets the mobile agents.
      * 
-     * @param array $mobile_agents
+     * @param array $mobile_agents The mobile agent strings.
+     * 
+     * @return null
      * 
      */
     public function setMobileAgents(array $mobile_agents)
@@ -96,9 +127,11 @@ class WebFactory
     
     /**
      * 
-     * Set the crawler agents.
+     * Sets the crawler agents.
      * 
-     * @param array $crawler_agents
+     * @param array $crawler_agents The crawler agent strings.
+     * 
+     * @return null
      * 
      */
     public function setCrawlerAgents(array $crawler_agents)
@@ -108,9 +141,11 @@ class WebFactory
     
     /**
      * 
-     * Set the content type decoders
+     * Sets the content type decoders.
      * 
-     * @param array $decoders
+     * @param array $decoders The content-type to decoder callables.
+     * 
+     * @return null
      * 
      */
     public function setDecoders(array $decoders)
@@ -120,9 +155,11 @@ class WebFactory
     
     /**
      * 
-     * Set the content type
+     * Sets the file .extension mappings to media types.
      * 
-     * @param array $types
+     * @param array $types The file .extension to media type mappings.
+     * 
+     * @return null
      * 
      */
     public function setTypes(array $types)
@@ -132,9 +169,9 @@ class WebFactory
     
     /**
      * 
-     * Set the method field
+     * Sets the HTTP method override field.
      * 
-     * @param string $method_field
+     * @param string $method_field The field name.
      * 
      */
     public function setMethodField($method_field)
@@ -144,9 +181,9 @@ class WebFactory
     
     /**
      * 
-     * Return a Request object
+     * Returns a new Request object.
      * 
-     * @return object Aura\Web\Request
+     * @return Request
      * 
      */
     public function newRequest()
@@ -165,9 +202,9 @@ class WebFactory
     
     /**
      * 
-     * Return a Aura\Web\Request\Client object
+     * Returns a request client object.
      * 
-     * @return object Aura\Web\Request\Client
+     * @return Request\Client
      * 
      */
     public function newRequestClient()
@@ -181,9 +218,9 @@ class WebFactory
     
     /**
      * 
-     * Return a Aura\Web\Request\Content object
+     * Returns a request content object.
      * 
-     * @return object Aura\Web\Request\Content
+     * @return Request\Content
      * 
      */
     public function newRequestContent()
@@ -196,9 +233,9 @@ class WebFactory
     
     /**
      * 
-     * Return a Request Cookies object
+     * Returns a request cookies object.
      * 
-     * @return object Aura\Web\Request\Values
+     * @return Request\Values
      * 
      */
     public function newRequestCookies()
@@ -208,9 +245,9 @@ class WebFactory
     
     /**
      * 
-     * Return a Request Environment object
+     * Returns a request environment object
      * 
-     * @return object Aura\Web\Request\Values
+     * @return Request\Values
      * 
      */
     public function newRequestEnv()
@@ -220,9 +257,9 @@ class WebFactory
     
     /**
      * 
-     * Return the request files object
+     * Returns a request files object.
      * 
-     * @return object Aura\Web\Request\Files
+     * @return Request\Files
      * 
      */
     public function newRequestFiles()
@@ -232,9 +269,10 @@ class WebFactory
     
     /**
      * 
-     * Return an object containing cookies, environment, files, post, query, server object
+     * Returns a request globals object containing cookies, environment,
+     * files, post, query, and server objects.
      * 
-     * @return object Aura\Web\Request\Globals
+     * @return Request\Globals
      * 
      */
     public function newRequestGlobals()
@@ -251,9 +289,9 @@ class WebFactory
     
     /**
      * 
-     * Return a Headers for a Request
+     * Returns a request headers object.
      * 
-     * @return object Aura\Web\Request\Headers
+     * @return Request\Headers
      * 
      */
     public function newRequestHeaders()
@@ -263,9 +301,9 @@ class WebFactory
     
     /**
      * 
-     * Return a Request Method
+     * Returns a request method object.
      * 
-     * @return object Aura\Web\Request\Method
+     * @return Request\Method
      * 
      */
     public function newRequestMethod()
@@ -279,9 +317,9 @@ class WebFactory
     
     /**
      * 
-     * Return a Aura\Web\Request\Accept object
+     * Returns a request accept object.
      * 
-     * @return object Aura\Web\Request\Accept
+     * @return Request\Accept
      * 
      */
     public function newRequestAccept()
@@ -294,9 +332,9 @@ class WebFactory
     
     /**
      * 
-     * Return a Aura\Web\Request\Params object
+     * Returns a request params object.
      * 
-     * @return object Aura\Web\Request\Params
+     * @return Request\Params
      * 
      */
     public function newRequestParams(array $data = array())
@@ -306,9 +344,9 @@ class WebFactory
     
     /**
      * 
-     * Return the $_POST values object
+     * Returns a request post-values object.
      * 
-     * @return object Aura\Web\Request\Values
+     * @return Request\Values
      * 
      */
     public function newRequestPost()
@@ -318,9 +356,9 @@ class WebFactory
     
     /**
      * 
-     * Return the $_GET values as an object
+     * Returns a request query-values object.
      * 
-     * @return object Aura\Web\Request\Values
+     * @return Request\Values
      * 
      */
     public function newRequestQuery()
@@ -330,9 +368,9 @@ class WebFactory
     
     /**
      * 
-     * Return the server values from the Request
+     * Returns a request server-values object.
      * 
-     * @return object Aura\Web\Request\Values
+     * @return Request\Values
      * 
      */
     public function newRequestServer()
@@ -342,9 +380,9 @@ class WebFactory
     
     /**
      * 
-     * Return a Aura\Web\Request\Url object
+     * Returns a request URL object.
      * 
-     * @return object Aura\Web\Request\Url
+     * @return Request\Url
      * 
      */
     public function newRequestUrl()
@@ -354,9 +392,9 @@ class WebFactory
 
     /**
      * 
-     * Return a Aura\Web\Response object
+     * Returns a new Response object.
      * 
-     * @return object Aura\Web\Response
+     * @return Response
      * 
      */
     public function newResponse()
@@ -379,9 +417,9 @@ class WebFactory
     
     /**
      * 
-     * Return a response object of type Aura\Web\Response\Cache
+     * Returns a response cache object.
      * 
-     * @return object Aura\Web\Response\Cache
+     * @return Response\Cache
      * 
      */
     public function newResponseCache(Response\Headers $headers)
@@ -391,9 +429,9 @@ class WebFactory
     
     /**
      * 
-     * Return a response object of type Aura\Web\Response\Content
+     * Returns a response content object.
      * 
-     * @return object Aura\Web\Response\Content
+     * @return Response\Content
      * 
      */
     public function newResponseContent(Response\Headers $headers)
@@ -403,9 +441,9 @@ class WebFactory
     
     /**
      * 
-     * Return a response object of type Aura\Web\Response\Cookies
+     * Returns a response cookies object.
      * 
-     * @return object Aura\Web\Response\Cookies
+     * @return Response\Cookies
      * 
      */
     public function newResponseCookies()
@@ -415,9 +453,9 @@ class WebFactory
     
     /**
      * 
-     * Return a Aura\Web\Response\Headers object
+     * Returns a response headers object.
      * 
-     * @return object Aura\Web\Response\Headers
+     * @return Response\Headers
      * 
      */
     public function newResponseHeaders()
@@ -427,9 +465,9 @@ class WebFactory
     
     /**
      * 
-     * Returns the Response Status
+     * Returns a response status object.
      * 
-     * @return object Aura\Web\Response\Status
+     * @return Response\Status
      * 
      */
     public function newResponseStatus()
@@ -439,9 +477,9 @@ class WebFactory
     
     /**
      * 
-     * Returns the Response Redirect
+     * Returns a response redirect object.
      * 
-     * @return object Aura\Web\Response\Redirect
+     * @return Response\Redirect
      * 
      */
     public function newResponseRedirect(
@@ -454,7 +492,11 @@ class WebFactory
     
     /**
      * 
-     * @return array
+     * Returns a $globals array value.
+     * 
+     * @param string $key The $globals array key.
+     * 
+     * @return array The $globals array value.
      * 
      */
     protected function get($key)

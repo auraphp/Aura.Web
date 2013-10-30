@@ -12,6 +12,13 @@ namespace Aura\Web\Response;
 
 use Aura\Web\Exception;
 
+/**
+ * 
+ * Represents the response status header line.
+ * 
+ * @package Aura.Web
+ * 
+ */
 class Status
 {
     /**
@@ -110,13 +117,20 @@ class Status
 
     /**
      * 
-     * The HTTP version to send as.
+     * The HTTP protocol version.
      * 
      * @var string
      * 
      */
     protected $version = 1.1;
 
+    /**
+     * 
+     * Returns the status values as a string.
+     * 
+     * @return string
+     * 
+     */
     public function get()
     {
         return "HTTP/{$this->version} {$this->code} {$this->phrase}";
@@ -124,11 +138,15 @@ class Status
     
     /**
      * 
-     * @param int $code
+     * Sets the status code, phrase, and version all at once.
      * 
-     * @param string $phrase
+     * @param int $code The statuus code.
      * 
-     * @param string $version
+     * @param string $phrase The status phrase.
+     * 
+     * @param string $version The HTTP protocol version.
+     * 
+     * @return null
      * 
      */
     public function set($code, $phrase = null, $version = null)
@@ -144,11 +162,12 @@ class Status
     
     /**
      * 
-     * Sets the HTTP status code for the response.
-     * 
-     * Automatically resets the status phrase to null.
+     * Sets the status code; if the code is recognized, also sets the status
+     * phrase.
      * 
      * @param int $code An HTTP status code, such as 200, 302, 404, etc.
+     * 
+     * @return null
      * 
      */
     public function setCode($code)
@@ -167,7 +186,7 @@ class Status
 
     /**
      * 
-     * Returns the HTTP status code for the response.
+     * Returns the status code.
      * 
      * @return int
      * 
@@ -179,7 +198,7 @@ class Status
 
     /**
      * 
-     * Sets the HTTP status phrase for the response.
+     * Sets the status phrase.
      * 
      * @param string $phrase The status phrase.
      * 
@@ -194,7 +213,7 @@ class Status
 
     /**
      * 
-     * Returns the HTTP status phrase for the response.
+     * Returns the status phrase.
      * 
      * @return string
      * 
@@ -206,9 +225,9 @@ class Status
 
     /**
      * 
-     * Sets the HTTP version for the response to 1.0 or 1.1.
+     * Sets the HTTP protocol version to 1.0 or 1.1.
      * 
-     * @param string $version The HTTP version to use for this response.
+     * @param string $version The HTTP protocol version to use.
      * 
      * @return null
      * 
@@ -223,7 +242,7 @@ class Status
 
     /**
      * 
-     * Returns the HTTP version for the response.
+     * Returns the HTTP protocol version.
      * 
      * @return string
      * 

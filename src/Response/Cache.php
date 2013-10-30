@@ -14,21 +14,59 @@ use DateTime;
 use DateTimeZone;
 use Exception;
 
+/**
+ * 
+ * Convenience methods related to HTTP caching.
+ * 
+ * @package Aura.Web
+ * 
+ * @todo Move (Age, Etag, Expires, Last-Modified) to Content object?
+ * 
+ */
 class Cache
 {
-    protected $control = array();
+    /**
+     * 
+     * Cache-Control directives and values.
+     * 
+     * @var array
+     * 
+     */
+    protected $control = array(
+        'public' => false,
+        'private' => false,
+        'max-age' => null,
+        's-maxage' => null,
+        'no-cache' => false,
+        'no-store' => false,
+        'must-revalidate' => false,
+        'proxy-revalidate' => false,
+    );
     
+    /**
+     * 
+     * The response headers.
+     * 
+     * @var Headers
+     * 
+     */
     protected $headers;
     
+    /**
+     * 
+     * Constructor.
+     * 
+     * @param Headers $headers The response headers.
+     * 
+     */
     public function __construct(Headers $headers)
     {
         $this->headers = $headers;
-        $this->reset();
     }
     
     /**
      * 
-     * Disable HTTP caching.
+     * Disables HTTP caching.
      * 
      * @return null
      * 
@@ -54,7 +92,7 @@ class Cache
     
     /**
      * 
-     * Reset caching headers to their original state (i.e., no caching
+     * Resets caching headers to their original state (i.e., no caching
      * headers).
      * 
      * @return null
@@ -79,6 +117,15 @@ class Cache
         $this->setVary(null);
     }
     
+    /**
+     * 
+     * Sets the content age in seconds.
+     * 
+     * @param int $age The content age, in seconds.
+     * 
+     * @return null
+     * 
+     */
     public function setAge($age)
     {
         $age = trim($age);
@@ -89,6 +136,16 @@ class Cache
         }
     }
     
+    /**
+     * 
+     * Sets multiple Cache-Control directives all at once.
+     * 
+     * @param array $control An array of key-value pairs where the key is the
+     * directive label and the value is the directive value.
+     * 
+     * @return null
+     * 
+     */
     public function setControl(array $control)
     {
         // prepare the cache-control directives
@@ -129,6 +186,15 @@ class Cache
         }
     }
     
+    /**
+     * 
+     * Sets a strong ETag header value.
+     * 
+     * @param string $etag The ETag header value.
+     * 
+     * @return null
+     * 
+     */
     public function setEtag($etag)
     {
         $etag = trim($etag);
@@ -138,16 +204,47 @@ class Cache
         $this->headers->set('Etag', $etag);
     }
     
+    /**
+     * 
+     * Sets the Expires header; converts to the appropriate date format.
+     * 
+     * @param mixed $expires The Expires value; this will be converted to an
+     * HTTP date format from any recognizable format (including a DateTime
+     * object).
+     * 
+     * @return null
+     * 
+     */
     public function setExpires($expires)
     {
         $this->headers->set('Expires', $this->httpDate($expires));
     }
     
+    /**
+     * 
+     * Sets the Last-Modified header; converts to the appropriate date format.
+     * 
+     * @param mixed $last_modified The Last-Modified value; this will be
+     * converted to an HTTP date format from any recognizable format
+     * (including a DateTime object).
+     * 
+     * @return null
+     * 
+     */
     public function setLastModified($last_modified)
     {
         $this->headers->set('Last-Modified', $this->httpDate($last_modified));
     }
     
+    /**
+     * 
+     * Sets the "max-age" cache control directive.
+     * 
+     * @param int $max_age The maximum allowed age for the content in seconds.
+     * 
+     * @return null
+     * 
+     */
     public function setMaxAge($max_age)
     {
         $this->setControl(array(
@@ -155,6 +252,16 @@ class Cache
         ));
     }
     
+    /**
+     * 
+     * Sets the "no-cache" cache control directive.
+     * 
+     * @param bool $flag True to add the "no-cache" directive, false to remove
+     * it.
+     * 
+     * @return null
+     * 
+     */
     public function setNoCache($flag = true)
     {
         $this->setControl(array(
@@ -162,6 +269,16 @@ class Cache
         ));
     }
     
+    /**
+     * 
+     * Sets the "no-store" cache control directive.
+     * 
+     * @param bool $flag True to add the "no-store" directive, false to remove
+     * it.
+     * 
+     * @return null
+     * 
+     */
     public function setNoStore($flag = true)
     {
         $this->setControl(array(
@@ -169,6 +286,13 @@ class Cache
         ));
     }
     
+    /**
+     * 
+     * Enables the "private" cache control directive, and disables "public".
+     * 
+     * @return null
+     * 
+     */
     public function setPrivate()
     {
         $this->setControl(array(
@@ -177,6 +301,13 @@ class Cache
         ));
     }
     
+    /**
+     * 
+     * Enables the "public" cache control directive, and disables "private".
+     * 
+     * @return null
+     * 
+     */
     public function setPublic()
     {
         $this->setControl(array(
@@ -185,6 +316,16 @@ class Cache
         ));
     }
     
+    /**
+     * 
+     * Sets the "s-maxage" (share max age) cache control directive.
+     * 
+     * @param int $s_maxage The maximum allowed age for the content in
+     * seconds.
+     * 
+     * @return null
+     * 
+     */
     public function setSharedMaxAge($s_maxage)
     {
         $this->setControl(array(
@@ -192,11 +333,29 @@ class Cache
         ));
     }
     
+    /**
+     * 
+     * Sets the Vary header.
+     * 
+     * @param mixed $vary The list of Vary values.
+     * 
+     * @return null
+     * 
+     */
     public function setVary($vary)
     {
         $this->headers->set('Vary', implode(', ', (array) $vary));
     }
     
+    /**
+     * 
+     * Sets a weak ETag header value.
+     * 
+     * @param string $etag The ETag header value.
+     * 
+     * @return null
+     * 
+     */
     public function setWeakEtag($etag)
     {
         $etag = trim($etag);
@@ -206,6 +365,15 @@ class Cache
         $this->headers->set('Etag', $etag);
     }
     
+    /**
+     * 
+     * Converts any regognizable date format to an HTTP date.
+     * 
+     * @param mixed $date The incoming date value.
+     * 
+     * @return string A formatted date.
+     * 
+     */
     protected function httpDate($date)
     {
         if ($date instanceof DateTime) {

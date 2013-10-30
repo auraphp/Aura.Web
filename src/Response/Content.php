@@ -11,12 +11,12 @@
 namespace Aura\Web\Response;
 
 /**
- * @todo Add the following:
  * 
- * Accept-Ranges -- what partial content range types this server supports
- * Accept-Ranges: bytes
+ * Represents the response content.
+ * 
+ * @package Aura.Web
+ * 
  */
-
 class Content
 {
     /**
@@ -28,19 +28,40 @@ class Content
      */
     protected $content = null;
 
+    /**
+     * 
+     * The response headers.
+     * 
+     * @var Headers
+     * 
+     */
     protected $headers;
     
     /**
      * 
-     * The response character set
+     * The content character set.
      * 
      * @var string
      * 
      */
     protected $charset;
     
+    /**
+     * 
+     * The content type.
+     * 
+     * @var string
+     * 
+     */
     protected $type;
     
+    /**
+     * 
+     * Constructor.
+     * 
+     * @param Headers $headers The response headers.
+     * 
+     */
     public function __construct(Headers $headers)
     {
         $this->headers = $headers;
@@ -50,7 +71,7 @@ class Content
      * 
      * Sets the content of the response.
      * 
-     * @param mixed $content The body content of the response.
+     * @param mixed $content The content of the response.
      * 
      * @return null
      * 
@@ -74,9 +95,9 @@ class Content
 
     /**
      * 
-     * Set the character set
+     * Sets the character set.
      * 
-     * @param string $charset
+     * @param string $charset The character set.
      * 
      * @return null
      * 
@@ -89,9 +110,9 @@ class Content
     
     /**
      * 
-     * Sets the Content-Type of the response.
+     * Sets the content type.
      * 
-     * @param string The Content-Type of the response.
+     * @param string $type The content type.
      * 
      * @return null
      * 
@@ -102,7 +123,13 @@ class Content
         $this->setContentType();
     }
     
-    // works even if set directly via $headers
+    /**
+     * 
+     * Gets the content type.
+     * 
+     * @return string
+     * 
+     */
     public function getType()
     {
         $parts = explode(';', $this->headers->get('Content-Type'));
@@ -110,7 +137,13 @@ class Content
         return trim($type);
     }
     
-    // works even if set directly via $headers
+    /**
+     * 
+     * Gets the character set.
+     * 
+     * @return string
+     * 
+     */
     public function getCharset()
     {
         $parts = explode(';', $this->headers->get('Content-Type'));
@@ -121,6 +154,13 @@ class Content
         return $charset;
     }
     
+    /**
+     * 
+     * Sets the content type into the headers.
+     * 
+     * @return null
+     * 
+     */
     protected function setContentType()
     {
         if (! $this->type) {
@@ -135,6 +175,13 @@ class Content
         $this->headers->set('Content-Type', $value);
     }
     
+    /**
+     * 
+     * Sets the content encoding.
+     * 
+     * @param string $encoding The content encoding.
+     * 
+     */
     public function setEncoding($encoding)
     {
         $this->headers->set('Content-Encoding', $encoding);
@@ -142,11 +189,24 @@ class Content
     
     /**
      * 
-     * Set the content disposition header
+     * Gets the content encoding.
      * 
-     * @param string $disposition
+     * @return string
      * 
-     * @param string $filename
+     */
+    public function getEncoding()
+    {
+        return $this->headers->get('Content-Encoding');
+    }
+    
+    /**
+     * 
+     * Set the Content-Disposition header.
+     * 
+     * @param string $disposition The disposition, typically 'inline' or
+     * 'attachment'.
+     * 
+     * @param string $filename The suggested filename for the content, if any.
      * 
      * @return null
      * 

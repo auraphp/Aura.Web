@@ -22,12 +22,16 @@ class Response
 {
     /**
      * 
+     * A Cache object.
+     * 
      * @var Response\Cache
      * 
      */
     protected $cache;
     
     /**
+     * 
+     * A Content object.
      * 
      * @var Response\Content
      * 
@@ -36,12 +40,16 @@ class Response
     
     /**
      * 
+     * A Cookies object.
+     * 
      * @var Response\Cookies
      * 
      */
     protected $cookies;
     
     /**
+     * 
+     * A Headers object.
      * 
      * @var Response\Headers
      * 
@@ -50,6 +58,17 @@ class Response
     
     /**
      * 
+     * A Redirect object.
+     * 
+     * @var Response\Redirect
+     * 
+     */
+    protected $redirect;
+    
+    /**
+     * 
+     * A Status object.
+     * 
      * @var Response\Status
      * 
      */
@@ -57,19 +76,19 @@ class Response
 
     /**
      * 
-     * Constructor
+     * Constructor.
      * 
-     * @param Response\Cache $cache
+     * @param Response\Status $status A status object.
      * 
-     * @param Response\Content $cache
+     * @param Response\Headers $headers A headers object.
      * 
-     * @param Response\Cookies $cookies
+     * @param Response\Cookies $cookies A cookies object.
      * 
-     * @param Response\Headers $headers
+     * @param Response\Content $content A content object.
      * 
-     * @param Response\Redirect $redirect
+     * @param Response\Cache $cache A cache object.
      * 
-     * @param Response\Status $status
+     * @param Response\Redirect $redirect A redirect object.
      * 
      */
     public function __construct(

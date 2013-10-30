@@ -19,6 +19,15 @@ namespace Aura\Web\Request;
  */
 class Params extends Values
 {
+    /**
+     * 
+     * Sets the param values.
+     * 
+     * @param array $params The new param values.
+     * 
+     * @return null
+     * 
+     */
     public function set(array $params)
     {
         $this->exchangeArray($params);

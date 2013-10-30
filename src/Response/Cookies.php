@@ -12,8 +12,9 @@ namespace Aura\Web\Response;
 
 /**
  * 
- * @todo Add setExpire(), setPath(), setDomain(), setSecure() to set
- * default values.
+ * Cookies to send with the response.
+ * 
+ * @package Aura.Web
  * 
  */
 class Cookies
@@ -29,7 +30,7 @@ class Cookies
 
     /**
      * 
-     * Default cookie values.
+     * The default cookie values.
      * 
      * @var array
      * 
@@ -43,21 +44,57 @@ class Cookies
         'httponly' => true,
     );
 
+    /**
+     * 
+     * Sets the default expire value.
+     * 
+     * @param mixed $expire The default expire value.
+     * 
+     * @return null
+     * 
+     */
     public function setExpire($expire)
     {
         $this->default['expire'] = $expire;
     }
     
+    /**
+     * 
+     * Sets the default path value.
+     * 
+     * @param string $path The default path value.
+     * 
+     * @return null
+     * 
+     */
     public function setPath($path)
     {
         $this->default['path'] = $path;
     }
     
+    /**
+     * 
+     * Sets the default domain value.
+     * 
+     * @param string $domain The default domain value.
+     * 
+     * @return null
+     * 
+     */
     public function setDomain($domain)
     {
         $this->default['domain'] = $domain;
     }
     
+    /**
+     * 
+     * Sets the default secure value.
+     * 
+     * @param bool $secure True to default to secure, false not.
+     * 
+     * @return null
+     * 
+     */
     public function setSecure($secure)
     {
         $this->default['secure'] = (bool) $secure;
@@ -66,7 +103,7 @@ class Cookies
 
     /**
      * 
-     * By default, should cookies be sent by HTTP only?
+     * Sets the default "HTTP Only" value.
      * 
      * @param bool $flag True to send by HTTP only, false to send by any
      * method.

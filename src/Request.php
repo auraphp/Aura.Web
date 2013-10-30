@@ -139,6 +139,13 @@ class Request
      */
     protected $url;
 
+    /**
+     * 
+     * Is this an XML HTTP request?
+     * 
+     * @var bool
+     * 
+     */
     protected $xhr = false;
     
     /**
@@ -193,6 +200,13 @@ class Request
         return $this->$key;
     }
     
+    /**
+     * 
+     * Is this an XML HTTP request?
+     * 
+     * @return bool
+     * 
+     */
     public function isXhr()
     {
         return $this->xhr;
