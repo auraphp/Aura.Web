@@ -75,40 +75,23 @@ class WebFactory
     
     /**
      * 
+     * The list of trusted proxies.
+     * 
+     * @var array
+     * 
+     */
+    protected $proxies = array();
+    
+    /**
+     * 
      * Constructor.
      * 
      * @param array $globals A copy of $GLOBALS.
      * 
-     * @param array $mobile_agents Additional mobile agent values for the
-     * request.
-     * 
-     * @param array $crawler_agents Additional crawler agent values for the
-     * request.
-     * 
-     * @param array $decoders Additional content decoder callables for the
-     * request.
-     * 
-     * @param array $types Additional file .extension mappings to content
-     * types for the request.
-     * 
-     * @param string $method_field The HTTP method override field name for the
-     * request.
-     * 
      */
-    public function __construct(
-        array $globals,
-        array $mobile_agents = array(),
-        array $crawler_agents = array(),
-        array $decoders = array(),
-        array $types = array(),
-        $method_field = null
-    ) {
+    public function __construct(array $globals)
+    {
         $this->globals = $globals;
-        $this->setMobileAgents($mobile_agents);
-        $this->setCrawlerAgents($crawler_agents);
-        $this->setDecoders($decoders);
-        $this->setTypes($types);
-        $this->setMethodField($method_field);
     }
     
     /**
@@ -181,6 +164,18 @@ class WebFactory
     
     /**
      * 
+     * Sets the list of trusted proxies.
+     * 
+     * @param array $proxies The list of trusted proxies.
+     * 
+     */
+    public function setProxies($proxies)
+    {
+        $this->proxies = $proxies;
+    }
+    
+    /**
+     * 
      * Returns a new Request object.
      * 
      * @return Request
@@ -212,7 +207,8 @@ class WebFactory
         return new Request\Client(
             $this->get('_SERVER'),
             $this->mobile_agents,
-            $this->crawler_agents
+            $this->crawler_agents,
+            $this->proxies
         );
     }
     
