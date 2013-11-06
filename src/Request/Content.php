@@ -40,6 +40,10 @@ class Content
      */
     protected $type;
     
+    protected $length;
+    
+    protected $md5;
+    
     /**
      * 
      * The decoded content.
@@ -71,9 +75,17 @@ class Content
         array $server,
         array $decoders = array()
     ) {
-        $this->type = isset($server['HTTP_CONTENT_TYPE'])
-                    ? strtolower($server['HTTP_CONTENT_TYPE'])
+        $this->type = isset($server['CONTENT_TYPE'])
+                    ? strtolower($server['CONTENT_TYPE'])
                     : null;
+        
+        $this->length = isset($server['CONTENT_LENGTH'])
+                      ? strtolower($server['CONTENT_LENGTH'])
+                      : null;
+        
+        $this->md5 = isset($server['CONTENT_MD5'])
+                   ? strtolower($server['CONTENT_MD5'])
+                   : null;
         
         $this->decoders = array_merge($this->decoders, $decoders);
     }
@@ -123,5 +135,29 @@ class Content
     public function getType()
     {
         return $this->type;
+    }
+    
+    /**
+     * 
+     * The content-length of the request body.
+     * 
+     * @return string
+     * 
+     */
+    public function getLength()
+    {
+        return $this->length;
+    }
+    
+    /**
+     * 
+     * The MD5 of the request body.
+     * 
+     * @return string
+     * 
+     */
+    public function getMd5()
+    {
+        return $this->md5;
     }
 }
