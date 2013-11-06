@@ -31,12 +31,19 @@ class ContentTest extends \PHPUnit_Framework_TestCase
         $encode = json_encode($object);
         PhpStream::$content = $encode;
         
-        $server = array('HTTP_CONTENT_TYPE' => 'application/json');
+        $server = array(
+            'CONTENT_TYPE' => 'application/json',
+            'CONTENT_LENGTH' => '88',
+            'CONTENT_MD5' => 'foo'
+        );
+        
         $content = $this->newContent($server);
         
         $actual = $content->get();
         $this->assertEquals($object, $actual);
         
         $this->assertSame('application/json', $content->getType());
+        $this->assertSame('88', $content->getLength());
+        $this->assertSame('foo', $content->getMd5());
     }
 }

@@ -6,15 +6,65 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     protected function newClient(
         $server = array(),
         $mobile_agents = array(),
-        $crawler_agents = array()
+        $crawler_agents = array(),
+        $proxies = array()
     ) {
-        return new Client($server, $mobile_agents, $crawler_agents);
+        return new Client($server, $mobile_agents, $crawler_agents, $proxies);
+    }
+    
+    public function testGetAuthDigest()
+    {
+        $server['PHP_AUTH_DIGEST'] = 'foo';
+        $client = $this->newClient($server);
+        $actual = $client->getAuthDigest();
+        $expect = 'foo';
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testGetAuthPw()
+    {
+        $server['PHP_AUTH_PW'] = 'foo';
+        $client = $this->newClient($server);
+        $actual = $client->getAuthPw();
+        $expect = 'foo';
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testGetAuthUser()
+    {
+        $server['PHP_AUTH_USER'] = 'foo';
+        $client = $this->newClient($server);
+        $actual = $client->getAuthUser();
+        $expect = 'foo';
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testGetAuthType()
+    {
+        $server['AUTH_TYPE'] = 'foo';
+        $client = $this->newClient($server);
+        $actual = $client->getAuthType();
+        $expect = 'foo';
+        $this->assertSame($expect, $actual);
     }
     
     public function testGetForwardedFor()
     {
+        // this is the last proxy in the chain
+        $server['REMOTE_ADDR'] = '127.0.0.4';
+        
+        // this is the forwarding chain
         $server['HTTP_X_FORWARDED_FOR'] = '127.0.0.1, 127.0.0.2, 127.0.0.3';
-        $client = $this->newClient($server);
+        
+        // these are the trusted proxies
+        $proxies = array(
+            '127.0.0.2',
+            '127.0.0.3',
+            '127.0.0.4',
+        );
+        
+        // create client and test
+        $client = $this->newClient($server, array(), array(), $proxies);
         $expect = array('127.0.0.1', '127.0.0.2', '127.0.0.3');
         $actual = $client->getForwardedFor();
         $this->assertSame($expect, $actual);

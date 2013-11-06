@@ -21,28 +21,30 @@ class ContentTest extends \PHPUnit_Framework_TestCase
 
     public function testTypeAndCharset()
     {
+        // test the content type in headers and in content
         $expect = 'application/json';
         $this->content->setType($expect);
         $actual = $this->headers->get('Content-Type');
         $this->assertSame($expect, $actual);
-        
-        $this->content->setCharset('utf-8');
-        $expect = 'application/json; charset=utf-8';
-        $actual = $this->headers->get('Content-Type');
-        $this->assertSame($expect, $actual);
-        
         $actual = $this->content->getType();
-        $expect = 'application/json';
         $this->assertSame($expect, $actual);
         
+        // test charset only in content
+        $this->content->setCharset('utf-8');
         $actual = $this->content->getCharset();
         $expect = 'utf-8';
         $this->assertSame($expect, $actual);
         
+        // test combined type and charset in headers
+        $expect = 'application/json; charset=utf-8';
+        $actual = $this->headers->get('Content-Type');
+        $this->assertSame($expect, $actual);
+        
+        // make sure no charset in headers when there is no type
         $this->content->setType(null);
         $this->assertNull($this->headers->get('Content-Type'));
     }
-
+    
     public function testDisposition()
     {
         $disposition = 'attachment';
@@ -62,6 +64,8 @@ class ContentTest extends \PHPUnit_Framework_TestCase
         $this->content->setEncoding('gzip');
         $expect = 'gzip';
         $actual = $this->headers->get('Content-Encoding');
+        $this->assertSame($expect, $actual);
+        $actual = $this->content->getEncoding();
         $this->assertSame($expect, $actual);
     }
 }

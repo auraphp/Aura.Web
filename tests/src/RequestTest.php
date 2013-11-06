@@ -8,6 +8,16 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     protected function newRequest(array $globals = array())
     {
         $factory = new WebFactory($globals);
+        
+        // these are BS; we should test them individually
+        $factory->setMobileAgents(array());
+        $factory->setCrawlerAgents(array());
+        $factory->setDecoders(array());
+        $factory->setTypes(array());
+        $factory->setMethodField('fieldname');
+        $factory->setProxies(array());
+        
+        // return the factory
         return $factory->newRequest();
     }
     
@@ -46,7 +56,5 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             ),
         ));
         $this->assertTrue($request->isXhr());
-        
     }
-
 }
