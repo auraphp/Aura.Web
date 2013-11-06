@@ -166,43 +166,122 @@ class Client
      * 
      * @param array $crawler_agents Additiona crawler agent strings.
      * 
+     * @param array $proxies IP addresses of trusted proxies, if any.
+     * 
      */
     public function __construct(
         array $server,
         array $mobile_agents = array(),
-        array $crawler_agents = array()
+        array $crawler_agents = array(),
+        array $proxies = array()
     ) {
-        $this->mobile_agents = array_merge(
-            $this->mobile_agents,
-            $mobile_agents
-        );
-
-        $this->crawler_agents = array_merge(
-            $this->crawler_agents,
-            $crawler_agents
-        );
-
-        if (isset($server['REMOTE_ADDR'])) {
-            $this->ip = $server['REMOTE_ADDR'];
-        }
+        // set basic properties
+        $this->mobile_agents  = array_merge($this->mobile_agents, $mobile_agents);
+        $this->crawler_agents = array_merge($this->crawler_agents, $crawler_agents);
+        $this->proxies        = $proxies;
+        $this->auth_digest    = isset($server['PHP_AUTH_DIGEST'])
+                              ? $server['PHP_AUTH_DIGEST']
+                              : null;
+        $this->auth_pw        = isset($server['PHP_AUTH_PW'])
+                              ? $server['PHP_AUTH_PW']
+                              : null;
+        $this->auth_type      = isset($server['AUTH_TYPE'])
+                              ? $server['AUTH_TYPE']
+                              : null;
+        $this->auth_user      = isset($server['PHP_AUTH_USER'])
+                              ? $server['PHP_AUTH_USER']
+                              : null;
+        $this->referer        = isset($server['HTTP_REFERER'])
+                              ? $server['HTTP_REFERER']
+                              : null;
+        $this->user_agent     = isset($server['HTTP_USER_AGENT'])
+                              ? $server['HTTP_USER_AGENT']
+                              : null;
         
+        // set forwarded-for
         if (isset($server['HTTP_X_FORWARDED_FOR'])) {
             $ips = explode(',', $server['HTTP_X_FORWARDED_FOR']);
             foreach ($ips as $ip) {
                 $this->forwarded_for[] = trim($ip);
             }
-            $this->ip = $this->forwarded_for[0];
         }
         
-        $this->user_agent = isset($server['HTTP_USER_AGENT'])
-                          ? $server['HTTP_USER_AGENT']
-                          : null;
+        // get the list of forwarded-for IPs, if any, and append the reported
+        // remote address (in a proxy situation, it is the last proxy)
+        $ips   = $this->forwarded_for;
+        $ips[] = isset($server['REMOTE_ADDR'])
+               ? $server['REMOTE_ADDR']
+               : null;
         
-        $this->referer = isset($server['HTTP_REFERER'])
-                       ? $server['HTTP_REFERER']
-                       : null;
+        // set the origin IP by working through the IPs from right to left
+        // (i.e., in reverse, from most to least reliable)
+        $ips = array_reverse($ips);
+        foreach ($ips as $ip) {
+            // is the IP a trusted proxy?
+            if (! in_array($ip, $this->proxies)) {
+                // no; treat it as the origin IP. technically we don't know
+                // if this is a proxy server, the real client IP, or a spoof.
+                // this is because this is the first point in the chain that
+                // we know we can't trust.
+                $this->ip = $ip;
+                break;
+            }
+        }
+        
+        // if we still don't have an IP, use the reported remote address
+        if (! $this->ip) {
+            $this->ip = $ips[0];
+        }
     }
-
+    
+    /**
+     * 
+     * Returns the server `PHP_AUTH_DIGEST` value, if any.
+     * 
+     * @return string
+     * 
+     */
+    public function getAuthDigest()
+    {
+        return $this->auth_digest;
+    }
+    
+    /**
+     * 
+     * Returns the server `PHP_AUTH_PW` value, if any.
+     * 
+     * @return string
+     * 
+     */
+    public function getAuthPw()
+    {
+        return $this->auth_pw;
+    }
+    
+    /**
+     * 
+     * Returns the server `PHP_AUTH_USER` value, if any.
+     * 
+     * @return string
+     * 
+     */
+    public function getAuthUser()
+    {
+        return $this->auth_user;
+    }
+    
+    /**
+     * 
+     * Returns the server `AUTH_TYPE` value, if any.
+     * 
+     * @return string
+     * 
+     */
+    public function getAuthType()
+    {
+        return $this->auth_type;
+    }
+    
     /**
      * 
      * Returns the values of the `X-Forwarded-For` headers as an array.
@@ -217,7 +296,8 @@ class Client
 
     /**
      * 
-     * Returns the client IP address.
+     * Returns the apparent origin IP address; note that this should not be
+     * treated as a trusted value in any case.
      * 
      * @return string
      * 
@@ -229,7 +309,7 @@ class Client
     
     /**
      * 
-     * Returns the value of the 'Referer' header.
+     * Returns the value of the `Referer` header.
      * 
      * @return string
      * 
@@ -241,7 +321,7 @@ class Client
     
     /**
      * 
-     * Returns the value of the 'User-Agent' header.
+     * Returns the value of the `User-Agent` header.
      * 
      * @return string
      * 
