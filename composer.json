@@ -16,5 +16,10 @@
     },
     "autoload": {
         "files": ["autoload.php"]
+    },
+    "extra": {
+        "aura": {
+            "type": "library"
+        }
     }
 }
