@@ -23,6 +23,26 @@ class Values extends ArrayObject
 {
     /**
      * 
+     * Constructor; identical to the parent ArrayObject, and copied here so
+     * that DI mechanisms can read the constructor param names.
+     * 
+     * @param mixed $input An array or an object.
+     * 
+     * @param int $flags Flags to control the behavior of the ArrayObject.
+     * 
+     * @param string $iterator_class The class that will be used for iteration
+     * of the ArrayObject.
+     * 
+     */
+    public function __construct(
+        $input = array(),
+        $flags = 0,
+        $iterator_class = 'ArrayIterator'
+    ) {
+        parent::__construct($input, $flags, $iterator_class);
+    }
+    /**
+     * 
      * Returns the value of an array key, or an alternative value if not set.
      * 
      * @param string $key The array key to return.
