@@ -7,247 +7,506 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
     {
         return new Accept($server);
     }
-    
-    public function testGetCharset()
+
+    /**
+     * @dataProvider charsetProvider
+     * @param $accept
+     * @param $expect
+     * @param $setType
+     * @param $valueType
+     */
+    public function testGetCharset($accept, $expect, $setType, $valueType)
     {
-        $accept = $this->newAccept(array(
-            'HTTP_ACCEPT_CHARSET' => 'iso-8859-5, unicode-1-1;q=0.8',
-        ));
-        
-        $expect = array(
-            'ISO-8859-1'  => 1.0,
-            'iso-8859-5'  => 1.0,
-            'unicode-1-1' => 0.8,
-        );
-        
+        $accept = $this->newAccept($accept);
         $actual = $accept->getCharset();
         
-        $this->assertSame($expect, $actual);
+        $this->verifySet($actual, $expect, $setType, $valueType);
     }
-    
-    public function testGetEncoding()
+
+    /**
+     * @dataProvider encodingProvider
+     * @param $accept
+     * @param $expect
+     * @param $setType
+     * @param $valueType
+     */
+    public function testGetEncoding($accept, $expect, $setType, $valueType)
     {
-        $accept = $this->newAccept(array(
-            'HTTP_ACCEPT_ENCODING' => 'compress;q=0.5, gzip;q=1.0',
-        ));
-        
-        $expect = array(
-            'gzip'     => 1.0,
-            'compress' => 0.5,
-        );
-        
+        $accept = $this->newAccept($accept);
         $actual = $accept->getEncoding();
         
-        $this->assertSame($expect, $actual);
+        $this->verifySet($actual, $expect, $setType, $valueType);
     }
-    
-    public function testGetLanguage()
+
+    /**
+     * @dataProvider languageProvider
+     * @param $accept
+     * @param $expect
+     * @param $setType
+     * @param $valueType
+     */
+    public function testGetLanguage($accept, $expect, $setType, $valueType)
     {
-        $accept = $this->newAccept(array(
-            'HTTP_ACCEPT_LANGUAGE' => 'en-US, en-GB, en, *',
-        ));
-        
-        $expect = array(
-            'en-US' => 1.0,
-            'en-GB' => 1.0,
-            'en' => 1.0,
-            '*' => 1.0
-        );
-        
+        $accept = $this->newAccept($accept);
         $actual = $accept->getLanguage();
-        
-        $this->assertSame($expect, $actual);
+
+        $this->verifySet($actual, $expect, $setType, $valueType);
     }
-    
-    public function testGetMedia()
+
+    /**
+     * @dataProvider mediaProvider
+     * @param $accept
+     * @param $expect
+     * @param $setType
+     * @param $valueType
+     */
+    public function testGetMedia($accept, $expected, $setType, $valueType)
     {
-        $accept = $this->newAccept(array(
-            'HTTP_ACCEPT' => 'text/*;q=0.9, text/html, text/xhtml;q=0.8',
-        ));
-        
-        $expect = array(
-            'text/html'  => 1.0,
-            'text/*'     => 0.9,
-            'text/xhtml' => 0.8,
-        );
-        
+        $accept = $this->newAccept($accept);
         $actual = $accept->getMedia();
-        
-        $this->assertSame($expect, $actual);
+
+        $this->verifySet($actual, $expected, $setType, $valueType);
     }
-    
-    public function testGetCharset_negotiate()
+
+    /**
+     * @dataProvider charsetNegotiateProvider
+     * @param $accept
+     * @param $available
+     * @param $expected
+     */
+    public function testGetCharset_negotiate($accept, $available, $expected)
     {
-        $accept = $this->newAccept(array(
-            'HTTP_ACCEPT_CHARSET' => 'iso-8859-5, unicode-1-1, *',
-        ));
-        
-        // nothing available
-        $expect = false;
-        $actual = $accept->getCharset(array());
-        $this->assertSame($expect, $actual);
-        
-        // explicitly accepts *, and no matching charset available
-        $expect = 'foo';
-        $actual = $accept->getCharset(array('foo', 'bar'));
-        $this->assertSame($expect, $actual);
-        
-        // explictly accepts unicode-1-1, which is explictly available.
-        // note that it returns the *available* value, which is determined
-        // by the developer, not the acceptable value, which is determined
-        // by the user/client/headers.
-        $expect = 'UniCode-1-1';
-        $actual = $accept->getCharset(array('foo', 'UniCode-1-1'));
-        $this->assertSame($expect, $actual);
-        
-        // no acceptable charset specified, use first available
-        $accept = $this->newAccept();
-        $expect = 'ISO-8859-5';
-        $actual = $accept->getCharset(array('ISO-8859-5', 'foo'));
-        $this->assertSame($expect, $actual);
-        
-        // charset is available but quality level is not acceptable
-        $accept = $this->newAccept(array(
-            'HTTP_ACCEPT_CHARSET' => 'ISO-8859-1, baz;q=0',
-        ));
-        $expect = false;
-        $actual = $accept->getCharset(array('baz'));
-        $this->assertSame($expect, $actual);
+        $accept = $this->newAccept($accept);
+
+        $actual = $accept->getCharset($available);
+
+        if ($expected === false) {
+            $this->assertFalse($expected, $actual);
+        } else {
+            $this->assertInstanceOf('Aura\Web\Request\Accept\Value\Charset', $actual);
+            $this->assertSame($expected, $actual->getValue());
+        }
     }
-    
-    public function testGetEncoding_negotiate()
+
+    /**
+     * @dataProvider encodingNegotiateProvider
+     * @param $accept
+     * @param $available
+     * @param $expected
+     */
+    public function testGetEncoding_negotiate($accept, $available, $expected)
     {
-        $accept = $this->newAccept(array(
-            'HTTP_ACCEPT_ENCODING' => 'gzip, compress, *',
-        ));
-        
-        // nothing available
-        $expect = false;
-        $actual = $accept->getEncoding(array());
-        $this->assertSame($expect, $actual);
-        
-        // explicitly accepts *, and no matching encoding available
-        $expect = 'foo';
-        $actual = $accept->getEncoding(array('foo', 'bar'));
-        $this->assertSame($expect, $actual);
-        
-        // explictly accepts compress, which is explictly available.
-        // note that it returns the *available* value, which is determined
-        // by the developer, not the acceptable value, which is determined
-        // by the user/client/headers.
-        $expect = 'GZIP';
-        $actual = $accept->getEncoding(array('foo', 'GZIP'));
-        $this->assertSame($expect, $actual);
-        
-        // no acceptable encoding specified, use first available
-        $accept = $this->newAccept();
-        $expect = 'gzip';
-        $actual = $accept->getEncoding(array('gzip', 'compress'));
-        $this->assertSame($expect, $actual);
-        
-        // encoding is available but quality level is not acceptable
-        $accept = $this->newAccept(array(
-            'HTTP_ACCEPT_ENCODING' => 'gzip, compress, foo;q=0',
-        ));
-        $expect = false;
-        $actual = $accept->getEncoding(array('foo'));
-        $this->assertSame($expect, $actual);
+        $accept = $this->newAccept($accept);
+
+        $actual = $accept->getEncoding($available);
+
+        if ($expected === false) {
+            $this->assertFalse($actual);
+        } else {
+            $this->assertInstanceOf('Aura\Web\Request\Accept\Value\Encoding', $actual);
+            $this->assertSame($expected, $actual->getValue());
+        }
     }
-    
-    public function testGetLanguage_negotiate()
+
+    /**
+     * @dataProvider languageNegotiateProvider
+     * @param $accept
+     * @param $available
+     * @param $expected
+     */
+    public function testGetLanguage_negotiate($accept, $available, $expected)
     {
-        $accept = $this->newAccept(array(
-            'HTTP_ACCEPT_LANGUAGE' => 'en-US, en-GB, en, *',
-        ));
-        
-        // nothing available
-        $expect = false;
-        $actual = $accept->getLanguage(array());
-        $this->assertSame($expect, $actual);
-        
-        // explicitly accepts *, and no matching language available
-        $expect = 'foo-bar';
-        $actual = $accept->getLanguage(array('foo-bar', 'baz-dib'));
-        $this->assertSame($expect, $actual);
-        
-        // explictly accepts en-gb, which is explictly available.
-        // note that it returns the *available* value, which is determined
-        // by the developer, not the acceptable value, which is determined
-        // by the user/client/headers.
-        $expect = 'en-gb';
-        $actual = $accept->getLanguage(array('en-gb', 'fr-FR'));
-        $this->assertSame($expect, $actual);
-        
-        // a subtype is available
-        $expect = 'en-zo';
-        $actual = $accept->getLanguage(array('foo-bar', 'en-zo', 'baz-qux'));
-        $this->assertSame($expect, $actual);
-        
-        // no acceptable language specified, use first available
-        $accept = $this->newAccept();
-        $expect = 'en-us';
-        $actual = $accept->getLanguage(array('en-us', 'en-gb'));
-        $this->assertSame($expect, $actual);
-        
-        // language is available but quality level is not acceptable
-        $accept = $this->newAccept(array(
-            'HTTP_ACCEPT_LANGUAGE' => 'en-us, en-gb, en, foo-bar;q=0',
-        ));
-        $expect = false;
-        $actual = $accept->getLanguage(array('foo-bar'));
-        $this->assertSame($expect, $actual);
+        $accept = $this->newAccept($accept);
+
+        $actual = $accept->getLanguage($available);
+
+        if ($expected === false) {
+            $this->assertFalse($actual);
+        } else {
+            $this->assertInstanceOf('Aura\Web\Request\Accept\Value\Language', $actual);
+            $this->assertSame($expected, $actual->getValue());
+        }
     }
-    
-    public function testGetMedia_negotiate()
+
+    /**
+     * @dataProvider mediaNegotiateProvider
+     * @param $accept
+     * @param $available
+     * @param $expected
+     */
+    public function testGetMedia_negotiate($accept, $available, $expected)
     {
-        $accept = $this->newAccept(array(
-            'HTTP_ACCEPT' => 'application/json, application/xml, text/*, */*',
-        ));
-        
-        // nothing available
-        $expect = false;
-        $actual = $accept->getMedia(array());
-        $this->assertSame($expect, $actual);
-        
-        // explicitly accepts */*, and no matching media are available
-        $expect = 'foo/bar';
-        $actual = $accept->getMedia(array('foo/bar', 'baz/dib'));
-        $this->assertSame($expect, $actual);
-        
-        // explictly accepts application/xml, which is explictly available.
-        // note that it returns the *available* value, which is determined
-        // by the developer, not the acceptable value, which is determined
-        // by the user/client/headers.
-        $expect = 'application/XML';
-        $actual = $accept->getMedia(array('application/XML', 'text/csv'));
-        $this->assertSame($expect, $actual);
-        
-        // a subtype is available
-        $expect = 'text/csv';
-        $actual = $accept->getMedia(array('foo/bar', 'text/csv', 'baz/qux'));
-        $this->assertSame($expect, $actual);
-        
-        // no acceptable media specified, use first available
-        $accept = $this->newAccept();
-        $expect = 'application/json';
-        $actual = $accept->getMedia(array('application/json', 'application/xml'));
-        $this->assertSame($expect, $actual);
-        
-        // media is available but quality level is not acceptable
-        $accept = $this->newAccept(array(
-            'HTTP_ACCEPT' => 'application/json, application/xml, text/*, foo/bar;q=0',
-        ));
-        $expect = false;
-        $actual = $accept->getMedia(array('foo/bar'));
-        $this->assertSame($expect, $actual);
-        
-        // override with file extension
-        $accept = $this->newAccept(array(
-            'HTTP_ACCEPT' => 'text/html, text/xhtml, text/plain',
-            'REQUEST_URI' => '/path/to/resource.json',
-        ));
-        $expect = 'application/json';
-        $actual = $accept->getMedia(array('text/html', 'application/json'));
-        $this->assertSame($expect, $actual);
+        $accept = $this->newAccept($accept);
+
+        $actual = $accept->getMedia($available);
+
+        if ($expected === false) {
+            $this->assertFalse($actual);
+        } else {
+            $this->assertInstanceOf('Aura\Web\Request\Accept\Value\Accept', $actual);
+            $this->assertSame($expected, $actual->getValue());
+        }
+    }
+
+    protected function verifySet($set, $expected, $setType, $valueType)
+    {
+        $this->assertInstanceOf($setType, $set);
+        $this->assertSameSize($set, $expected);
+
+        foreach ($set as $key => $item) {
+            $this->assertInstanceOf($valueType, $item);
+            foreach ($expected[$key] as $func => $value) {
+                if ($func != 'string') {
+                    $func = 'get' . $func;
+                } else {
+                    $func = '__toString';
+                }
+
+                $this->assertEquals($value, $item->$func());
+            }
+        }
+    }
+
+    public function charsetProvider()
+    {
+        return array(
+            array(
+                'accept' => array(
+                    'HTTP_ACCEPT_CHARSET' => 'iso-8859-5, unicode-1-1;q=0.8',
+                ),
+                'expected' => array(
+                    array(
+                        'value' => 'iso-8859-5',
+                        'priority' => 1.0,
+                    ),
+                    array(
+                        'value' => 'ISO-8859-1',
+                        'priority' => 1.0,
+                    ),
+                    array(
+                        'value' => 'unicode-1-1',
+                        'priority' => 0.8,
+                    ),
+                ),
+                'setType' => 'Aura\Web\Request\Accept\Set',
+                'valueType' => 'Aura\Web\Request\Accept\Value\Charset',
+            )
+        );
+    }
+
+    public function charsetNegotiateProvider()
+    {
+        return array(
+            array(
+                'accept' => array('HTTP_ACCEPT_CHARSET' => 'iso-8859-5, unicode-1-1, *'),
+                'available' => array(),
+                'expected' => false,
+            ),
+            array(
+                'accept' => array('HTTP_ACCEPT_CHARSET' => 'iso-8859-5, unicode-1-1, *'),
+                'available' => array('foo', 'bar'),
+                'expected' => 'foo'
+            ),
+            array(
+                'accept' => array('HTTP_ACCEPT_CHARSET' => 'iso-8859-5, unicode-1-1, *'),
+                'available' => array('foo', 'UniCode-1-1'),
+                'expected' => 'UniCode-1-1'
+            ),
+            array(
+                'accept' => array(),
+                'available' => array('ISO-8859-5', 'foo'),
+                'expected' => 'ISO-8859-5'
+            ),
+            array(
+                'accept' => array('HTTP_ACCEPT_CHARSET' => 'ISO-8859-1, baz;q=0'),
+                'available' => array('baz'),
+                'expected' => false
+            ),
+        );
+    }
+
+    public function encodingProvider()
+    {
+        return array(
+            array(
+                'accept' => array('HTTP_ACCEPT_ENCODING' => 'compress;q=0.5, gzip;q=1.0'),
+                'expect' => array(
+                    array('value' => 'gzip', 'priority' => 1.0),
+                    array('value' => 'compress', 'priority' => 0.5)
+                ),
+                'setType' => 'Aura\Web\Request\Accept\Set',
+                'valueType' => 'Aura\Web\Request\Accept\Value\Encoding',
+            )
+        );
+    }
+
+    public function encodingNegotiateProvider()
+    {
+        return array(
+            array(
+                'accept' => array('HTTP_ACCEPT_ENCODING' => 'gzip, compress, *',),
+                'available' => array(),
+                'expected' => false,
+            ),
+            array(
+                'accept' => array('HTTP_ACCEPT_ENCODING' => 'gzip, compress, *'),
+                'available' => array('foo', 'bar'),
+                'expected' => 'foo',
+            ),
+            array(
+                'accept' => array('HTTP_ACCEPT_ENCODING' => 'gzip, compress, *',),
+                'available' => array('foo', 'GZIP'),
+                'expected' => 'GZIP',
+            ),
+            array(
+                'accept' => array('HTTP_ACCEPT_ENCODING' => 'gzip, compress, *',),
+                'available' => array('gzip', 'compress'),
+                'expected' => 'gzip',
+            ),
+            array(
+                'accept' => array('HTTP_ACCEPT_ENCODING' => 'gzip, compress, foo;q=0'),
+                'available' => array('foo'),
+                'expected' => false,
+            ),
+        );
+    }
+
+    public function mediaNegotiateProvider()
+    {
+        return array(
+            array(
+                // nothing available
+                'accept' => array('HTTP_ACCEPT' => 'application/json, application/xml, text/*, */*'),
+                'available' => array(),
+                'expected' => false,
+            ),
+            array(
+                // explicitly accepts */*, and no matching media are available
+                'accept' => array('HTTP_ACCEPT' => 'application/json, application/xml, text/*, */*'),
+                'available' => array('foo/bar', 'baz/dib'),
+                'expected' => 'foo/bar',
+            ),
+            array(
+                // explictly accepts application/xml, which is explictly available.
+                // note that it returns the *available* value, which is determined
+                // by the developer, not the acceptable value, which is determined
+                // by the user/client/headers.
+                'accept' => array('HTTP_ACCEPT' => 'application/json, application/xml, text/*, */*'),
+                'available' => array('application/XML', 'text/csv'),
+                'expected' => 'application/XML',
+            ),
+            array(
+                // a subtype is available
+                'accept' => array('HTTP_ACCEPT' => 'application/json, application/xml, text/*, */*'),
+                'available' => array('foo/bar', 'text/csv', 'baz/qux'),
+                'expected' => 'text/csv',
+            ),
+            array(
+                // no acceptable media specified, use first available
+                'accept' => array(),
+                'available' => array('application/json', 'application/xml'),
+                'expected' => 'application/json',
+            ),
+            array(
+                // media is available but quality level is not acceptable
+                'accept' => array('HTTP_ACCEPT' => 'application/json, application/xml, text/*, foo/bar;q=0'),
+                'available' => array('foo/bar'),
+                'expected' => false,
+            ),
+            array(
+                // override with file extension
+                'accept' => array(
+                    'HTTP_ACCEPT' => 'text/html, text/xhtml, text/plain',
+                    'REQUEST_URI' => '/path/to/resource.json',
+                ),
+                'available' => array('text/html', 'application/json'),
+                'expected' => 'application/json',
+            )
+        );
+    }
+
+    public function languageProvider()
+    {
+        return array(
+            array(
+                'accept' => array(),
+                'expect' => array(),
+                'setType' => 'Aura\Web\Request\Accept\Set',
+                'valueType' => 'Aura\Web\Request\Accept\Value\Language',
+            ),
+            array(
+                'accept' => array(
+                    'HTTP_ACCEPT_LANGUAGE' => '*',
+                ),
+                'expect' => array(
+                    array('type' => '*', 'subtype' => false, 'value' => '*',  'priority' => 1.0, 'parameters' => array())
+                ),
+                'setType' => 'Aura\Web\Request\Accept\Set',
+                'valueType' => 'Aura\Web\Request\Accept\Value\Language',
+            ),
+            array(
+                'accept' => array(
+                    'HTTP_ACCEPT_LANGUAGE' => 'en-US, en-GB, en, *',
+                ),
+                'expect' => array(
+                    array('type' => 'en', 'subtype' => 'US', 'value' => 'en-US', 'priority' => 1.0, 'parameters' => array()),
+                    array('type' => 'en', 'subtype' => 'GB', 'value' => 'en-GB', 'priority' => 1.0, 'parameters' => array()),
+                    array('type' => 'en', 'subtype' => false, 'value' => 'en', 'priority' => 1.0, 'parameters' => array()),
+                    array('type' => '*', 'subtype' => false, 'value' => '*',  'priority' => 1.0, 'parameters' => array())
+                ),
+                'setType' => 'Aura\Web\Request\Accept\Set',
+                'valueType' => 'Aura\Web\Request\Accept\Value\Language',
+            ),
+        );
+    }
+
+    public function mediaProvider()
+    {
+        return array(
+            array(
+                'accept' => array('HTTP_ACCEPT' => 'text/*;q=0.9, text/html, text/xhtml;q=0.8'),
+                'expect' => array(
+                    array(
+                        'type' => 'text',
+                        'subtype' => 'html',
+                        'value' => 'text/html',
+                        'priority' => 1.0,
+                        'string' => 'text/html;q=1',
+                        'parameters' => array(),
+                    ),
+                    array(
+                        'type' => 'text',
+                        'subtype' => '*',
+                        'value' => 'text/*',
+                        'priority' => 0.9,
+                        'string' => 'text/*;q=0.9',
+                        'parameters' => array(),
+                    ),
+                    array(
+                        'type' => 'text',
+                        'subtype' => 'xhtml',
+                        'value' => 'text/xhtml',
+                        'priority' => 0.8,
+                        'string' => 'text/xhtml;q=0.8',
+                        'parameters' => array(),
+                    ),
+                ),
+                'setType' => 'Aura\Web\Request\Accept\Set',
+                'valueType' => 'Aura\Web\Request\Accept\Value\Accept',
+            ),
+            array(
+                'accept' => array('HTTP_ACCEPT' => 'text/json;version=1,text/html;q=1;version=2,application/xml+xhtml;q=0'),
+                'expect' => array(
+                    array(
+                        'type' => 'text',
+                        'subtype' => 'json',
+                        'value' => 'text/json',
+                        'priority' => 1.0,
+                        'string' => 'text/json;q=1;version=1',
+                        'parameters' => array('version' => 1),
+                    ),
+                    array(
+                        'type' => 'text',
+                        'subtype' => 'html',
+                        'value' => 'text/html',
+                        'priority' => 1.0,
+                        'string' => 'text/html;q=1;version=2',
+                        'parameters' => array('version' => 2),
+                    ),
+                    array(
+                        'type' => 'application',
+                        'subtype' => 'xml+xhtml',
+                        'value' => 'application/xml+xhtml',
+                        'priority' => 0,
+                        'string' => 'application/xml+xhtml;q=0',
+                        'parameters' => array(),
+                    ),
+                ),
+                'setType' => 'Aura\Web\Request\Accept\Set',
+                'valueType' => 'Aura\Web\Request\Accept\Value\Accept',
+            ),
+            array(
+                'accept' => array('HTTP_ACCEPT' => 'text/json;version=1;foo=bar,text/html;version=2,application/xml+xhtml'),
+                'expect' => array(
+                    array(
+                        'type' => 'text',
+                        'subtype' => 'json',
+                        'value' => 'text/json',
+                        'priority' => 1.0,
+                        'string' => 'text/json;q=1;version=1;foo=bar',
+                        'parameters' => array('version' => 1, 'foo' => 'bar'),
+                    ),
+                    array(
+                        'type' => 'text',
+                        'subtype' => 'html',
+                        'value' => 'text/html',
+                        'priority' => 1.0,
+                        'string' => 'text/html;q=1;version=2',
+                        'parameters' => array('version' => 2),
+                    ),
+                    array(
+                        'type' => 'application',
+                        'subtype' => 'xml+xhtml',
+                        'value' => 'application/xml+xhtml',
+                        'priority' => 1.0,
+                        'string' => 'application/xml+xhtml;q=1',
+                        'parameters' => array(),
+                    ),
+                ),
+                'setType' => 'Aura\Web\Request\Accept\Set',
+                'valueType' => 'Aura\Web\Request\Accept\Value\Accept',
+            ),
+            array(
+                'accept' => array('HTTP_ACCEPT' => 'text/json;q=0.9;version=1;foo="bar"'),
+                'expect' => array(
+                    array(
+                        'type' => 'text',
+                        'subtype' => 'json',
+                        'value' => 'text/json',
+                        'priority' => 0.9,
+                        'string' => 'text/json;q=0.9;version=1;foo=bar',
+                        'parameters' => array('version' => 1, 'foo' => 'bar'),
+                    ),
+                ),
+                'setType' => 'Aura\Web\Request\Accept\Set',
+                'valueType' => 'Aura\Web\Request\Accept\Value\Accept',
+            ),
+        );
+    }
+
+    public function languageNegotiateProvider()
+    {
+        return array(
+            array(
+                'accept' => array('HTTP_ACCEPT_LANGUAGE' => 'en-US, en-GB, en, *'),
+                'available' => array(),
+                'expected' => false,
+            ),
+            array(
+                'accept' => array('HTTP_ACCEPT_LANGUAGE' => 'en-US, en-GB, en, *'),
+                'available' => array('foo-bar' , 'baz-dib'),
+                'expected' => 'foo-bar',
+            ),
+            array(
+                'accept' => array('HTTP_ACCEPT_LANGUAGE' => 'en-US, en-GB, en, *'),
+                'available' => array('en-gb', 'fr-FR'),
+                'expected' => 'en-gb',
+            ),
+            array(
+                'accept' => array('HTTP_ACCEPT_LANGUAGE' => 'en-US, en-GB, en, *'),
+                'available' => array('foo-bar', 'en-zo', 'baz-qux'),
+                'expected' => 'en-zo',
+            ),
+            array(
+                'accept' => array(),
+                'available' => array('en-us', 'en-gb'),
+                'expected' => 'en-us',
+            ),
+            array(
+                'accept' => array('HTTP_ACCEPT_LANGUAGE' => 'en-us, en-gb, en, foo-bar;q=0'),
+                'available' => array('foo-bar'),
+                'expected' => false
+            )
+        );
     }
 }
