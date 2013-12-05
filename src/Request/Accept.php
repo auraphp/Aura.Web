@@ -259,7 +259,7 @@ class Accept
     protected function fixCharset()
     {
         // no charset values were specified
-        if (sizeof($this->charset) == 0) {
+        if (count($this->charset) == 0) {
             return;
         }
         
@@ -305,7 +305,7 @@ class Accept
         $acceptable = $this->charset;
         
         // if no acceptable charset specified, use first available
-        if (sizeof($acceptable) == 0) {
+        if (count($acceptable) == 0) {
             return $available[0];
         }
         
@@ -364,7 +364,7 @@ class Accept
         $acceptable = $this->encoding;
         
         // if no acceptable encoding specified, use first available
-        if (sizeof($acceptable) == 0) {
+        if (count($acceptable) == 0) {
             return $available[0];
         }
         
@@ -423,7 +423,7 @@ class Accept
         $acceptable = $this->language;
         
         // if no acceptable language specified, use first available
-        if (sizeof($acceptable) == 0) {
+        if (count($acceptable) == 0) {
             return $available[0];
         }
         
@@ -490,7 +490,7 @@ class Accept
         $acceptable = $this->media;
         
         // if no acceptable media specified, use first available
-        if (sizeof($acceptable) == 0) {
+        if (count($acceptable) == 0) {
             return $available[0];
         }
 

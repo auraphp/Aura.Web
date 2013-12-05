@@ -50,7 +50,7 @@ class Language extends \Aura\Web\Request\Accept\Value  {
 
     public function __toString()
     {
-        $parameters = (sizeof($this->parameters) > 0) ? ';' . http_build_query($this->getParameters(), null, ';') : '';
+        $parameters = (count($this->parameters) > 0) ? ';' . http_build_query($this->getParameters(), null, ';') : '';
 
         return $this->getValue() . ';q=' . $this->priority . $parameters;
     }

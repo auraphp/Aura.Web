@@ -137,7 +137,7 @@ class Set implements \IteratorAggregate, \Countable, \ArrayAccess {
 
     public function count()
     {
-        return sizeof($this->values);
+        return count($this->values);
     }
 
     public function offsetExists($offset)
