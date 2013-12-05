@@ -82,29 +82,6 @@ class Accept
     
     /**
      * 
-     * Modify the $media property based on a URI file extension.
-     * 
-     * @param array $server An array of $_SERVER values.
-     * 
-     * @return null
-     * 
-     */
-    protected function fixMedia($server)
-    {
-        // override the media if a file extension exists in the path
-        $request_uri = isset($server['REQUEST_URI'])
-                     ? $server['REQUEST_URI']
-                     : null;
-        $path   = parse_url('http://example.com/' . $request_uri, PHP_URL_PATH);
-        $name   = basename($path);
-        $ext    = strrchr($name, '.');
-        if ($ext && isset($this->types[$ext])) {
-            $this->media->setValues($this->types[$ext]);
-        }
-    }
-    
-    /**
-     * 
      * Returns the `Accept-Charset` value as an array; or, if available values
      * are passed, returns a negotiated value.
      * 
