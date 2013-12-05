@@ -1,7 +1,7 @@
 <?php
-namespace Aura\Web\Request\Accept;
+namespace Aura\Web\Request\Accept\Value;
 
-class Value {
+abstract class AbstractValue {
     protected $value = "";
     protected $quality = 1.0;
     protected $parameters = array();

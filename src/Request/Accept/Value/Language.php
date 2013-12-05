@@ -1,7 +1,8 @@
 <?php
 namespace Aura\Web\Request\Accept\Value;
 
-class Language extends \Aura\Web\Request\Accept\Value  {
+class Language extends AbstractValue
+{
     protected $type = '*';
     protected $subtype = false;
 
