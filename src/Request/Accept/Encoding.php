@@ -43,7 +43,7 @@ class Encoding extends AbstractValues
             $value = strtolower($encoding->getValue());
             
             // if the acceptable quality is zero, skip it
-            if ($encoding->getPriority() == 0) {
+            if ($encoding->getQuality() == 0) {
                 continue;
             }
             

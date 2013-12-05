@@ -188,15 +188,15 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                 'expected' => array(
                     array(
                         'value' => 'iso-8859-5',
-                        'priority' => 1.0,
+                        'quality' => 1.0,
                     ),
                     array(
                         'value' => 'ISO-8859-1',
-                        'priority' => 1.0,
+                        'quality' => 1.0,
                     ),
                     array(
                         'value' => 'unicode-1-1',
-                        'priority' => 0.8,
+                        'quality' => 0.8,
                     ),
                 ),
                 'setType' => 'Aura\Web\Request\Accept\Charset',
@@ -242,8 +242,8 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
             array(
                 'accept' => array('HTTP_ACCEPT_ENCODING' => 'compress;q=0.5, gzip;q=1.0'),
                 'expect' => array(
-                    array('value' => 'gzip', 'priority' => 1.0),
-                    array('value' => 'compress', 'priority' => 0.5)
+                    array('value' => 'gzip', 'quality' => 1.0),
+                    array('value' => 'compress', 'quality' => 0.5)
                 ),
                 'setType' => 'Aura\Web\Request\Accept\Encoding',
                 'valueType' => 'Aura\Web\Request\Accept\Value\Encoding',
@@ -350,7 +350,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                     'HTTP_ACCEPT_LANGUAGE' => '*',
                 ),
                 'expect' => array(
-                    array('type' => '*', 'subtype' => false, 'value' => '*',  'priority' => 1.0, 'parameters' => array())
+                    array('type' => '*', 'subtype' => false, 'value' => '*',  'quality' => 1.0, 'parameters' => array())
                 ),
                 'setType' => 'Aura\Web\Request\Accept\Language',
                 'valueType' => 'Aura\Web\Request\Accept\Value\Language',
@@ -360,10 +360,10 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                     'HTTP_ACCEPT_LANGUAGE' => 'en-US, en-GB, en, *',
                 ),
                 'expect' => array(
-                    array('type' => 'en', 'subtype' => 'US', 'value' => 'en-US', 'priority' => 1.0, 'parameters' => array()),
-                    array('type' => 'en', 'subtype' => 'GB', 'value' => 'en-GB', 'priority' => 1.0, 'parameters' => array()),
-                    array('type' => 'en', 'subtype' => false, 'value' => 'en', 'priority' => 1.0, 'parameters' => array()),
-                    array('type' => '*', 'subtype' => false, 'value' => '*',  'priority' => 1.0, 'parameters' => array())
+                    array('type' => 'en', 'subtype' => 'US', 'value' => 'en-US', 'quality' => 1.0, 'parameters' => array()),
+                    array('type' => 'en', 'subtype' => 'GB', 'value' => 'en-GB', 'quality' => 1.0, 'parameters' => array()),
+                    array('type' => 'en', 'subtype' => false, 'value' => 'en', 'quality' => 1.0, 'parameters' => array()),
+                    array('type' => '*', 'subtype' => false, 'value' => '*',  'quality' => 1.0, 'parameters' => array())
                 ),
                 'setType' => 'Aura\Web\Request\Accept\Language',
                 'valueType' => 'Aura\Web\Request\Accept\Value\Language',
@@ -381,7 +381,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'type' => 'text',
                         'subtype' => 'html',
                         'value' => 'text/html',
-                        'priority' => 1.0,
+                        'quality' => 1.0,
                         'string' => 'text/html;q=1',
                         'parameters' => array(),
                     ),
@@ -389,7 +389,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'type' => 'text',
                         'subtype' => '*',
                         'value' => 'text/*',
-                        'priority' => 0.9,
+                        'quality' => 0.9,
                         'string' => 'text/*;q=0.9',
                         'parameters' => array(),
                     ),
@@ -397,7 +397,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'type' => 'text',
                         'subtype' => 'xhtml',
                         'value' => 'text/xhtml',
-                        'priority' => 0.8,
+                        'quality' => 0.8,
                         'string' => 'text/xhtml;q=0.8',
                         'parameters' => array(),
                     ),
@@ -412,7 +412,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'type' => 'text',
                         'subtype' => 'json',
                         'value' => 'text/json',
-                        'priority' => 1.0,
+                        'quality' => 1.0,
                         'string' => 'text/json;q=1;version=1',
                         'parameters' => array('version' => 1),
                     ),
@@ -420,7 +420,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'type' => 'text',
                         'subtype' => 'html',
                         'value' => 'text/html',
-                        'priority' => 1.0,
+                        'quality' => 1.0,
                         'string' => 'text/html;q=1;version=2',
                         'parameters' => array('version' => 2),
                     ),
@@ -428,7 +428,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'type' => 'application',
                         'subtype' => 'xml+xhtml',
                         'value' => 'application/xml+xhtml',
-                        'priority' => 0,
+                        'quality' => 0,
                         'string' => 'application/xml+xhtml;q=0',
                         'parameters' => array(),
                     ),
@@ -443,7 +443,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'type' => 'text',
                         'subtype' => 'json',
                         'value' => 'text/json',
-                        'priority' => 1.0,
+                        'quality' => 1.0,
                         'string' => 'text/json;q=1;version=1;foo=bar',
                         'parameters' => array('version' => 1, 'foo' => 'bar'),
                     ),
@@ -451,7 +451,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'type' => 'text',
                         'subtype' => 'html',
                         'value' => 'text/html',
-                        'priority' => 1.0,
+                        'quality' => 1.0,
                         'string' => 'text/html;q=1;version=2',
                         'parameters' => array('version' => 2),
                     ),
@@ -459,7 +459,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'type' => 'application',
                         'subtype' => 'xml+xhtml',
                         'value' => 'application/xml+xhtml',
-                        'priority' => 1.0,
+                        'quality' => 1.0,
                         'string' => 'application/xml+xhtml;q=1',
                         'parameters' => array(),
                     ),
@@ -474,7 +474,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'type' => 'text',
                         'subtype' => 'json',
                         'value' => 'text/json',
-                        'priority' => 0.9,
+                        'quality' => 0.9,
                         'string' => 'text/json;q=0.9;version=1;foo=bar',
                         'parameters' => array('version' => 1, 'foo' => 'bar'),
                     ),

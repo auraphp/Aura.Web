@@ -42,7 +42,7 @@ class Language extends AbstractValues
         foreach ($acceptable as $language) {
             
             // if the acceptable quality is zero, skip it
-            if ($language->getPriority() == 0) {
+            if ($language->getQuality() == 0) {
                 continue;
             }
             

@@ -3,7 +3,7 @@ namespace Aura\Web\Request\Accept;
 
 class Value {
     protected $value = "";
-    protected $priority = 1.0;
+    protected $quality = 1.0;
     protected $parameters = array();
 
     /**
@@ -23,19 +23,19 @@ class Value {
     }
 
     /**
-     * @param int $priority
+     * @param int $quality
      */
-    public function setPriority($priority)
+    public function setQuality($quality)
     {
-        $this->priority = $priority;
+        $this->quality = $quality;
     }
 
     /**
      * @return float
      */
-    public function getPriority()
+    public function getQuality()
     {
-        return (float) $this->priority;
+        return (float) $this->quality;
     }
 
     /**

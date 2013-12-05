@@ -155,7 +155,7 @@ class Media extends AbstractValues
         foreach ($acceptable as $media) {
             
             // if the acceptable quality is zero, skip it
-            if ($media->getPriority() == 0) {
+            if ($media->getQuality() == 0) {
                 continue;
             }
             

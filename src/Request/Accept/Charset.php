@@ -66,7 +66,7 @@ class Charset extends AbstractValues
             $value = strtolower($charset->getValue());
             
             // if the acceptable quality is zero, skip it
-            if ($charset->getPriority() == 0) {
+            if ($charset->getQuality() == 0) {
                 continue;
             }
             

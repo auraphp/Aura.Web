@@ -77,9 +77,9 @@ abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayA
                 $params[$param['name']] = $param['value'];
             }
 
-            $priority = 1.0;
+            $quality = 1.0;
             if (isset($params['q'])) {
-                $priority = $params['q'];
+                $quality = $params['q'];
                 unset($params['q']);
             }
 
@@ -87,7 +87,7 @@ abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayA
             $class = $this->value_class;
             $obj = new $class();
             $obj->setValue(trim($value));
-            $obj->setPriority((float) $priority);
+            $obj->setQuality((float) $quality);
             $obj->setParameters($params);
             $value = $obj;
         }
@@ -119,7 +119,7 @@ abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayA
 
         // sort into q-value buckets
         foreach ($values as $value) {
-            $bucket[$value->getPriority()][] = $value;
+            $bucket[$value->getQuality()][] = $value;
         }
 
         // reverse-sort the buckets so that q=1 is first and q=0 is last,
