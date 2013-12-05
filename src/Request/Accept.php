@@ -200,7 +200,7 @@ class Accept
         $name   = basename($path);
         $ext    = strrchr($name, '.');
         if ($ext && isset($this->types[$ext])) {
-            $this->media->setValues($this->types[$ext], 'HTTP_ACCEPT');
+            $this->media->setValues($this->types[$ext]);
         }
     }
     
@@ -226,7 +226,7 @@ class Accept
         }
         
         // charset iso-8859-1 is acceptable if not explictly mentioned
-        $this->charset->addValues('ISO-8859-1', 'HTTP_ACCEPT_CHARSET');
+        $this->charset->addValues('ISO-8859-1');
     }
     
     /**
@@ -251,9 +251,9 @@ class Accept
         }
 
         $set = clone $this->charset;
-        $set->setValues(array(), 'HTTP_ACCEPT_CHARSET');
+        $set->setValues(array());
         foreach ($available as $charset) {
-            $set->addValues($charset, 'HTTP_ACCEPT_CHARSET');
+            $set->addValues($charset);
         }
         $available = $set;
         
@@ -311,9 +311,9 @@ class Accept
         }
 
         $set = clone $this->encoding;
-        $set->setValues(array(), 'HTTP_ACCEPT_ENCODING');
+        $set->setValues(array());
         foreach ($available as $encoding) {
-            $set->addValues($encoding, 'HTTP_ACCEPT_ENCODING');
+            $set->addValues($encoding);
         }
         $available = $set;
 
@@ -371,9 +371,9 @@ class Accept
         }
 
         $set = clone $this->language;
-        $set->setValues(array(), 'HTTP_ACCEPT_LANGUAGE');
+        $set->setValues(array());
         foreach ($available as $language) {
-            $set->addValues($language, 'HTTP_ACCEPT_LANGUAGE');
+            $set->addValues($language);
         }
         $available = $set;
         
@@ -439,9 +439,9 @@ class Accept
         }
 
         $set = clone $this->media;
-        $set->setValues(array(), 'HTTP_ACCEPT');
+        $set->setValues(array());
         foreach ($available as $media_type) {
-            $set->addValues($media_type, 'HTTP_ACCEPT');
+            $set->addValues($media_type);
         }
         $available = $set;
         

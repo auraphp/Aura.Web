@@ -5,10 +5,10 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
 {
     protected function newAccept($server = array())
     {
-        $charset = new Accept\Charset($server, 'HTTP_ACCEPT_CHARSET');
-        $encoding = new Accept\Encoding($server, 'HTTP_ACCEPT_ENCODING');
-        $language = new Accept\Language($server, 'HTTP_ACCEPT_LANGUAGE');
-        $media = new Accept\Media($server, 'HTTP_ACCEPT');
+        $charset = new Accept\Charset($server);
+        $encoding = new Accept\Encoding($server);
+        $language = new Accept\Language($server);
+        $media = new Accept\Media($server);
         
         return new Accept(
             $charset,
@@ -199,7 +199,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'priority' => 0.8,
                     ),
                 ),
-                'setType' => 'Aura\Web\Request\Accept\Set',
+                'setType' => 'Aura\Web\Request\Accept\Charset',
                 'valueType' => 'Aura\Web\Request\Accept\Value\Charset',
             )
         );
@@ -245,7 +245,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                     array('value' => 'gzip', 'priority' => 1.0),
                     array('value' => 'compress', 'priority' => 0.5)
                 ),
-                'setType' => 'Aura\Web\Request\Accept\Set',
+                'setType' => 'Aura\Web\Request\Accept\Encoding',
                 'valueType' => 'Aura\Web\Request\Accept\Value\Encoding',
             )
         );
@@ -342,7 +342,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
             array(
                 'accept' => array(),
                 'expect' => array(),
-                'setType' => 'Aura\Web\Request\Accept\Set',
+                'setType' => 'Aura\Web\Request\Accept\Language',
                 'valueType' => 'Aura\Web\Request\Accept\Value\Language',
             ),
             array(
@@ -352,7 +352,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                 'expect' => array(
                     array('type' => '*', 'subtype' => false, 'value' => '*',  'priority' => 1.0, 'parameters' => array())
                 ),
-                'setType' => 'Aura\Web\Request\Accept\Set',
+                'setType' => 'Aura\Web\Request\Accept\Language',
                 'valueType' => 'Aura\Web\Request\Accept\Value\Language',
             ),
             array(
@@ -365,7 +365,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                     array('type' => 'en', 'subtype' => false, 'value' => 'en', 'priority' => 1.0, 'parameters' => array()),
                     array('type' => '*', 'subtype' => false, 'value' => '*',  'priority' => 1.0, 'parameters' => array())
                 ),
-                'setType' => 'Aura\Web\Request\Accept\Set',
+                'setType' => 'Aura\Web\Request\Accept\Language',
                 'valueType' => 'Aura\Web\Request\Accept\Value\Language',
             ),
         );
@@ -402,7 +402,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'parameters' => array(),
                     ),
                 ),
-                'setType' => 'Aura\Web\Request\Accept\Set',
+                'setType' => 'Aura\Web\Request\Accept\Media',
                 'valueType' => 'Aura\Web\Request\Accept\Value\Media',
             ),
             array(
@@ -433,7 +433,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'parameters' => array(),
                     ),
                 ),
-                'setType' => 'Aura\Web\Request\Accept\Set',
+                'setType' => 'Aura\Web\Request\Accept\Media',
                 'valueType' => 'Aura\Web\Request\Accept\Value\Media',
             ),
             array(
@@ -464,7 +464,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'parameters' => array(),
                     ),
                 ),
-                'setType' => 'Aura\Web\Request\Accept\Set',
+                'setType' => 'Aura\Web\Request\Accept\Media',
                 'valueType' => 'Aura\Web\Request\Accept\Value\Media',
             ),
             array(
@@ -479,7 +479,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'parameters' => array('version' => 1, 'foo' => 'bar'),
                     ),
                 ),
-                'setType' => 'Aura\Web\Request\Accept\Set',
+                'setType' => 'Aura\Web\Request\Accept\Media',
                 'valueType' => 'Aura\Web\Request\Accept\Value\Media',
             ),
         );
