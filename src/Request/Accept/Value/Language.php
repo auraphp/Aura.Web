@@ -52,6 +52,6 @@ class Language extends \Aura\Web\Request\Accept\Value  {
     {
         $parameters = (count($this->parameters) > 0) ? ';' . http_build_query($this->getParameters(), null, ';') : '';
 
-        return $this->getValue() . ';q=' . $this->priority . $parameters;
+        return $this->getValue() . ';q=' . $this->quality . $parameters;
     }
 }
