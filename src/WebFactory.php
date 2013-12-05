@@ -321,10 +321,11 @@ class WebFactory
     public function newRequestAccept()
     {
         $server = $this->get('_SERVER');
-        $charset = new Request\Accept\Charset($server);
-        $encoding = new Request\Accept\Encoding($server);
-        $language = new Request\Accept\Language($server);
-        $media = new Request\Accept\Media($server, $this->types);
+        $value_factory = new Request\Accept\Value\ValueFactory;
+        $charset = new Request\Accept\Charset($value_factory, $server);
+        $encoding = new Request\Accept\Encoding($value_factory, $server);
+        $language = new Request\Accept\Language($value_factory, $server);
+        $media = new Request\Accept\Media($value_factory, $server, $this->types);
         
         return new Request\Accept(
             $charset,

@@ -1,6 +1,8 @@
 <?php
 namespace Aura\Web\Request\Accept;
 
+use Aura\Web\Request\Accept\Value\ValueFactory;
+
 /**
  * @todo make sure this is read-only
  */
@@ -10,13 +12,16 @@ abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayA
 
     protected $server_key;
     
-    protected $value_class;
+    protected $value_type;
     
     /**
      * @param array $server A copy of $_SERVER.
      */
-    public function __construct(array $server = array())
-    {
+    public function __construct(
+        ValueFactory $value_factory,
+        array $server = array()
+    ) {
+        $this->value_factory = $value_factory;
         $this->addValues($server);
     }
 
@@ -87,8 +92,12 @@ abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayA
             }
 
             /** @todo needs a factory here */
-            $class = $this->value_class;
-            $value = new $class(trim($value), (float) $quality, $params);
+            $value = $this->value_factory->newInstance(
+                $this->value_type,
+                trim($value),
+                (float) $quality,
+                $params
+            );
         }
 
         return $values;

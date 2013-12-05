@@ -1,11 +1,13 @@
 <?php
 namespace Aura\Web\Request\Accept;
 
+use Aura\Web\Request\Accept\Value\ValueFactory;
+
 class Media extends AbstractValues
 {
     protected $server_key = 'HTTP_ACCEPT';
 
-    protected $value_class = 'Aura\Web\Request\Accept\Value\Media';
+    protected $value_type = 'media';
     
     /**
      * 
@@ -101,9 +103,12 @@ class Media extends AbstractValues
     /**
      * @param array $server A copy of $_SERVER.
      */
-    public function __construct(array $server = array(), array $types = array())
-    {
-        parent::__construct($server);
+    public function __construct(
+        ValueFactory $value_factory,
+        array $server = array(),
+        array $types = array()
+    ) {
+        parent::__construct($value_factory, $server);
         
         // merge the media type maps
         $this->types = array_merge($this->types, $types);

@@ -1,18 +1,22 @@
 <?php
 namespace Aura\Web\Request\Accept;
 
+use Aura\Web\Request\Accept\Value\ValueFactory;
+
 class Charset extends AbstractValues
 {
     protected $server_key = 'HTTP_ACCEPT_CHARSET';
     
-    protected $value_class = 'Aura\Web\Request\Accept\Value\Charset';
+    protected $value_type = 'charset';
     
     /**
      * @param array $server A copy of $_SERVER.
      */
-    public function __construct(array $server = array())
-    {
-        parent::__construct($server);
+    public function __construct(
+        ValueFactory $value_factory,
+        array $server = array()
+    ) {
+        parent::__construct($value_factory, $server);
         
         // are charset values specified?
         if (count($this->values) == 0) {

@@ -5,7 +5,7 @@ class Encoding extends AbstractValues
 {
     protected $server_key = 'HTTP_ACCEPT_ENCODING';
 
-    protected $value_class = 'Aura\Web\Request\Accept\Value\Encoding';
+    protected $value_type = 'encoding';
     
     /**
      * 
