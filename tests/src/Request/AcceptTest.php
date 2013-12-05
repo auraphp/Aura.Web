@@ -5,7 +5,18 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
 {
     protected function newAccept($server = array())
     {
-        return new Accept($server);
+        $charset = new Accept\Set($server, 'HTTP_ACCEPT_CHARSET');
+        $encoding = new Accept\Set($server, 'HTTP_ACCEPT_ENCODING');
+        $language = new Accept\Set($server, 'HTTP_ACCEPT_LANGUAGE');
+        $media = new Accept\Set($server, 'HTTP_ACCEPT');
+        
+        return new Accept(
+            $charset,
+            $encoding,
+            $language,
+            $media,
+            $server
+        );
     }
 
     /**

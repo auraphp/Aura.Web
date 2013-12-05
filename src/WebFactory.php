@@ -320,8 +320,18 @@ class WebFactory
      */
     public function newRequestAccept()
     {
+        $server = $this->get('_SERVER');
+        $charset = new Request\Accept\Set($server, 'HTTP_ACCEPT_CHARSET');
+        $encoding = new Request\Accept\Set($server, 'HTTP_ACCEPT_ENCODING');
+        $language = new Request\Accept\Set($server, 'HTTP_ACCEPT_LANGUAGE');
+        $media = new Request\Accept\Set($server, 'HTTP_ACCEPT');
+        
         return new Request\Accept(
-            $this->get('_SERVER'),
+            $charset,
+            $encoding,
+            $language,
+            $media,
+            $server,
             $this->types
         );
     }

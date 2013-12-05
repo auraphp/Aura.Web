@@ -156,16 +156,22 @@ class Accept
      * @param array $types Additional extension to Content-Type mappings.
      * 
      */
-    public function __construct(array $server, array $types = array())
-    {
+    public function __construct(
+        AcceptSet $charset,
+        AcceptSet $encoding,
+        AcceptSet $language,
+        AcceptSet $media,
+        array $server,
+        array $types = array()
+    ) {
         // merge the media type maps
         $this->types = array_merge($this->types, $types);
         
         // set the properties
-        $this->media    = new AcceptSet($server, 'HTTP_ACCEPT');
-        $this->charset  = new AcceptSet($server, 'HTTP_ACCEPT_CHARSET');
-        $this->encoding = new AcceptSet($server, 'HTTP_ACCEPT_ENCODING');
-        $this->language = new AcceptSet($server, 'HTTP_ACCEPT_LANGUAGE');
+        $this->media    = $media;
+        $this->charset  = $charset;
+        $this->encoding = $encoding;
+        $this->language = $language;
         
         // fix the properties
         $this->fixMedia($server);
