@@ -1,7 +1,8 @@
 <?php
 namespace Aura\Web\Request\Accept\Value;
 
-class Accept extends \Aura\Web\Request\Accept\Value {
+class Media extends \Aura\Web\Request\Accept\Value
+{
     protected $type = '*';
     protected $subtype = '*';
 

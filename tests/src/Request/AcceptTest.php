@@ -143,7 +143,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
         if ($expected === false) {
             $this->assertFalse($actual);
         } else {
-            $this->assertInstanceOf('Aura\Web\Request\Accept\Value\Accept', $actual);
+            $this->assertInstanceOf('Aura\Web\Request\Accept\Value\Media', $actual);
             $this->assertSame($expected, $actual->getValue());
         }
     }
@@ -392,7 +392,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                     ),
                 ),
                 'setType' => 'Aura\Web\Request\Accept\Set',
-                'valueType' => 'Aura\Web\Request\Accept\Value\Accept',
+                'valueType' => 'Aura\Web\Request\Accept\Value\Media',
             ),
             array(
                 'accept' => array('HTTP_ACCEPT' => 'text/json;version=1,text/html;q=1;version=2,application/xml+xhtml;q=0'),
@@ -423,7 +423,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                     ),
                 ),
                 'setType' => 'Aura\Web\Request\Accept\Set',
-                'valueType' => 'Aura\Web\Request\Accept\Value\Accept',
+                'valueType' => 'Aura\Web\Request\Accept\Value\Media',
             ),
             array(
                 'accept' => array('HTTP_ACCEPT' => 'text/json;version=1;foo=bar,text/html;version=2,application/xml+xhtml'),
@@ -454,7 +454,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                     ),
                 ),
                 'setType' => 'Aura\Web\Request\Accept\Set',
-                'valueType' => 'Aura\Web\Request\Accept\Value\Accept',
+                'valueType' => 'Aura\Web\Request\Accept\Value\Media',
             ),
             array(
                 'accept' => array('HTTP_ACCEPT' => 'text/json;q=0.9;version=1;foo="bar"'),
@@ -469,7 +469,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                     ),
                 ),
                 'setType' => 'Aura\Web\Request\Accept\Set',
-                'valueType' => 'Aura\Web\Request\Accept\Value\Accept',
+                'valueType' => 'Aura\Web\Request\Accept\Value\Media',
             ),
         );
     }

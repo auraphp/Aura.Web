@@ -53,12 +53,14 @@ class Set implements \IteratorAggregate, \Countable, \ArrayAccess {
 
     protected function parseValues($values, $key)
     {
-        $parts = explode('_', $key);
-        $class = 'Aura\Web\Request\Accept\Value\\' . ucfirst(strtolower(end($parts)));
-
-        if (!class_exists($class)) {
-            $class = '\Aura\Web\Request\Accept\Value';
-        }
+        $classes = array(
+            'HTTP_ACCEPT'          => 'Media',
+            'HTTP_ACCEPT_CHARSET'  => 'Charset',
+            'HTTP_ACCEPT_LANGUAGE' => 'Language',
+            'HTTP_ACCEPT_ENCODING' => 'Encoding',
+        );
+        
+        $class = 'Aura\Web\Request\Accept\Value\\' . $classes[$key];
 
         $values = explode(',', $values);
 
@@ -81,6 +83,7 @@ class Set implements \IteratorAggregate, \Countable, \ArrayAccess {
                 unset($params['q']);
             }
 
+            /** @todo needs a factory here */
             $obj = new $class();
             $obj->setValue(trim($value));
             $obj->setPriority((float) $priority);
@@ -91,6 +94,23 @@ class Set implements \IteratorAggregate, \Countable, \ArrayAccess {
         return $values;
     }
 
+    /**
+     * 
+     * Sorts an Accept header value set according to quality levels.
+     * 
+     * This is an unusual sort. Normally we'd think a reverse-sort would
+     * order the array by q values from 1 to 0, but the problem is that
+     * an implicit 1.0 on more than one value means that those values will
+     * be reverse from what the header specifies, which seems unexpected
+     * when negotiating later.
+     * 
+     * @param array $server An array of $_SERVER values.
+     * 
+     * @param string $key The key to look up in $_SERVER.
+     * 
+     * @return array An array of values sorted by quality level.
+     * 
+     */
     protected function qualitySort($values)
     {
         $var    = array();

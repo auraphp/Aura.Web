@@ -174,59 +174,6 @@ class Accept
     
     /**
      * 
-     * Sorts an Accept header value set according to quality levels.
-     * 
-     * This is an unusual sort. Normally we'd think a reverse-sort would
-     * order the array by q values from 1 to 0, but the problem is that
-     * an implicit 1.0 on more than one value means that those values will
-     * be reverse from what the header specifies, which seems unexpected
-     * when negotiating later.
-     * 
-     * @param array $server An array of $_SERVER values.
-     * 
-     * @param string $key The key to look up in $_SERVER.
-     * 
-     * @return array An array of values sorted by quality level.
-     * 
-     */
-    protected function qualitySort($server, $key)
-    {
-        if (! isset($server[$key])) {
-            return array();
-        }
-        
-        $raw    = $server[$key];
-        $var    = array();
-        $bucket = array();
-        $values = explode(',', $raw);
-        
-        // sort into q-value buckets
-        foreach ($values as $value) {
-            $value = trim($value);
-            if (strpos($value, ';q=') === false) {
-                $bucket['1.0'][] = $value;
-            } else {
-                list($value, $q) = explode(';q=', $value);
-                $bucket[$q][] = $value;
-            }
-        }
-        
-        // reverse-sort the buckets so that q=1 is first and q=0 is last,
-        // but the values in the buckets stay in the original order.
-        krsort($bucket);
-        
-        // flatten the buckets into the var
-        foreach ($bucket as $q => $values) {
-            foreach ($values as $value) {
-                $var[$value] = (float) $q;
-            }
-        }
-        
-        return $var;
-    }
-    
-    /**
-     * 
      * Modify the $media property based on a URI file extension.
      * 
      * @param array $server An array of $_SERVER values.
@@ -522,32 +469,5 @@ class Accept
         }
         
         return false;
-    }
-    
-    /**
-     * 
-     * Normalized available and acceptable value arrays.
-     * 
-     * @param array $acceptable Acceptable values in preference order.
-     * 
-     * @param array $available Available values in preference order.
-     * 
-     * @return array An array where element 0 is the normalized acceptable
-     * values and element 1 is the normalized available values.
-     * 
-     */
-    public function normalize($acceptable, $available)
-    {
-        $normalized = array();
-        foreach ($acceptable as $value) {
-            $value = strtolower($value->getValue());
-            $normalized[$value] = $value->getPriority();
-        }
-        $acceptable = $normalized;
-        foreach ($available as $value) {
-            $value = strtolower($value->getValue());
-            $available[$value] = $value->getPriority();
-        }
-        return array($acceptable, $available);
     }
 }
