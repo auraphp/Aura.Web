@@ -1,14 +1,14 @@
 <?php
 namespace Aura\Web\Request\Accept;
 
+use ArrayAccess;
 use Aura\Web\Request\Accept\Value\ValueFactory;
+use Countable;
+use IteratorAggregate;
 
-/**
- * @todo make sure this is read-only
- */
-abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayAccess
+abstract class AbstractValues implements IteratorAggregate, Countable, ArrayAccess
 {
-    protected $values = array();
+    protected $acceptable = array();
 
     protected $server_key;
     
@@ -22,57 +22,43 @@ abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayA
         array $server = array()
     ) {
         $this->value_factory = $value_factory;
-        $this->addValues($server);
+        $this->addAcceptable($server);
     }
 
-    protected function setValues($values)
+    protected function setAcceptable($values)
     {
-        $this->values = array();
-        $this->addValues($values);
+        $this->acceptable = array();
+        $this->addAcceptable($values);
     }
     
     /**
      * @param string|array $values $_SERVER of an Accept* value
      */
-    protected function addValues($values)
+    protected function addAcceptable($values)
     {
         $key = $this->server_key;
         
         if (is_array($values)) {
             if (! isset($values[$key])) {
-                $this->values = array();
+                $this->acceptable = array();
                 return;
             }
             $values = $values[$key];
         }
 
-        $values = $this->parseValues($values, $key);
-        $values = $this->qualitySort(array_merge($this->values, $values));
+        $values = $this->parseAcceptable($values, $key);
+        $values = $this->qualitySort(array_merge($this->acceptable, $values));
 
         $values = $this->removeDuplicates($values);
 
-        $this->values = $values;
+        $this->acceptable = $values;
     }
 
-    public function getValues()
-    {
-        return $this->values;
-    }
-
-    public function getValuesAsString()
-    {
-        foreach ($this->values as $value) {
-            $values[] = $value->getValue();
-        }
-
-        return implode(',', $values);
-    }
-
-    protected function parseValues($values)
+    protected function parseAcceptable($values)
     {
         $values = explode(',', $values);
 
-        foreach ($values as &$value) {
+        foreach ($values as $key => $value) {
             $pairs = explode(';', $value);
             $value = $pairs[0];
             unset($pairs[0]);
@@ -91,8 +77,7 @@ abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayA
                 unset($params['q']);
             }
 
-            /** @todo needs a factory here */
-            $value = $this->value_factory->newInstance(
+            $values[$key] = $this->value_factory->newInstance(
                 $this->value_type,
                 trim($value),
                 (float) $quality,
@@ -156,36 +141,37 @@ abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayA
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->values);
-    }
-
-    public function __toString()
-    {
-        return $this->getValuesAsString();
+        return new \ArrayIterator($this->acceptable);
     }
 
     public function count()
     {
-        return count($this->values);
+        return count($this->acceptable);
     }
 
     public function offsetExists($offset)
     {
-        return isset($this->values[$offset]);
+        return isset($this->acceptable[$offset]);
     }
 
     public function offsetGet($offset)
     {
-        return $this->values[$offset];
+        return $this->acceptable[$offset];
     }
 
-    public function offsetSet($offset, $value)
+    /**
+     * @todo REMOVE THIS (should be read-only)
+     */
+     public function offsetSet($offset, $value)
     {
-        $this->values[$offset] = $value;
+        $this->acceptable[$offset] = $value;
     }
 
+    /**
+     * @todo REMOVE THIS (should be read-only)
+     */
     public function offsetUnset($offset)
     {
-        unset($this->values[$offset]);
+        unset($this->acceptable[$offset]);
     }
 }

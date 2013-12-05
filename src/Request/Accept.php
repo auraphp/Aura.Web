@@ -17,9 +17,6 @@ use Aura\Web\Request\Accept\Media;
 
 /**
  * Trying real hard to adhere to <http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>.
- * 
- * @todo figure out what to do when matching to * when the result has an explicit q=0 value.
- * @todo identity encoding is always acceptable unless set explictly to q=0
  */
 class Accept
 {
@@ -78,11 +75,6 @@ class Accept
         $this->charset  = $charset;
         $this->encoding = $encoding;
         $this->language = $language;
-    }
-    
-    public function __get($key)
-    {
-        return $this->$key;
     }
     
     /**

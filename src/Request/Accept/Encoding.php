@@ -16,6 +16,8 @@ class Encoding extends AbstractValues
      * @return mixed The header values as an array, or the negotiated value
      * (false indicates negotiation failed).
      * 
+     * @todo identity encoding is always acceptable unless set explictly to q=0
+     * 
      */
     public function negotiate(array $available)
     {
@@ -24,14 +26,14 @@ class Encoding extends AbstractValues
         }
 
         $set = clone $this;
-        $set->setValues(array());
+        $set->setAcceptable(array());
         foreach ($available as $encoding) {
-            $set->addValues($encoding);
+            $set->addAcceptable($encoding);
         }
         $available = $set;
 
         // get acceptable encodings
-        $acceptable = $this->values;
+        $acceptable = $this->acceptable;
         
         // if no acceptable encoding specified, use first available
         if (count($acceptable) == 0) {

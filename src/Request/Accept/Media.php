@@ -121,7 +121,7 @@ class Media extends AbstractValues
         $name   = basename($path);
         $ext    = strrchr($name, '.');
         if ($ext && isset($this->types[$ext])) {
-            $this->setValues($this->types[$ext]);
+            $this->setAcceptable($this->types[$ext]);
         }
     }
     
@@ -134,6 +134,8 @@ class Media extends AbstractValues
      * @return mixed The header values as an array, or the negotiated value
      * (false indicates negotiation failed).
      * 
+     * @todo figure out what to do when matching to * when the result has an explicit q=0 value.
+     * 
      */
     public function negotiate(array $available = null)
     {
@@ -142,14 +144,14 @@ class Media extends AbstractValues
         }
 
         $set = clone $this;
-        $set->setValues(array());
+        $set->setAcceptable(array());
         foreach ($available as $media_type) {
-            $set->addValues($media_type);
+            $set->addAcceptable($media_type);
         }
         $available = $set;
         
         // get acceptable media
-        $acceptable = $this->values;
+        $acceptable = $this->acceptable;
         
         // if no acceptable media specified, use first available
         if (count($acceptable) == 0) {

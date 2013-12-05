@@ -19,13 +19,13 @@ class Charset extends AbstractValues
         parent::__construct($value_factory, $server);
         
         // are charset values specified?
-        if (count($this->values) == 0) {
+        if (count($this->acceptable) == 0) {
             // no, so don't modify anything
             return;
         }
         
         // look for ISO-8859-1, case insensitive
-        foreach ($this->values as $charset) {
+        foreach ($this->acceptable as $charset) {
             if (strtolower($charset->getValue()) == 'iso-8859-1') {
                 // found it, no no need to modify
                 return;
@@ -33,7 +33,7 @@ class Charset extends AbstractValues
         }
         
         // charset ISO-8859-1 is acceptable if not explictly mentioned
-        $this->addValues('ISO-8859-1');
+        $this->addAcceptable('ISO-8859-1');
     }
     /**
      * 
@@ -51,14 +51,14 @@ class Charset extends AbstractValues
         }
 
         $set = clone $this;
-        $set->setValues(array());
+        $set->setAcceptable(array());
         foreach ($available as $charset) {
-            $set->addValues($charset);
+            $set->addAcceptable($charset);
         }
         $available = $set;
         
         // get acceptable charsets
-        $acceptable = $this->values;
+        $acceptable = $this->acceptable;
         
         // if no acceptable charset specified, use first available
         if (count($acceptable) == 0) {
