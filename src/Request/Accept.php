@@ -391,7 +391,7 @@ class Accept
             // force an ending dash on the language; ignored if subtype is
             // already present, avoids "undefined offset" error when not.
             foreach ($available as $avail) {
-                if (!$language->getSubtype()) {
+                if (! $language->getSubtype()) {
                     // accept any subtype of a language
                     if (strtolower($language->getType()) == strtolower($avail->getType())) {
                         // type match (subtype ignored)

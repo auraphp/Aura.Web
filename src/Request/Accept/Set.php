@@ -10,7 +10,7 @@ class Set implements \IteratorAggregate, \Countable, \ArrayAccess {
      */
     public function __construct($values = null, $key = null)
     {
-        if (!is_null($values)) {
+        if (! is_null($values)) {
             $this->addValues($values, $key);
         }
     }
@@ -22,7 +22,7 @@ class Set implements \IteratorAggregate, \Countable, \ArrayAccess {
     public function addValues($values, $key)
     {
         if (is_array($values)) {
-            if (!isset($values[$key])) {
+            if (! isset($values[$key])) {
                 $this->values = array();
                 return;
             }
