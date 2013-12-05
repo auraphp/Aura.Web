@@ -80,6 +80,11 @@ class Accept
         $this->language = $language;
     }
     
+    public function __get($key)
+    {
+        return $this->$key;
+    }
+    
     /**
      * 
      * Returns the `Accept-Charset` value as an array; or, if available values

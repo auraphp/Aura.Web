@@ -1,18 +1,10 @@
 <?php
 namespace Aura\Web\Request\Accept\Value;
 
-class Media extends \Aura\Web\Request\Accept\Value
+class Media extends AbstractValue
 {
     protected $type = '*';
     protected $subtype = '*';
-
-    /**
-     * @param string $subtype
-     */
-    public function setSubtype($subtype)
-    {
-        $this->subtype = $subtype;
-    }
 
     /**
      * @return string
@@ -23,14 +15,6 @@ class Media extends \Aura\Web\Request\Accept\Value
     }
 
     /**
-     * @param string $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
-
-    /**
      * @return string
      */
     public function getType()
@@ -38,14 +22,9 @@ class Media extends \Aura\Web\Request\Accept\Value
         return $this->type;
     }
 
-    public function getValue()
+    protected function prep()
     {
-        return $this->type. '/' .$this->subtype;
-    }
-
-    public function setValue($value)
-    {
-        list($this->type, $this->subtype) = explode('/', $value);
+        list($this->type, $this->subtype) = explode('/', $this->value);
     }
 
     public function __toString()

@@ -1,6 +1,9 @@
 <?php
 namespace Aura\Web\Request\Accept;
 
+/**
+ * @todo make sure this is read-only
+ */
 abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayAccess
 {
     protected $values = array();
@@ -17,7 +20,7 @@ abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayA
         $this->addValues($server);
     }
 
-    public function setValues($values)
+    protected function setValues($values)
     {
         $this->values = array();
         $this->addValues($values);
@@ -26,7 +29,7 @@ abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayA
     /**
      * @param string|array $values $_SERVER of an Accept* value
      */
-    public function addValues($values)
+    protected function addValues($values)
     {
         $key = $this->server_key;
         
@@ -85,11 +88,7 @@ abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayA
 
             /** @todo needs a factory here */
             $class = $this->value_class;
-            $obj = new $class();
-            $obj->setValue(trim($value));
-            $obj->setQuality((float) $quality);
-            $obj->setParameters($params);
-            $value = $obj;
+            $value = new $class(trim($value), (float) $quality, $params);
         }
 
         return $values;

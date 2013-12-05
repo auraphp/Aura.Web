@@ -1,17 +1,10 @@
 <?php
 namespace Aura\Web\Request\Accept\Value;
 
-class Language extends \Aura\Web\Request\Accept\Value  {
+class Language extends AbstractValue
+{
     protected $type = '*';
     protected $subtype = false;
-
-    /**
-     * @param string $subtype
-     */
-    public function setSubtype($subtype)
-    {
-        $this->subtype = $subtype;
-    }
 
     /**
      * @return string
@@ -19,14 +12,6 @@ class Language extends \Aura\Web\Request\Accept\Value  {
     public function getSubtype()
     {
         return $this->subtype;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
     }
 
     /**
@@ -43,15 +28,8 @@ class Language extends \Aura\Web\Request\Accept\Value  {
         return $this->type . $subtype;
     }
 
-    public function setValue($value)
+    protected function prep()
     {
-        list($this->type, $this->subtype) = array_pad(explode('-', $value), 2, false);
-    }
-
-    public function __toString()
-    {
-        $parameters = (count($this->parameters) > 0) ? ';' . http_build_query($this->getParameters(), null, ';') : '';
-
-        return $this->getValue() . ';q=' . $this->quality . $parameters;
+        list($this->type, $this->subtype) = array_pad(explode('-', $this->value), 2, false);
     }
 }
