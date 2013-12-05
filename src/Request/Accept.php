@@ -197,8 +197,7 @@ class Accept
         $name   = basename($path);
         $ext    = strrchr($name, '.');
         if ($ext && isset($this->types[$ext])) {
-            $this->media = new AcceptSet();
-            $this->media->addValues($this->types[$ext], 'HTTP_ACCEPT');
+            $this->media->setValues($this->types[$ext], 'HTTP_ACCEPT');
         }
     }
     

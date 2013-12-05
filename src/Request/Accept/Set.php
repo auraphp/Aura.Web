@@ -15,6 +15,12 @@ class Set implements \IteratorAggregate, \Countable, \ArrayAccess {
         }
     }
 
+    public function setValues($values, $key)
+    {
+        $this->values = array();
+        $this->addValues($values, $key);
+    }
+    
     /**
      * @param string|array $values $_SERVER of an Accept* value
      * @param string $key The key to look up in $_SERVER.
