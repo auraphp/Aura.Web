@@ -19,7 +19,7 @@ class Charset extends AbstractValues
         parent::__construct($value_factory, $server);
         
         // are charset values specified?
-        if (count($this->acceptable) == 0) {
+        if ($this->isEmpty()) {
             // no, so don't modify anything
             return;
         }
@@ -57,16 +57,13 @@ class Charset extends AbstractValues
         }
         $available = $set;
         
-        // get acceptable charsets
-        $acceptable = $this->acceptable;
-        
         // if no acceptable charset specified, use first available
-        if (count($acceptable) == 0) {
+        if ($this->isEmpty()) {
             return $available[0];
         }
         
         // loop through acceptable charsets
-        foreach ($acceptable as $charset) {
+        foreach ($this->acceptable as $charset) {
             $value = strtolower($charset->getValue());
             
             // if the acceptable quality is zero, skip it

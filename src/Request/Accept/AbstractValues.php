@@ -24,6 +24,11 @@ abstract class AbstractValues implements IteratorAggregate, Countable, ArrayAcce
         $this->value_factory = $value_factory;
         $this->addAcceptable($server);
     }
+    
+    public function isEmpty()
+    {
+        return empty($this->acceptable);
+    }
 
     protected function setAcceptable($values)
     {

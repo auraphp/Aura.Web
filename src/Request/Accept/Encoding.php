@@ -32,16 +32,13 @@ class Encoding extends AbstractValues
         }
         $available = $set;
 
-        // get acceptable encodings
-        $acceptable = $this->acceptable;
-        
         // if no acceptable encoding specified, use first available
-        if (count($acceptable) == 0) {
+        if ($this->isEmpty()) {
             return $available[0];
         }
         
         // loop through acceptable encodings
-        foreach ($acceptable as $encoding) {
+        foreach ($this->acceptable as $encoding) {
             $value = strtolower($encoding->getValue());
             
             // if the acceptable quality is zero, skip it

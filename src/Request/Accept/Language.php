@@ -30,16 +30,13 @@ class Language extends AbstractValues
         }
         $available = $set;
         
-        // get acceptable languages
-        $acceptable = $this->acceptable;
-        
         // if no acceptable language specified, use first available
-        if (count($acceptable) == 0) {
+        if ($this->isEmpty()) {
             return $available[0];
         }
         
         // loop through acceptable languages
-        foreach ($acceptable as $language) {
+        foreach ($this->acceptable as $language) {
             
             // if the acceptable quality is zero, skip it
             if ($language->getQuality() == 0) {

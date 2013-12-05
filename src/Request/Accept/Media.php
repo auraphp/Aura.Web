@@ -150,16 +150,13 @@ class Media extends AbstractValues
         }
         $available = $set;
         
-        // get acceptable media
-        $acceptable = $this->acceptable;
-        
         // if no acceptable media specified, use first available
-        if (count($acceptable) == 0) {
+        if ($this->isEmpty()) {
             return $available[0];
         }
 
         // loop through acceptable media
-        foreach ($acceptable as $media) {
+        foreach ($this->acceptable as $media) {
             
             // if the acceptable quality is zero, skip it
             if ($media->getQuality() == 0) {
