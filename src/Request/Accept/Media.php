@@ -119,4 +119,65 @@ class Media extends AbstractValues
             $this->setValues($this->types[$ext]);
         }
     }
+    
+    /**
+     * 
+     * Returns a media type negotiated between acceptable and available values.
+     * 
+     * @param array $available Available values in preference order, if any.
+     * 
+     * @return mixed The header values as an array, or the negotiated value
+     * (false indicates negotiation failed).
+     * 
+     */
+    public function negotiate(array $available = null)
+    {
+        if (! $available) {
+            return false;
+        }
+
+        $set = clone $this;
+        $set->setValues(array());
+        foreach ($available as $media_type) {
+            $set->addValues($media_type);
+        }
+        $available = $set;
+        
+        // get acceptable media
+        $acceptable = $this->values;
+        
+        // if no acceptable media specified, use first available
+        if (count($acceptable) == 0) {
+            return $available[0];
+        }
+
+        // loop through acceptable media
+        foreach ($acceptable as $media) {
+            
+            // if the acceptable quality is zero, skip it
+            if ($media->getPriority() == 0) {
+                continue;
+            }
+            
+            // if acceptable media is */*, return the first available
+            if ($media->getValue() == '*/*') {
+                return $available[0];
+            }
+            
+            // go through the available values and find what's acceptable.
+            // force an ending dash on the language; ignored if subtype is
+            // already present, avoids "undefined offset" error when not.
+            $value = strtolower($media->getValue());
+            foreach ($available as $avail) {
+                if ($value == strtolower($avail->getValue())) {
+                    return $avail;
+                }
+                if ($media->getSubtype() == '*' && $media->getType() == $avail->getType()) {
+                    return $avail;
+                }
+            }
+        }
+        
+        return false;
+    }
 }
