@@ -179,4 +179,6 @@ abstract class AbstractValues implements IteratorAggregate, Countable, ArrayAcce
     {
         unset($this->acceptable[$offset]);
     }
+    
+    abstract public function negotiate(array $available);
 }
