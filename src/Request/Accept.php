@@ -10,6 +10,8 @@
  */
 namespace Aura\Web\Request;
 
+use Aura\Web\Request\Accept\Set as AcceptSet;
+
 /**
  * Trying real hard to adhere to <http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>.
  * 
@@ -22,42 +24,42 @@ class Accept
      * 
      * The `Accept` header values as an array sorted by quality level.
      * 
-     * @var array
+     * @var \Aura\Web\Request\Accept\Set
      * 
      */
-    protected $media = array();
+    protected $media;
     
     /**
      * 
      * The `Accept-Charset` header values as an array sorted by quality level.
-     * 
-     * @var array
+     *
+     * @var \Aura\Web\Request\Accept\Set
      * 
      */
-    protected $charset = array();
+    protected $charset;
     
     /**
      * 
      * The `Accept-Encoding` header values as an array sorted by quality level.
-     * 
-     * @var array
+     *
+     * @var \Aura\Web\Request\Accept\Set
      * 
      */
-    protected $encoding = array();
+    protected $encoding;
     
     /**
      * 
      * The `Accept-Language` header values as an array sorted by quality level.
-     * 
-     * @var array
+     *
+     * @var \Aura\Web\Request\Accept\Set
      * 
      */
-    protected $language = array();
+    protected $language;
     
     /**
      * 
      * A map of file .extensions to media types.
-     * 
+     *
      * @var array
      * 
      */
@@ -160,10 +162,10 @@ class Accept
         $this->types = array_merge($this->types, $types);
         
         // set the properties
-        $this->media    = $this->qualitySort($server, 'HTTP_ACCEPT');
-        $this->charset  = $this->qualitySort($server, 'HTTP_ACCEPT_CHARSET');
-        $this->encoding = $this->qualitySort($server, 'HTTP_ACCEPT_ENCODING');
-        $this->language = $this->qualitySort($server, 'HTTP_ACCEPT_LANGUAGE');
+        $this->media    = new AcceptSet($server, 'HTTP_ACCEPT');
+        $this->charset  = new AcceptSet($server, 'HTTP_ACCEPT_CHARSET');
+        $this->encoding = new AcceptSet($server, 'HTTP_ACCEPT_ENCODING');
+        $this->language = new AcceptSet($server, 'HTTP_ACCEPT_LANGUAGE');
         
         // fix the properties
         $this->fixMedia($server);
@@ -242,7 +244,8 @@ class Accept
         $name   = basename($path);
         $ext    = strrchr($name, '.');
         if ($ext && isset($this->types[$ext])) {
-            $this->media = array($this->types[$ext] => 1.0);
+            $this->media = new AcceptSet();
+            $this->media->addValues($this->types[$ext], 'HTTP_ACCEPT');
         }
     }
     
@@ -256,22 +259,19 @@ class Accept
     protected function fixCharset()
     {
         // no charset values were specified
-        if (! $this->charset) {
+        if (sizeof($this->charset) == 0) {
             return;
         }
         
         // look for ISO-8859-1, case insensitive
-        foreach ($this->charset as $charset => $q) {
-            if (strtolower($charset) == 'iso-8859-1') {
+        foreach ($this->charset as $charset) {
+            if (strtolower($charset->getValue()) == 'iso-8859-1') {
                 return;
             }
         }
         
         // charset iso-8859-1 is acceptable if not explictly mentioned
-        $this->charset = array_merge(
-            array('ISO-8859-1' => 1.0),
-            $this->charset
-        );
+        $this->charset->addValues('ISO-8859-1', 'HTTP_ACCEPT_CHARSET');
     }
     
     /**
@@ -294,38 +294,39 @@ class Accept
         if (! $available) {
             return false;
         }
+
+        $set = new AcceptSet();
+        foreach ($available as $charset) {
+            $set->addValues($charset, 'HTTP_ACCEPT_CHARSET');
+        }
+        $available = $set;
         
         // get acceptable charsets
         $acceptable = $this->charset;
         
         // if no acceptable charset specified, use first available
-        if (! $acceptable) {
+        if (sizeof($acceptable) == 0) {
             return $available[0];
         }
         
-        // normalize for comparisons
-        list($norm_accept, $norm_avail) = $this->normalize(
-            $acceptable,
-            $available
-        );
-        
         // loop through acceptable charsets
-        foreach ($norm_accept as $charset => $q) {
+        foreach ($acceptable as $charset) {
+            $value = strtolower($charset->getValue());
             
             // if the acceptable quality is zero, skip it
-            if (! $q) {
+            if ($charset->getPriority() == 0) {
                 continue;
             }
             
             // if acceptable charset is *, return the first available
-            if ($charset == '*') {
+            if ($value == '*') {
                 return $available[0];
             }
             
             // if acceptable charset is available, use it
-            foreach ($norm_avail as $key => $avail) {
-                if ($charset == $avail) {
-                    return $available[$key];
+            foreach ($available as $avail) {
+                if ($value == strtolower($avail->getValue())) {
+                    return $avail;
                 }
             }
         }
@@ -352,38 +353,39 @@ class Accept
         if (! $available) {
             return false;
         }
-        
+
+        $set = new AcceptSet();
+        foreach ($available as $encoding) {
+            $set->addValues($encoding, 'HTTP_ACCEPT_ENCODING');
+        }
+        $available = $set;
+
         // get acceptable encodings
         $acceptable = $this->encoding;
         
         // if no acceptable encoding specified, use first available
-        if (! $acceptable) {
+        if (sizeof($acceptable) == 0) {
             return $available[0];
         }
         
-        // normalize for comparisons
-        list($norm_accept, $norm_avail) = $this->normalize(
-            $acceptable,
-            $available
-        );
-        
         // loop through acceptable encodings
-        foreach ($norm_accept as $encoding => $q) {
+        foreach ($acceptable as $encoding) {
+            $value = strtolower($encoding->getValue());
             
             // if the acceptable quality is zero, skip it
-            if (! $q) {
+            if ($encoding->getPriority() == 0) {
                 continue;
             }
             
             // if acceptable encoding is *, return the first available
-            if ($encoding == '*') {
+            if ($value == '*') {
                 return $available[0];
             }
             
             // if acceptable encoding is available, use it
-            foreach ($norm_avail as $key => $avail) {
-                if ($encoding == $avail) {
-                    return $available[$key];
+            foreach ($available as $avail) {
+                if ($value == strtolower($avail->getValue())) {
+                    return $avail;
                 }
             }
         }
@@ -410,49 +412,47 @@ class Accept
         if (! $available) {
             return false;
         }
+
+        $set = new AcceptSet();
+        foreach ($available as $language) {
+            $set->addValues($language, 'HTTP_ACCEPT_LANGUAGE');
+        }
+        $available = $set;
         
         // get acceptable language
         $acceptable = $this->language;
         
         // if no acceptable language specified, use first available
-        if (! $acceptable) {
+        if (sizeof($acceptable) == 0) {
             return $available[0];
         }
         
-        // normalize for comparisons
-        list($norm_accept, $norm_avail) = $this->normalize(
-            $acceptable,
-            $available
-        );
-        
         // loop through acceptable languages
-        foreach ($norm_accept as $language => $q) {
+        foreach ($acceptable as $language) {
             
             // if the acceptable quality is zero, skip it
-            if (! $q) {
+            if ($language->getPriority() == 0) {
                 continue;
             }
             
             // if acceptable language is *, return the first available
-            if ($language == '*') {
+            if ($language->getValue() == '*') {
                 return $available[0];
             }
             
             // go through the available values and find what's acceptable.
             // force an ending dash on the language; ignored if subtype is
             // already present, avoids "undefined offset" error when not.
-            list($language_type, $language_subtype) = explode('-', $language . '-');
-            foreach ($norm_avail as $key => $avail) {
-                if (! $language_subtype) {
+            foreach ($available as $avail) {
+                if (!$language->getSubtype()) {
                     // accept any subtype of a language
-                    list($avail_type, $avail_subtype) = explode('-', $avail);
-                    if ($language_type == $avail_type) {
+                    if (strtolower($language->getType()) == strtolower($avail->getType())) {
                         // type match (subtype ignored)
-                        return $available[$key];
+                        return $avail;
                     }
-                } elseif ($language == $avail) {
+                } elseif ($language->getValue() == $avail->getValue()) {
                     // type and subtype match
-                    return $available[$key];
+                    return $avail;
                 }
             }
         }
@@ -479,45 +479,44 @@ class Accept
         if (! $available) {
             return false;
         }
+
+        $set = new AcceptSet();
+        foreach ($available as $mimetype) {
+            $set->addValues($mimetype, 'HTTP_ACCEPT');
+        }
+        $available = $set;
         
         // get acceptable media
         $acceptable = $this->media;
         
         // if no acceptable media specified, use first available
-        if (! $acceptable) {
+        if (sizeof($acceptable) == 0) {
             return $available[0];
         }
-        
-        // normalize for comparisons
-        list($norm_accept, $norm_avail) = $this->normalize(
-            $acceptable,
-            $available
-        );
-        
+
         // loop through acceptable media
-        foreach ($norm_accept as $media => $q) {
+        foreach ($acceptable as $media) {
             
             // if the acceptable quality is zero, skip it
-            if (! $q) {
+            if ($media->getPriority() == 0) {
                 continue;
             }
             
             // if acceptable media is */*, return the first available
-            if ($media == '*/*') {
+            if ($media->getValue() == '*/*') {
                 return $available[0];
             }
             
             // go through the available values and find what's acceptable.
             // force an ending dash on the language; ignored if subtype is
             // already present, avoids "undefined offset" error when not.
-            list($media_type, $media_subtype) = explode('/', $media . '/*');
-            foreach ($norm_avail as $key => $avail) {
-                if ($media == $avail) {
-                    return $available[$key];
+            $value = strtolower($media->getValue());
+            foreach ($available as $avail) {
+                if ($value == strtolower($avail->getValue())) {
+                    return $avail;
                 }
-                list($avail_type, $avail_subtype) = explode('/', $avail);
-                if ($media_subtype == '*' && $media_type == $avail_type) {
-                    return $available[$key];
+                if ($media->getSubtype() == '*' && $media->getType() == $avail->getType()) {
+                    return $avail;
                 }
             }
         }
@@ -540,13 +539,14 @@ class Accept
     public function normalize($acceptable, $available)
     {
         $normalized = array();
-        foreach ($acceptable as $value => $q) {
-            $value = strtolower($value);
-            $normalized[$value] = $q;
+        foreach ($acceptable as $value) {
+            $value = strtolower($value->getValue());
+            $normalized[$value] = $value->getPriority();
         }
         $acceptable = $normalized;
-        foreach ($available as $key => $val) {
-            $available[$key] = strtolower($val);
+        foreach ($available as $value) {
+            $value = strtolower($value->getValue());
+            $available[$value] = $value->getPriority();
         }
         return array($acceptable, $available);
     }
