@@ -7,13 +7,11 @@ abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayA
     protected $server_key;
     
     /**
-     * @param string|array $values $_SERVER of an Accept* value
+     * @param array $server A copy of $_SERVER.
      */
-    public function __construct($values = null)
+    public function __construct(array $server = array())
     {
-        if (! is_null($values)) {
-            $this->addValues($values);
-        }
+        $this->addValues($server);
     }
 
     public function setValues($values)
