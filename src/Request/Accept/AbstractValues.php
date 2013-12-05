@@ -1,10 +1,13 @@
 <?php
 namespace Aura\Web\Request\Accept;
 
-abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayAccess {
+abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayAccess
+{
     protected $values = array();
 
     protected $server_key;
+    
+    protected $value_class;
     
     /**
      * @param array $server A copy of $_SERVER.
@@ -59,17 +62,6 @@ abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayA
 
     protected function parseValues($values)
     {
-        $key = $this->server_key;
-        
-        $classes = array(
-            'HTTP_ACCEPT'          => 'Media',
-            'HTTP_ACCEPT_CHARSET'  => 'Charset',
-            'HTTP_ACCEPT_LANGUAGE' => 'Language',
-            'HTTP_ACCEPT_ENCODING' => 'Encoding',
-        );
-        
-        $class = 'Aura\Web\Request\Accept\Value\\' . $classes[$key];
-
         $values = explode(',', $values);
 
         foreach ($values as &$value) {
@@ -92,6 +84,7 @@ abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayA
             }
 
             /** @todo needs a factory here */
+            $class = $this->value_class;
             $obj = new $class();
             $obj->setValue(trim($value));
             $obj->setPriority((float) $priority);

@@ -5,6 +5,8 @@ class Charset extends AbstractValues
 {
     protected $server_key = 'HTTP_ACCEPT_CHARSET';
     
+    protected $value_class = 'Aura\Web\Request\Accept\Value\Charset';
+    
     /**
      * @param array $server A copy of $_SERVER.
      */
