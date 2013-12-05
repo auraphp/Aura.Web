@@ -10,7 +10,10 @@
  */
 namespace Aura\Web\Request;
 
-use Aura\Web\Request\Accept\Set as AcceptSet;
+use Aura\Web\Request\Accept\Charset;
+use Aura\Web\Request\Accept\Encoding;
+use Aura\Web\Request\Accept\Language;
+use Aura\Web\Request\Accept\Media;
 
 /**
  * Trying real hard to adhere to <http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>.
@@ -24,7 +27,7 @@ class Accept
      * 
      * The `Accept` header values as an array sorted by quality level.
      * 
-     * @var \Aura\Web\Request\Accept\Set
+     * @var Media
      * 
      */
     protected $media;
@@ -33,7 +36,7 @@ class Accept
      * 
      * The `Accept-Charset` header values as an array sorted by quality level.
      *
-     * @var \Aura\Web\Request\Accept\Set
+     * @var Charset
      * 
      */
     protected $charset;
@@ -42,7 +45,7 @@ class Accept
      * 
      * The `Accept-Encoding` header values as an array sorted by quality level.
      *
-     * @var \Aura\Web\Request\Accept\Set
+     * @var Encoding
      * 
      */
     protected $encoding;
@@ -51,7 +54,7 @@ class Accept
      * 
      * The `Accept-Language` header values as an array sorted by quality level.
      *
-     * @var \Aura\Web\Request\Accept\Set
+     * @var Language
      * 
      */
     protected $language;
@@ -157,10 +160,10 @@ class Accept
      * 
      */
     public function __construct(
-        AcceptSet $charset,
-        AcceptSet $encoding,
-        AcceptSet $language,
-        AcceptSet $media,
+        Charset $charset,
+        Encoding $encoding,
+        Language $language,
+        Media $media,
         array $server,
         array $types = array()
     ) {
