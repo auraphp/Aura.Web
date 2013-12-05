@@ -247,7 +247,8 @@ class Accept
             return false;
         }
 
-        $set = new AcceptSet();
+        $set = clone $this->charset;
+        $set->setValues(array(), 'HTTP_ACCEPT_CHARSET');
         foreach ($available as $charset) {
             $set->addValues($charset, 'HTTP_ACCEPT_CHARSET');
         }
@@ -306,7 +307,8 @@ class Accept
             return false;
         }
 
-        $set = new AcceptSet();
+        $set = clone $this->encoding;
+        $set->setValues(array(), 'HTTP_ACCEPT_ENCODING');
         foreach ($available as $encoding) {
             $set->addValues($encoding, 'HTTP_ACCEPT_ENCODING');
         }
@@ -365,7 +367,8 @@ class Accept
             return false;
         }
 
-        $set = new AcceptSet();
+        $set = clone $this->language;
+        $set->setValues(array(), 'HTTP_ACCEPT_LANGUAGE');
         foreach ($available as $language) {
             $set->addValues($language, 'HTTP_ACCEPT_LANGUAGE');
         }
@@ -432,9 +435,10 @@ class Accept
             return false;
         }
 
-        $set = new AcceptSet();
-        foreach ($available as $mimetype) {
-            $set->addValues($mimetype, 'HTTP_ACCEPT');
+        $set = clone $this->media;
+        $set->setValues(array(), 'HTTP_ACCEPT');
+        foreach ($available as $media_type) {
+            $set->addValues($media_type, 'HTTP_ACCEPT');
         }
         $available = $set;
         
