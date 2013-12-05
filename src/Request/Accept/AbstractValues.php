@@ -4,29 +4,31 @@ namespace Aura\Web\Request\Accept;
 abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayAccess {
     protected $values = array();
 
+    protected $server_key;
+    
     /**
      * @param string|array $values $_SERVER of an Accept* value
-     * @param string $key The key to look up in $_SERVER.
      */
-    public function __construct($values = null, $key = null)
+    public function __construct($values = null)
     {
         if (! is_null($values)) {
-            $this->addValues($values, $key);
+            $this->addValues($values);
         }
     }
 
-    public function setValues($values, $key)
+    public function setValues($values)
     {
         $this->values = array();
-        $this->addValues($values, $key);
+        $this->addValues($values);
     }
     
     /**
      * @param string|array $values $_SERVER of an Accept* value
-     * @param string $key The key to look up in $_SERVER.
      */
-    public function addValues($values, $key)
+    public function addValues($values)
     {
+        $key = $this->server_key;
+        
         if (is_array($values)) {
             if (! isset($values[$key])) {
                 $this->values = array();
@@ -57,8 +59,10 @@ abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayA
         return implode(',', $values);
     }
 
-    protected function parseValues($values, $key)
+    protected function parseValues($values)
     {
+        $key = $this->server_key;
+        
         $classes = array(
             'HTTP_ACCEPT'          => 'Media',
             'HTTP_ACCEPT_CHARSET'  => 'Charset',
