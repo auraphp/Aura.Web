@@ -88,11 +88,7 @@ abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayA
 
             /** @todo needs a factory here */
             $class = $this->value_class;
-            $obj = new $class();
-            $obj->setValue(trim($value));
-            $obj->setQuality((float) $quality);
-            $obj->setParameters($params);
-            $value = $obj;
+            $value = new $class(trim($value), (float) $quality, $params);
         }
 
         return $values;

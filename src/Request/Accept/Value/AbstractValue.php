@@ -1,33 +1,34 @@
 <?php
 namespace Aura\Web\Request\Accept\Value;
 
-abstract class AbstractValue {
-    protected $value = "";
+abstract class AbstractValue
+{
+    protected $value = '';
     protected $quality = 1.0;
     protected $parameters = array();
 
+    public function __construct(
+        $value,
+        $quality,
+        array $parameters
+    ) {
+        $this->value = $value;
+        $this->quality = $quality;
+        $this->parameters = $parameters;
+        $this->prep();
+    }
+    
+    protected function prep()
+    {
+        // do nothing
+    }
+    
     /**
      * @return string
      */
     public function getValue()
     {
         return $this->value;
-    }
-
-    /**
-     * @param string $value
-     */
-    public function setValue($value)
-    {
-        $this->value = $value;
-    }
-
-    /**
-     * @param int $quality
-     */
-    public function setQuality($quality)
-    {
-        $this->quality = $quality;
     }
 
     /**
@@ -39,23 +40,10 @@ abstract class AbstractValue {
     }
 
     /**
-     * @param array $parameters
-     */
-    public function setParameters($parameters)
-    {
-        $this->parameters = $parameters;
-    }
-
-    /**
      * @return array
      */
     public function getParameters()
     {
         return $this->parameters;
-    }
-
-    public function __toString()
-    {
-        return $this->getValue();
     }
 }

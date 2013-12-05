@@ -7,27 +7,11 @@ class Media extends AbstractValue
     protected $subtype = '*';
 
     /**
-     * @param string $subtype
-     */
-    public function setSubtype($subtype)
-    {
-        $this->subtype = $subtype;
-    }
-
-    /**
      * @return string
      */
     public function getSubtype()
     {
         return $this->subtype;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
     }
 
     /**
@@ -38,14 +22,9 @@ class Media extends AbstractValue
         return $this->type;
     }
 
-    public function getValue()
+    protected function prep()
     {
-        return $this->type. '/' .$this->subtype;
-    }
-
-    public function setValue($value)
-    {
-        list($this->type, $this->subtype) = explode('/', $value);
+        list($this->type, $this->subtype) = explode('/', $this->value);
     }
 
     public function __toString()
