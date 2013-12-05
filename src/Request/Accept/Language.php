@@ -24,15 +24,15 @@ class Language extends AbstractValues
         }
 
         $set = clone $this;
-        $set->setAcceptable(array());
+        $set->set(array());
         foreach ($available as $language) {
-            $set->addAcceptable($language);
+            $set->add($language);
         }
         $available = $set;
         
         // if no acceptable language specified, use first available
         if ($this->isEmpty()) {
-            return $available[0];
+            return $available->get(0);
         }
         
         // loop through acceptable languages
@@ -45,7 +45,7 @@ class Language extends AbstractValues
             
             // if acceptable language is *, return the first available
             if ($language->getValue() == '*') {
-                return $available[0];
+                return $available->get(0);
             }
             
             // go through the available values and find what's acceptable.

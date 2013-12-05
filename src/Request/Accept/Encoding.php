@@ -26,15 +26,15 @@ class Encoding extends AbstractValues
         }
 
         $set = clone $this;
-        $set->setAcceptable(array());
+        $set->set(array());
         foreach ($available as $encoding) {
-            $set->addAcceptable($encoding);
+            $set->add($encoding);
         }
         $available = $set;
 
         // if no acceptable encoding specified, use first available
         if ($this->isEmpty()) {
-            return $available[0];
+            return $available->get(0);
         }
         
         // loop through acceptable encodings
@@ -48,7 +48,7 @@ class Encoding extends AbstractValues
             
             // if acceptable encoding is *, return the first available
             if ($value == '*') {
-                return $available[0];
+                return $available->get(0);
             }
             
             // if acceptable encoding is available, use it

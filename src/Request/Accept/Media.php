@@ -121,7 +121,7 @@ class Media extends AbstractValues
         $name   = basename($path);
         $ext    = strrchr($name, '.');
         if ($ext && isset($this->types[$ext])) {
-            $this->setAcceptable($this->types[$ext]);
+            $this->set($this->types[$ext]);
         }
     }
     
@@ -144,15 +144,15 @@ class Media extends AbstractValues
         }
 
         $set = clone $this;
-        $set->setAcceptable(array());
+        $set->set(array());
         foreach ($available as $media_type) {
-            $set->addAcceptable($media_type);
+            $set->add($media_type);
         }
         $available = $set;
         
         // if no acceptable media specified, use first available
         if ($this->isEmpty()) {
-            return $available[0];
+            return $available->get(0);
         }
 
         // loop through acceptable media
@@ -165,7 +165,7 @@ class Media extends AbstractValues
             
             // if acceptable media is */*, return the first available
             if ($media->getValue() == '*/*') {
-                return $available[0];
+                return $available->get(0);
             }
             
             // go through the available values and find what's acceptable.

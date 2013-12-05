@@ -1,12 +1,11 @@
 <?php
 namespace Aura\Web\Request\Accept;
 
-use ArrayAccess;
 use Aura\Web\Request\Accept\Value\ValueFactory;
 use Countable;
 use IteratorAggregate;
 
-abstract class AbstractValues implements IteratorAggregate, Countable, ArrayAccess
+abstract class AbstractValues implements IteratorAggregate, Countable
 {
     protected $acceptable = array();
 
@@ -22,7 +21,7 @@ abstract class AbstractValues implements IteratorAggregate, Countable, ArrayAcce
         array $server = array()
     ) {
         $this->value_factory = $value_factory;
-        $this->addAcceptable($server);
+        $this->add($server);
     }
     
     public function isEmpty()
@@ -30,16 +29,24 @@ abstract class AbstractValues implements IteratorAggregate, Countable, ArrayAcce
         return empty($this->acceptable);
     }
 
-    protected function setAcceptable($values)
+    public function get($key = null)
+    {
+        if ($key === null) {
+            return $this->acceptable;
+        }
+        return $this->acceptable[$key];
+    }
+    
+    protected function set($values)
     {
         $this->acceptable = array();
-        $this->addAcceptable($values);
+        $this->add($values);
     }
     
     /**
      * @param string|array $values $_SERVER of an Accept* value
      */
-    protected function addAcceptable($values)
+    protected function add($values)
     {
         $key = $this->server_key;
         
@@ -153,32 +160,10 @@ abstract class AbstractValues implements IteratorAggregate, Countable, ArrayAcce
     {
         return count($this->acceptable);
     }
-
-    public function offsetExists($offset)
-    {
-        return isset($this->acceptable[$offset]);
-    }
-
-    public function offsetGet($offset)
-    {
-        return $this->acceptable[$offset];
-    }
-
-    /**
-     * @todo REMOVE THIS (should be read-only)
-     */
-     public function offsetSet($offset, $value)
-    {
-        $this->acceptable[$offset] = $value;
-    }
-
-    /**
-     * @todo REMOVE THIS (should be read-only)
-     */
-    public function offsetUnset($offset)
-    {
-        unset($this->acceptable[$offset]);
-    }
     
+    /**
+     * @return A matching string from the original $available array, *not*
+     * a Accept\Value object.
+     */
     abstract public function negotiate(array $available);
 }

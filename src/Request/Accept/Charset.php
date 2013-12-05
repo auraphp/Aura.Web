@@ -33,7 +33,7 @@ class Charset extends AbstractValues
         }
         
         // charset ISO-8859-1 is acceptable if not explictly mentioned
-        $this->addAcceptable('ISO-8859-1');
+        $this->add('ISO-8859-1');
     }
     /**
      * 
@@ -51,15 +51,15 @@ class Charset extends AbstractValues
         }
 
         $set = clone $this;
-        $set->setAcceptable(array());
+        $set->set(array());
         foreach ($available as $charset) {
-            $set->addAcceptable($charset);
+            $set->add($charset);
         }
         $available = $set;
         
         // if no acceptable charset specified, use first available
         if ($this->isEmpty()) {
-            return $available[0];
+            return $available->get(0);
         }
         
         // loop through acceptable charsets
@@ -73,7 +73,7 @@ class Charset extends AbstractValues
             
             // if acceptable charset is *, return the first available
             if ($value == '*') {
-                return $available[0];
+                return $available->get(0);
             }
             
             // if acceptable charset is available, use it
