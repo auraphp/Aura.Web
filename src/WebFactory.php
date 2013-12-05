@@ -324,15 +324,13 @@ class WebFactory
         $charset = new Request\Accept\Charset($server);
         $encoding = new Request\Accept\Encoding($server);
         $language = new Request\Accept\Language($server);
-        $media = new Request\Accept\Media($server);
+        $media = new Request\Accept\Media($server, $this->types);
         
         return new Request\Accept(
             $charset,
             $encoding,
             $language,
-            $media,
-            $server,
-            $this->types
+            $media
         );
     }
     
