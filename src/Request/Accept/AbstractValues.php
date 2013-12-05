@@ -1,7 +1,7 @@
 <?php
 namespace Aura\Web\Request\Accept;
 
-class Set implements \IteratorAggregate, \Countable, \ArrayAccess {
+abstract class AbstractValues implements \IteratorAggregate, \Countable, \ArrayAccess {
     protected $values = array();
 
     /**
