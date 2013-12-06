@@ -77,6 +77,15 @@ class Accept
         $this->language = $language;
     }
     
+    /**
+     * 
+     * Returns a property object by name.
+     * 
+     * @param string $key The property name.
+     * 
+     * @return object The property object.
+     * 
+     */
     public function __get($key)
     {
         return $this->$key;
