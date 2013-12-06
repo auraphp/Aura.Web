@@ -77,80 +77,8 @@ class Accept
         $this->language = $language;
     }
     
-    /**
-     * 
-     * Returns the `Accept-Charset` value as an array; or, if available values
-     * are passed, returns a negotiated value.
-     * 
-     * @param array $available Available values in preference order, if any.
-     * 
-     * @return mixed The header values as an array, or the negotiated value
-     * (false indicates negotiation failed).
-     * 
-     */
-    public function getCharset(array $available = null)
+    public function __get($key)
     {
-        if ($available === null) {
-            return $this->charset;
-        }
-        
-        return $this->charset->negotiate($available);
-    }
-    
-    /**
-     * 
-     * Returns an encoding negotiated between acceptable and available values.
-     * 
-     * @param array $available Available values in preference order, if any.
-     * 
-     * @return mixed The header values as an array, or the negotiated value
-     * (false indicates negotiation failed).
-     * 
-     */
-    public function getEncoding(array $available = null)
-    {
-        if ($available === null) {
-            return $this->encoding;
-        }
-        
-        return $this->encoding->negotiate($available);
-    }
-    
-    /**
-     * 
-     * Returns a language negotiated between acceptable and available values.
-     * 
-     * @param array $available Available values in preference order, if any.
-     * 
-     * @return mixed The header values as an array, or the negotiated value
-     * (false indicates negotiation failed).
-     * 
-     */
-    public function getLanguage(array $available = null)
-    {
-        if ($available === null) {
-            return $this->language;
-        }
-        
-        return $this->language->negotiate($available);
-    }
-    
-    /**
-     * 
-     * Returns a media type negotiated between acceptable and available values.
-     * 
-     * @param array $available Available values in preference order, if any.
-     * 
-     * @return mixed The header values as an array, or the negotiated value
-     * (false indicates negotiation failed).
-     * 
-     */
-    public function getMedia(array $available = null)
-    {
-        if ($available === null) {
-            return $this->media;
-        }
-        
-        return $this->media->negotiate($available);
+        return $this->$key;
     }
 }

@@ -30,8 +30,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
     public function testGetCharset($accept, $expect, $values_class, $value_class)
     {
         $accept = $this->newAccept($accept);
-        $actual = $accept->getCharset();
-        
+        $actual = $accept->charset;
         $this->assertAcceptValues($actual, $expect, $values_class, $value_class);
     }
 
@@ -45,8 +44,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
     public function testGetEncoding($accept, $expect, $values_class, $value_class)
     {
         $accept = $this->newAccept($accept);
-        $actual = $accept->getEncoding();
-        
+        $actual = $accept->encoding;
         $this->assertAcceptValues($actual, $expect, $values_class, $value_class);
     }
 
@@ -60,8 +58,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
     public function testGetLanguage($accept, $expect, $values_class, $value_class)
     {
         $accept = $this->newAccept($accept);
-        $actual = $accept->getLanguage();
-
+        $actual = $accept->language;
         $this->assertAcceptValues($actual, $expect, $values_class, $value_class);
     }
 
@@ -75,7 +72,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
     public function testGetMedia($accept, $expected, $values_class, $value_class)
     {
         $accept = $this->newAccept($accept);
-        $actual = $accept->getMedia();
+        $actual = $accept->media;
 
         $this->assertAcceptValues($actual, $expected, $values_class, $value_class);
     }
@@ -90,7 +87,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
     {
         $accept = $this->newAccept($accept);
 
-        $actual = $accept->getCharset($available);
+        $actual = $accept->charset->negotiate($available);
 
         if ($expected === false) {
             $this->assertFalse($expected, $actual);
@@ -110,7 +107,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
     {
         $accept = $this->newAccept($accept);
 
-        $actual = $accept->getEncoding($available);
+        $actual = $accept->encoding->negotiate($available);
 
         if ($expected === false) {
             $this->assertFalse($actual);
@@ -130,7 +127,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
     {
         $accept = $this->newAccept($accept);
 
-        $actual = $accept->getLanguage($available);
+        $actual = $accept->language->negotiate($available);
 
         if ($expected === false) {
             $this->assertFalse($actual);
@@ -150,7 +147,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
     {
         $accept = $this->newAccept($accept);
 
-        $actual = $accept->getMedia($available);
+        $actual = $accept->media->negotiate($available);
 
         if ($expected === false) {
             $this->assertFalse($actual);
