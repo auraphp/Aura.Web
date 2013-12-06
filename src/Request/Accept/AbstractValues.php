@@ -2,10 +2,9 @@
 namespace Aura\Web\Request\Accept;
 
 use Aura\Web\Request\Accept\Value\ValueFactory;
-use Countable;
 use IteratorAggregate;
 
-abstract class AbstractValues implements IteratorAggregate, Countable
+abstract class AbstractValues implements IteratorAggregate
 {
     protected $acceptable = array();
 
@@ -151,11 +150,6 @@ abstract class AbstractValues implements IteratorAggregate, Countable
         return new \ArrayIterator($this->acceptable);
     }
 
-    public function count()
-    {
-        return count($this->acceptable);
-    }
-    
     protected function convertAvailable(array $available)
     {
         $values = clone $this;
