@@ -19,52 +19,57 @@ class Language extends AbstractValues
      */
     public function negotiate(array $available)
     {
+        // if none available, no possible match
         if (! $available) {
             return false;
         }
 
-        $set = clone $this;
-        $set->set(array());
-        foreach ($available as $language) {
-            $set->add($language);
-        }
-        $available = $set;
+        // convert to object
+        $available = $this->convertAvailable($available);
         
-        // if no acceptable language specified, use first available
-        if ($this->isEmpty()) {
+        // if nothing acceptable specified, use first available
+        if (! $this->acceptable) {
             return $available->get(0);
         }
         
         // loop through acceptable languages
-        foreach ($this->acceptable as $language) {
+        foreach ($this->acceptable as $accept) {
             
             // if the acceptable quality is zero, skip it
-            if ($language->getQuality() == 0) {
+            if ($accept->getQuality() == 0) {
                 continue;
             }
             
+            // normalize values
+            $value = strtolower($accept->getValue());
+            $type = strtolower($accept->getType());
+            
             // if acceptable language is *, return the first available
-            if ($language->getValue() == '*') {
+            if ($value == '*') {
                 return $available->get(0);
             }
             
-            // go through the available values and find what's acceptable.
-            // force an ending dash on the language; ignored if subtype is
-            // already present, avoids "undefined offset" error when not.
+            // if acceptable language is available, use it
             foreach ($available as $avail) {
-                if (! $language->getSubtype()) {
-                    // accept any subtype of a language
-                    if (strtolower($language->getType()) == strtolower($avail->getType())) {
-                        // type match (subtype ignored)
-                        return $avail;
-                    }
-                } elseif ($language->getValue() == $avail->getValue()) {
-                    // type and subtype match
+                
+                // is it a full match?
+                if ($value == strtolower($avail->getValue())) {
+                    return $avail;
+                }
+                
+                // not a full match, and subtype is specified, cannot match
+                if ($accept->getSubtype()) {
+                    continue;
+                }
+                
+                // is it a type-without-subtype match?
+                if ($type == strtolower($avail->getType())) {
                     return $avail;
                 }
             }
         }
         
+        // no match
         return false;
     }
 }

@@ -139,44 +139,45 @@ class Media extends AbstractValues
      */
     public function negotiate(array $available = null)
     {
+        // if none available, no possible match
         if (! $available) {
             return false;
         }
 
-        $set = clone $this;
-        $set->set(array());
-        foreach ($available as $media_type) {
-            $set->add($media_type);
-        }
-        $available = $set;
+        // convert to object
+        $available = $this->convertAvailable($available);
         
-        // if no acceptable media specified, use first available
-        if ($this->isEmpty()) {
+        // if nothing acceptable specified, use first available
+        if (! $this->acceptable) {
             return $available->get(0);
         }
 
         // loop through acceptable media
-        foreach ($this->acceptable as $media) {
+        foreach ($this->acceptable as $accept) {
             
             // if the acceptable quality is zero, skip it
-            if ($media->getQuality() == 0) {
+            if ($accept->getQuality() == 0) {
                 continue;
             }
             
+            // normalize value
+            $value = strtolower($accept->getValue());
+            
             // if acceptable media is */*, return the first available
-            if ($media->getValue() == '*/*') {
+            if ($value == '*/*') {
                 return $available->get(0);
             }
             
-            // go through the available values and find what's acceptable.
-            // force an ending dash on the language; ignored if subtype is
-            // already present, avoids "undefined offset" error when not.
-            $value = strtolower($media->getValue());
+            // if acceptable value is available, use it
             foreach ($available as $avail) {
+                
+                // is it a full match?
                 if ($value == strtolower($avail->getValue())) {
                     return $avail;
                 }
-                if ($media->getSubtype() == '*' && $media->getType() == $avail->getType()) {
+                
+                // is it a type match?
+                if ($accept->getSubtype() == '*' && $accept->getType() == $avail->getType()) {
                     return $avail;
                 }
             }

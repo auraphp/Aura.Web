@@ -24,11 +24,6 @@ abstract class AbstractValues implements IteratorAggregate, Countable
         $this->add($server);
     }
     
-    public function isEmpty()
-    {
-        return empty($this->acceptable);
-    }
-
     public function get($key = null)
     {
         if ($key === null) {
@@ -159,6 +154,16 @@ abstract class AbstractValues implements IteratorAggregate, Countable
     public function count()
     {
         return count($this->acceptable);
+    }
+    
+    protected function convertAvailable(array $available)
+    {
+        $values = clone $this;
+        $values->set(array());
+        foreach ($available as $avail) {
+            $values->add($avail);
+        }
+        return $values;
     }
     
     /**

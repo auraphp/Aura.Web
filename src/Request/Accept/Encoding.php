@@ -21,30 +21,29 @@ class Encoding extends AbstractValues
      */
     public function negotiate(array $available)
     {
+        // if none available, no possible match
         if (! $available) {
             return false;
         }
 
-        $set = clone $this;
-        $set->set(array());
-        foreach ($available as $encoding) {
-            $set->add($encoding);
-        }
-        $available = $set;
+        // convert to object
+        $available = $this->convertAvailable($available);
 
-        // if no acceptable encoding specified, use first available
-        if ($this->isEmpty()) {
+        // if nothing acceptable specified, use first available
+        if (! $this->acceptable) {
             return $available->get(0);
         }
         
         // loop through acceptable encodings
-        foreach ($this->acceptable as $encoding) {
-            $value = strtolower($encoding->getValue());
+        foreach ($this->acceptable as $accept) {
             
             // if the acceptable quality is zero, skip it
-            if ($encoding->getQuality() == 0) {
+            if ($accept->getQuality() == 0) {
                 continue;
             }
+            
+            // normalize the value
+            $value = strtolower($accept->getValue());
             
             // if acceptable encoding is *, return the first available
             if ($value == '*') {
@@ -59,6 +58,7 @@ class Encoding extends AbstractValues
             }
         }
         
+        // no match
         return false;
     }
 }

@@ -19,7 +19,7 @@ class Charset extends AbstractValues
         parent::__construct($value_factory, $server);
         
         // are charset values specified?
-        if ($this->isEmpty()) {
+        if (! $this->acceptable) {
             // no, so don't modify anything
             return;
         }
@@ -46,30 +46,29 @@ class Charset extends AbstractValues
      */
     public function negotiate(array $available)
     {
+        // if none available, no possible match
         if (! $available) {
             return false;
         }
 
-        $set = clone $this;
-        $set->set(array());
-        foreach ($available as $charset) {
-            $set->add($charset);
-        }
-        $available = $set;
+        // convert to object
+        $available = $this->convertAvailable($available);
         
-        // if no acceptable charset specified, use first available
-        if ($this->isEmpty()) {
+        // if nothing acceptable specified, use first available
+        if (! $this->acceptable) {
             return $available->get(0);
         }
         
         // loop through acceptable charsets
-        foreach ($this->acceptable as $charset) {
-            $value = strtolower($charset->getValue());
+        foreach ($this->acceptable as $accept) {
             
             // if the acceptable quality is zero, skip it
-            if ($charset->getQuality() == 0) {
+            if ($accept->getQuality() == 0) {
                 continue;
             }
+            
+            // normalize the acceptable value
+            $value = strtolower($accept->getValue());
             
             // if acceptable charset is *, return the first available
             if ($value == '*') {
@@ -84,6 +83,7 @@ class Charset extends AbstractValues
             }
         }
         
+        // no match
         return false;
     }
 }
