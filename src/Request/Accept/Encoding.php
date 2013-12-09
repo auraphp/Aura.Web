@@ -42,9 +42,6 @@ class Encoding extends AbstractValues
                 continue;
             }
             
-            // normalize the value
-            $value = strtolower($accept->getValue());
-            
             // if acceptable encoding is *, return the first available
             if ($accept->isWildcard()) {
                 return $available->get(0);
@@ -52,7 +49,7 @@ class Encoding extends AbstractValues
             
             // if acceptable encoding is available, use it
             foreach ($available as $avail) {
-                if ($value == strtolower($avail->getValue())) {
+                if ($accept->match($avail)) {
                     return $avail;
                 }
             }

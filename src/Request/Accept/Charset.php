@@ -67,9 +67,6 @@ class Charset extends AbstractValues
                 continue;
             }
             
-            // normalize the acceptable value
-            $value = strtolower($accept->getValue());
-            
             // if acceptable charset is *, return the first available
             if ($accept->isWildcard()) {
                 return $available->get(0);
@@ -77,7 +74,7 @@ class Charset extends AbstractValues
             
             // if acceptable charset is available, use it
             foreach ($available as $avail) {
-                if ($value == strtolower($avail->getValue())) {
+                if ($accept->match($avail)) {
                     return $avail;
                 }
             }
