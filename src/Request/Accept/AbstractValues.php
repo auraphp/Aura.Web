@@ -20,7 +20,9 @@ abstract class AbstractValues implements IteratorAggregate
         array $server = array()
     ) {
         $this->value_factory = $value_factory;
-        $this->add($server);
+        if (isset($server[$this->server_key])) {
+            $this->set($server[$this->server_key]);
+        }
     }
     
     public function get($key = null)
@@ -31,32 +33,23 @@ abstract class AbstractValues implements IteratorAggregate
         return $this->acceptable[$key];
     }
     
-    protected function set($values)
+    protected function set($values = null)
     {
         $this->acceptable = array();
         $this->add($values);
     }
     
     /**
-     * @param string|array $values $_SERVER of an Accept* value
+     * @param string $values $_SERVER of an Accept* value
      */
     protected function add($values)
     {
-        $key = $this->server_key;
-        
-        if (is_array($values)) {
-            if (! isset($values[$key])) {
-                $this->acceptable = array();
-                return;
-            }
-            $values = $values[$key];
+        if (! $values) {
+            return;
         }
-
-        $values = $this->parseAcceptable($values, $key);
+        $values = $this->parseAcceptable($values);
         $values = $this->qualitySort(array_merge($this->acceptable, $values));
-
         $values = $this->removeDuplicates($values);
-
         $this->acceptable = $values;
     }
 
@@ -153,7 +146,7 @@ abstract class AbstractValues implements IteratorAggregate
     protected function convertAvailable(array $available)
     {
         $values = clone $this;
-        $values->set(array());
+        $values->set();
         foreach ($available as $avail) {
             $values->add($avail);
         }
