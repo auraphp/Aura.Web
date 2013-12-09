@@ -51,19 +51,7 @@ class Language extends AbstractValues
             
             // if acceptable language is available, use it
             foreach ($available as $avail) {
-                
-                // is it a full match?
-                if ($value == strtolower($avail->getValue())) {
-                    return $avail;
-                }
-                
-                // not a full match, and subtype is specified, cannot match
-                if ($accept->getSubtype()) {
-                    continue;
-                }
-                
-                // is it a type-without-subtype match?
-                if ($type == strtolower($avail->getType())) {
+                if ($accept->match($avail)) {
                     return $avail;
                 }
             }

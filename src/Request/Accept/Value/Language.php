@@ -32,4 +32,16 @@ class Language extends AbstractValue
     {
         list($this->type, $this->subtype) = array_pad(explode('-', $this->value), 2, false);
     }
+    
+    public function match(Language $avail)
+    {
+        // is it a full match?
+        if (strtolower($this->value) == strtolower($avail->getValue())) {
+            return true;
+        }
+        
+        // is it a type-without-subtype match?
+        return ! $this->subtype
+            && strtolower($this->type) == strtolower($avail->getType());
+    }
 }
