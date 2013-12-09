@@ -161,8 +161,53 @@ abstract class AbstractValues implements IteratorAggregate
     }
     
     /**
-     * @return A matching string from the original $available array, *not*
-     * a Accept\Value object.
+     * 
+     * Returns a value negotiated between acceptable and available values.
+     * 
+     * @param array $available Available values in preference order, if any.
+     * 
+     * @return mixed The header values as an array, or the negotiated value
+     * (false indicates negotiation failed).
+     * 
+     * @todo figure out what to do when matching to * when the result has an explicit q=0 value.
+     * 
      */
-    abstract public function negotiate(array $available);
+    public function negotiate(array $available = null)
+    {
+        // if none available, no possible match
+        if (! $available) {
+            return false;
+        }
+
+        // convert to object
+        $available = $this->convertAvailable($available);
+        
+        // if nothing acceptable specified, use first available
+        if (! $this->acceptable) {
+            return $available->get(0);
+        }
+
+        // loop through acceptable values
+        foreach ($this->acceptable as $accept) {
+            
+            // if the acceptable quality is zero, skip it
+            if ($accept->getQuality() == 0) {
+                continue;
+            }
+            
+            // if acceptable value is "anything" return the first available
+            if ($accept->isWildcard()) {
+                return $available->get(0);
+            }
+            
+            // if acceptable value is available, use it
+            foreach ($available as $avail) {
+                if ($accept->match($avail)) {
+                    return $avail;
+                }
+            }
+        }
+        
+        return false;
+    }
 }
