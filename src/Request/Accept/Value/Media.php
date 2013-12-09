@@ -44,11 +44,4 @@ class Media extends AbstractValue
     {
         list($this->type, $this->subtype) = explode('/', $this->value);
     }
-
-    public function __toString()
-    {
-        $parameters = (count($this->parameters) > 0) ? ';' . http_build_query($this->getParameters(), null, ';') : '';
-
-        return $this->getValue() . ';q=' . $this->quality . $parameters;
-    }
 }

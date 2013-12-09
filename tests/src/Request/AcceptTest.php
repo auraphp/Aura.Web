@@ -167,12 +167,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
         foreach ($actual as $key => $item) {
             $this->assertInstanceOf($value_class, $item);
             foreach ($expect[$key] as $func => $value) {
-                if ($func != 'string') {
-                    $func = 'get' . $func;
-                } else {
-                    $func = '__toString';
-                }
-
+                $func = 'get' . $func;
                 $this->assertEquals($value, $item->$func());
             }
         }
@@ -403,7 +398,6 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'subtype' => 'html',
                         'value' => 'text/html',
                         'quality' => 1.0,
-                        'string' => 'text/html;q=1',
                         'parameters' => array(),
                     ),
                     array(
@@ -411,7 +405,6 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'subtype' => '*',
                         'value' => 'text/*',
                         'quality' => 0.9,
-                        'string' => 'text/*;q=0.9',
                         'parameters' => array(),
                     ),
                     array(
@@ -419,7 +412,6 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'subtype' => 'xhtml',
                         'value' => 'text/xhtml',
                         'quality' => 0.8,
-                        'string' => 'text/xhtml;q=0.8',
                         'parameters' => array(),
                     ),
                 ),
@@ -434,7 +426,6 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'subtype' => 'json',
                         'value' => 'text/json',
                         'quality' => 1.0,
-                        'string' => 'text/json;q=1;version=1',
                         'parameters' => array('version' => 1),
                     ),
                     array(
@@ -442,7 +433,6 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'subtype' => 'html',
                         'value' => 'text/html',
                         'quality' => 1.0,
-                        'string' => 'text/html;q=1;version=2',
                         'parameters' => array('version' => 2),
                     ),
                     array(
@@ -450,7 +440,6 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'subtype' => 'xml+xhtml',
                         'value' => 'application/xml+xhtml',
                         'quality' => 0,
-                        'string' => 'application/xml+xhtml;q=0',
                         'parameters' => array(),
                     ),
                 ),
@@ -465,7 +454,6 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'subtype' => 'json',
                         'value' => 'text/json',
                         'quality' => 1.0,
-                        'string' => 'text/json;q=1;version=1;foo=bar',
                         'parameters' => array('version' => 1, 'foo' => 'bar'),
                     ),
                     array(
@@ -473,7 +461,6 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'subtype' => 'html',
                         'value' => 'text/html',
                         'quality' => 1.0,
-                        'string' => 'text/html;q=1;version=2',
                         'parameters' => array('version' => 2),
                     ),
                     array(
@@ -481,7 +468,6 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'subtype' => 'xml+xhtml',
                         'value' => 'application/xml+xhtml',
                         'quality' => 1.0,
-                        'string' => 'application/xml+xhtml;q=1',
                         'parameters' => array(),
                     ),
                 ),
@@ -496,7 +482,6 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                         'subtype' => 'json',
                         'value' => 'text/json',
                         'quality' => 0.9,
-                        'string' => 'text/json;q=0.9;version=1;foo=bar',
                         'parameters' => array('version' => 1, 'foo' => 'bar'),
                     ),
                 ),
