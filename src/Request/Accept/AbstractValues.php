@@ -182,7 +182,10 @@ abstract class AbstractValues implements IteratorAggregate
         
         // if nothing acceptable specified, use first available
         if (! $this->acceptable) {
-            return $available->get(0);
+            return (object) array(
+                'acceptable' => false,
+                'available' => $available->get(0),
+            );
         }
 
         // loop through acceptable values
@@ -195,13 +198,15 @@ abstract class AbstractValues implements IteratorAggregate
             
             // if acceptable value is "anything" return the first available
             if ($accept->isWildcard()) {
-                return $available->get(0);
+                return (object) array(
+                    'acceptable' => $accept,
+                    'available' => $available->get(0),
+                );
             }
             
             // if acceptable value is available, use it
             foreach ($available as $avail) {
                 if ($accept->match($avail)) {
-                    // return both the matching "acceptable" and "available"
                     return (object) array(
                         'acceptable' => $accept,
                         'available' => $avail,

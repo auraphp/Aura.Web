@@ -92,8 +92,8 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
         if ($expected === false) {
             $this->assertFalse($expected, $actual);
         } else {
-            $this->assertInstanceOf('Aura\Web\Request\Accept\Value\Charset', $actual);
-            $this->assertSame($expected, $actual->getValue());
+            $this->assertInstanceOf('Aura\Web\Request\Accept\Value\Charset', $actual->available);
+            $this->assertSame($expected, $actual->available->getValue());
         }
     }
 
@@ -112,8 +112,8 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
         if ($expected === false) {
             $this->assertFalse($actual);
         } else {
-            $this->assertInstanceOf('Aura\Web\Request\Accept\Value\Encoding', $actual);
-            $this->assertSame($expected, $actual->getValue());
+            $this->assertInstanceOf('Aura\Web\Request\Accept\Value\Encoding', $actual->available);
+            $this->assertSame($expected, $actual->available->getValue());
         }
     }
 
@@ -132,8 +132,8 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
         if ($expected === false) {
             $this->assertFalse($actual);
         } else {
-            $this->assertInstanceOf('Aura\Web\Request\Accept\Value\Language', $actual);
-            $this->assertSame($expected, $actual->getValue());
+            $this->assertInstanceOf('Aura\Web\Request\Accept\Value\Language', $actual->available);
+            $this->assertSame($expected, $actual->available->getValue());
         }
     }
 
@@ -152,8 +152,8 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
         if ($expected === false) {
             $this->assertFalse($actual);
         } else {
-            $this->assertInstanceOf('Aura\Web\Request\Accept\Value\Media', $actual);
-            $this->assertSame($expected, $actual->getValue());
+            $this->assertInstanceOf('Aura\Web\Request\Accept\Value\Media', $actual->available);
+            $this->assertSame($expected, $actual->available->getValue());
         }
     }
 
