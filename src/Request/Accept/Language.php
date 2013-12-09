@@ -45,7 +45,7 @@ class Language extends AbstractValues
             $type = strtolower($accept->getType());
             
             // if acceptable language is *, return the first available
-            if ($value == '*') {
+            if ($accept->isWildcard()) {
                 return $available->get(0);
             }
             

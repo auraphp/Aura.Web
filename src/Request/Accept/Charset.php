@@ -71,7 +71,7 @@ class Charset extends AbstractValues
             $value = strtolower($accept->getValue());
             
             // if acceptable charset is *, return the first available
-            if ($value == '*') {
+            if ($accept->isWildcard()) {
                 return $available->get(0);
             }
             

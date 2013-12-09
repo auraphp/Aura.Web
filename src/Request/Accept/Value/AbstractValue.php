@@ -23,6 +23,11 @@ abstract class AbstractValue
         // do nothing
     }
     
+    public function isWildcard()
+    {
+        return $this->value == '*';
+    }
+    
     /**
      * @return string
      */

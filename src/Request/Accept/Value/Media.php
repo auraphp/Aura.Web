@@ -14,6 +14,11 @@ class Media extends AbstractValue
         return $this->subtype;
     }
 
+    public function isWildcard()
+    {
+        return $this->value == '*/*';
+    }
+    
     /**
      * @return string
      */

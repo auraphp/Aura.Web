@@ -46,7 +46,7 @@ class Encoding extends AbstractValues
             $value = strtolower($accept->getValue());
             
             // if acceptable encoding is *, return the first available
-            if ($value == '*') {
+            if ($accept->isWildcard()) {
                 return $available->get(0);
             }
             

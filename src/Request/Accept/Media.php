@@ -164,7 +164,7 @@ class Media extends AbstractValues
             $value = strtolower($accept->getValue());
             
             // if acceptable media is */*, return the first available
-            if ($value == '*/*') {
+            if ($accept->isWildcard()) {
                 return $available->get(0);
             }
             
