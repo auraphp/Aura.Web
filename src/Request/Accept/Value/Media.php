@@ -27,8 +27,8 @@ class Media extends AbstractValue
         }
         
         // is it a type match?
-        return $this->subtype == '*' &&
-            && $this->type == $avail->getType();
+        return $this->subtype == '*'
+            && strtolower($this->type) == strtolower($avail->getType());
     }
     
     /**
