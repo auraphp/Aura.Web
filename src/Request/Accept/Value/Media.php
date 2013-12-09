@@ -19,6 +19,18 @@ class Media extends AbstractValue
         return $this->value == '*/*';
     }
     
+    public function match(Media $avail)
+    {
+        // is it a full match?
+        if (strtolower($this->value) == strtolower($avail->getValue())) {
+            return true;
+        }
+        
+        // is it a type match?
+        return $this->subtype == '*' &&
+            && $this->type == $avail->getType();
+    }
+    
     /**
      * @return string
      */

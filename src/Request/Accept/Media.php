@@ -160,9 +160,6 @@ class Media extends AbstractValues
                 continue;
             }
             
-            // normalize value
-            $value = strtolower($accept->getValue());
-            
             // if acceptable media is */*, return the first available
             if ($accept->isWildcard()) {
                 return $available->get(0);
@@ -170,14 +167,7 @@ class Media extends AbstractValues
             
             // if acceptable value is available, use it
             foreach ($available as $avail) {
-                
-                // is it a full match?
-                if ($value == strtolower($avail->getValue())) {
-                    return $avail;
-                }
-                
-                // is it a type match?
-                if ($accept->getSubtype() == '*' && $accept->getType() == $avail->getType()) {
+                if ($accept->match($avail)) {
                     return $avail;
                 }
             }
