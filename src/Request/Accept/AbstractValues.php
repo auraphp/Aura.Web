@@ -169,8 +169,6 @@ abstract class AbstractValues implements IteratorAggregate
      * @return mixed The header values as an array, or the negotiated value
      * (false indicates negotiation failed).
      * 
-     * @todo figure out what to do when matching to * when the result has an explicit q=0 value.
-     * 
      */
     public function negotiate(array $available = null)
     {
@@ -203,7 +201,11 @@ abstract class AbstractValues implements IteratorAggregate
             // if acceptable value is available, use it
             foreach ($available as $avail) {
                 if ($accept->match($avail)) {
-                    return $avail;
+                    // return both the matching "acceptable" and "available"
+                    return (object) array(
+                        'acceptable' => $accept,
+                        'available' => $avail,
+                    );
                 }
             }
         }
