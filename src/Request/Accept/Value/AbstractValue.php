@@ -23,6 +23,16 @@ abstract class AbstractValue
         // do nothing
     }
     
+    protected function matchParameters(AbstractValue $avail)
+    {
+        foreach ($avail->getParameters() as $label => $value) {
+            if ($this->parameters[$label] != $value) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     public function isWildcard()
     {
         return $this->value == '*';

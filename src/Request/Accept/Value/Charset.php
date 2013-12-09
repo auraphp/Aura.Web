@@ -5,6 +5,7 @@ class Charset extends AbstractValue
 {
     public function match(Charset $avail)
     {
-        return strtolower($this->value) == strtolower($avail->getValue());
+        return strtolower($this->value) == strtolower($avail->getValue())
+            && $this->matchParameters($avail);
     }
 }

@@ -141,19 +141,21 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
      * @dataProvider mediaNegotiateProvider
      * @param $accept
      * @param $available
-     * @param $expected
+     * @param $expected_value
+     * @param $expected_params
      */
-    public function testGetMedia_negotiate($accept, $available, $expected)
+    public function testGetMedia_negotiate($accept, $available, $expected_value, $expected_params)
     {
         $accept = $this->newAccept($accept);
 
         $actual = $accept->media->negotiate($available);
 
-        if ($expected === false) {
+        if ($expected_value === false) {
             $this->assertFalse($actual);
         } else {
             $this->assertInstanceOf('Aura\Web\Request\Accept\Value\Media', $actual->available);
-            $this->assertSame($expected, $actual->available->getValue());
+            $this->assertSame($expected_value, $actual->available->getValue());
+            $this->assertSame($expected_params, $actual->available->getParameters());
         }
     }
 
@@ -287,13 +289,15 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                 // nothing available
                 'accept' => array('HTTP_ACCEPT' => 'application/json, application/xml, text/*, */*'),
                 'available' => array(),
-                'expected' => false,
+                'expected_value' => false,
+                'expected_params' => array(),
             ),
             array(
                 // explicitly accepts */*, and no matching media are available
                 'accept' => array('HTTP_ACCEPT' => 'application/json, application/xml, text/*, */*'),
                 'available' => array('foo/bar', 'baz/dib'),
-                'expected' => 'foo/bar',
+                'expected_value' => 'foo/bar',
+                'expected_params' => array(),
             ),
             array(
                 // explictly accepts application/xml, which is explictly available.
@@ -302,25 +306,29 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                 // by the user/client/headers.
                 'accept' => array('HTTP_ACCEPT' => 'application/json, application/xml, text/*, */*'),
                 'available' => array('application/XML', 'text/csv'),
-                'expected' => 'application/XML',
+                'expected_value' => 'application/XML',
+                'expected_params' => array(),
             ),
             array(
                 // a subtype is available
                 'accept' => array('HTTP_ACCEPT' => 'application/json, application/xml, text/*, */*'),
                 'available' => array('foo/bar', 'text/csv', 'baz/qux'),
-                'expected' => 'text/csv',
+                'expected_value' => 'text/csv',
+                'expected_params' => array(),
             ),
             array(
                 // no acceptable media specified, use first available
                 'accept' => array(),
                 'available' => array('application/json', 'application/xml'),
-                'expected' => 'application/json',
+                'expected_value' => 'application/json',
+                'expected_params' => array(),
             ),
             array(
                 // media is available but quality level is not acceptable
                 'accept' => array('HTTP_ACCEPT' => 'application/json, application/xml, text/*, foo/bar;q=0'),
                 'available' => array('foo/bar'),
-                'expected' => false,
+                'expected_value' => false,
+                'expected_params' => array(),
             ),
             array(
                 // override with file extension
@@ -329,8 +337,23 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                     'REQUEST_URI' => '/path/to/resource.json',
                 ),
                 'available' => array('text/html', 'application/json'),
-                'expected' => 'application/json',
-            )
+                'expected_value' => 'application/json',
+                'expected_params' => array(),
+            ),
+            array(
+                // check against parameters when they are available
+                'accept' => array('HTTP_ACCEPT' => 'text/html;level=2, text/html;level=1;q=0.5'),
+                'available' => array('text/html;level=1'),
+                'expected_value' => 'text/html',
+                'expected_params' => array('level' => '1'),
+            ),
+            array(
+                // check against parameters when they are not available
+                'accept' => array('HTTP_ACCEPT' => 'text/html;level=2, text/html;level=1;q=0.5'),
+                'available' => array('text/html;level=3'),
+                'expected_value' => false,
+                'expected_params' => array(),
+            ),
         );
     }
 

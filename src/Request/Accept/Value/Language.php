@@ -37,11 +37,12 @@ class Language extends AbstractValue
     {
         // is it a full match?
         if (strtolower($this->value) == strtolower($avail->getValue())) {
-            return true;
+            return $this->matchParameters($avail);
         }
         
         // is it a type-without-subtype match?
         return ! $this->subtype
-            && strtolower($this->type) == strtolower($avail->getType());
+            && strtolower($this->type) == strtolower($avail->getType())
+            && $this->matchParameters($avail);
     }
 }
