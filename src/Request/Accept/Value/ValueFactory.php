@@ -1,6 +1,22 @@
 <?php
+/**
+ * 
+ * This file is part of Aura for PHP.
+ * 
+ * @package Aura.Web
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 namespace Aura\Web\Request\Accept\Value;
 
+/**
+ * 
+ * A factory to create value objects.
+ * 
+ * @package Aura.Web
+ * 
+ */
 class ValueFactory
 {
     protected $map = array(

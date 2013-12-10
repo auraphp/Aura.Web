@@ -1,12 +1,43 @@
 <?php
+/**
+ * 
+ * This file is part of Aura for PHP.
+ * 
+ * @package Aura.Web
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 namespace Aura\Web\Request\Accept;
 
 use Aura\Web\Request\Accept\Value\ValueFactory;
 
+/**
+ * 
+ * Represents a collection of `Acccept` header values, sorted in quality
+ * order.
+ * 
+ * @package Aura.Web
+ * 
+ */
 class Media extends AbstractValues
 {
+    /**
+     * 
+     * The $_SERVER key to use when populating acceptable values.
+     * 
+     * @var string
+     * 
+     */
     protected $server_key = 'HTTP_ACCEPT';
 
+    /**
+     * 
+     * The type of value object to create using the ValueFactory.
+     * 
+     * @var string
+     * 
+     */
     protected $value_type = 'media';
     
     /**
@@ -102,7 +133,11 @@ class Media extends AbstractValues
     
     /**
      * 
-     * @param array $server A copy of $_SERVER.
+     * Constructor.
+     * 
+     * @param ValueFactory $value_factory A factory for value objects.
+     * 
+     * @param array $server A copy of $_SERVER for finding acceptable values.
      * 
      * @param array $types Additional extensions to media type mappings.
      * 
@@ -112,18 +147,19 @@ class Media extends AbstractValues
         array $server = array(),
         array $types = array()
     ) {
+        // parent construction
         parent::__construct($value_factory, $server);
         
-        // merge the media type maps
+        // merge the media type mappings
         $this->types = array_merge($this->types, $types);
         
-        // override the media if a file extension exists in the path
+        // override the media type if a file extension exists in the path
         $request_uri = isset($server['REQUEST_URI'])
                      ? $server['REQUEST_URI']
                      : null;
-        $path   = parse_url('http://example.com/' . $request_uri, PHP_URL_PATH);
-        $name   = basename($path);
-        $ext    = strrchr($name, '.');
+        $path = parse_url('http://example.com/' . $request_uri, PHP_URL_PATH);
+        $name = basename($path);
+        $ext  = strrchr($name, '.');
         if ($ext && isset($this->types[$ext])) {
             $this->set($this->types[$ext]);
         }

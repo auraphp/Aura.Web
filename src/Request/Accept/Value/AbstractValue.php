@@ -1,10 +1,49 @@
 <?php
+/**
+ * 
+ * This file is part of Aura for PHP.
+ * 
+ * @package Aura.Web
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 namespace Aura\Web\Request\Accept\Value;
 
+/**
+ * 
+ * Represents an acceptable value.
+ * 
+ * @package Aura.Web
+ * 
+ */
 abstract class AbstractValue
 {
-    protected $value = '';
+    /**
+     * 
+     * The acceptable value, not including any parameters.
+     * 
+     * @var string
+     * 
+     */
+    protected $value;
+    
+    /**
+     * 
+     * The quality parameter.
+     * 
+     * @var float
+     * 
+     */
     protected $quality = 1.0;
+    
+    /**
+     * 
+     * Parameters attached to the acceptable value.
+     * 
+     * @var array
+     * 
+     */
     protected $parameters = array();
 
     public function __construct(

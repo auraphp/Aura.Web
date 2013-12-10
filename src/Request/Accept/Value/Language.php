@@ -1,6 +1,22 @@
 <?php
+/**
+ * 
+ * This file is part of Aura for PHP.
+ * 
+ * @package Aura.Web
+ * 
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ * 
+ */
 namespace Aura\Web\Request\Accept\Value;
 
+/**
+ * 
+ * Represents an acceptable language value.
+ * 
+ * @package Aura.Web
+ * 
+ */
 class Language extends AbstractValue
 {
     protected $type = '*';
@@ -33,6 +49,15 @@ class Language extends AbstractValue
         list($this->type, $this->subtype) = array_pad(explode('-', $this->value), 2, false);
     }
     
+    /**
+     * 
+     * Checks if an available language value matches this acceptable value.
+     * 
+     * @param Charset $avail An available language value.
+     * 
+     * @return True on a match, false if not.
+     * 
+     */
     public function match(Language $avail)
     {
         // is it a full match?
