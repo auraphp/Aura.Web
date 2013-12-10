@@ -204,11 +204,19 @@ echo $request->method->get(); // DELETE
 
 ## Accept
 
-The _Accept_ object helps with negotiating acceptable media types, character
-sets, encodings, and languages.  There is one `$request->accept` sub-object
-for each of them. Each has a `negotiate()` method.
+> N.b. Accept headers can be kind of complicated. See the
+> [HTTP Header Field Definitions](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html)
+> for more detailed information regarding quality factors, matching rules,
+> and parameters extensions.
 
-Pass an array of available values to the `negotiate()` method to negotiate between the acceptable values and the available ones. The return will be an object with `$available` and `$acceptable` properties describing highest-quality match.
+The _Accept_ object helps with negotiating acceptable media, charset,
+encoding, and language values. There is one `$request->accept` sub-object for
+each of them. Each has a `negotiate()` method.
+
+Pass an array of available values to the `negotiate()` method to negotiate
+between the acceptable values and the available ones. The return will be a
+plain old PHP object with `$available` and `$acceptable` properties describing
+highest-quality match.
 
 ```php
 <?php
@@ -220,7 +228,7 @@ $_SERVER['HTTP_ACCEPT'] = 'application/xml;q=1.0,text/csv;q=0.5,*;q=0.1';
 $request = $web_factory->newRequest();
 
 // assume our application has `application/json` and `text/csv` available
-// as content types, in order of highest-to-lowest preference for delivery
+// as media types, in order of highest-to-lowest preference for delivery
 $available = array(
     'application/json',
     'text/csv',
@@ -233,9 +241,9 @@ echo $media->available->getValue(); // text/csv
 ?>
 ```
 
-If the requested URL ends in a recognized file extension for a content type,
+If the requested URL ends in a recognized file extension for a media type,
 the _Accept\Media_ object will use that file extension instead of the explicit
-`Accept` header value to determine the acceptable content type for the
+`Accept` header value to determine the acceptable media type for the
 request:
 
 ```php
@@ -251,7 +259,7 @@ $_SERVER['REQUEST_URI'] = '/path/to/entity.json';
 $request = $web_factory->newRequest();
 
 // assume our application has `application/json` and `text/csv` available
-// as content types, in order of highest-to-lowest preference for delivery
+// as media types, in order of highest-to-lowest preference for delivery
 $available = array(
     'application/json',
     'text/csv',
@@ -266,7 +274,7 @@ echo $media->available->getValue(); // application/json
 ```
 
 See the _Accept\Media_ class file for the list of what file extensions map to 
-what content types. To set your own mappings, set up the _WebFactory_ object
+what media types. To set your own mappings, set up the _WebFactory_ object
 first, then create the _Request_ object:
 
 ```php
@@ -291,7 +299,7 @@ $_SERVER['HTTP_ACCEPT'] = 'text/html;level=1;q=0.5,text/html;level=3';
 $request = $web_factory->newRequest();
 
 // assume our application has `application/json` and `text/csv` available
-// as content types, in order of highest-to-lowest preference for delivery
+// as media types, in order of highest-to-lowest preference for delivery
 $available = array(
     'text/html;level=1',
     'text/html;level=2',
