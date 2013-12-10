@@ -19,11 +19,54 @@ namespace Aura\Web\Request\Accept\Value;
  */
 class Media extends AbstractValue
 {
+    /**
+     * 
+     * The media type.
+     * 
+     * @var string
+     * 
+     */
     protected $type = '*';
+    
+    /**
+     * 
+     * The media subtype.
+     * 
+     * @var string
+     * 
+     */
     protected $subtype = '*';
 
     /**
+     * 
+     * Finishes construction of the value object.
+     * 
+     * @return null
+     * 
+     */
+    protected function init()
+    {
+        list($this->type, $this->subtype) = explode('/', $this->value);
+    }
+    
+    /**
+     * 
+     * Returns the media type.
+     * 
      * @return string
+     * 
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * 
+     * Returns the media subtype.
+     * 
+     * @return string
+     * 
      */
     public function getSubtype()
     {
@@ -39,7 +82,7 @@ class Media extends AbstractValue
      * 
      * Checks if an available media type value matches this acceptable value.
      * 
-     * @param Charset $avail An available media type value.
+     * @param Media $avail An available media type value.
      * 
      * @return True on a match, false if not.
      * 
@@ -55,18 +98,5 @@ class Media extends AbstractValue
         return $this->subtype == '*'
             && strtolower($this->type) == strtolower($avail->getType())
             && $this->matchParameters($avail);
-    }
-    
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    protected function prep()
-    {
-        list($this->type, $this->subtype) = explode('/', $this->value);
     }
 }

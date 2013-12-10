@@ -39,13 +39,24 @@ abstract class AbstractValue
     
     /**
      * 
-     * Parameters attached to the acceptable value.
+     * Parameters additional to the acceptable value.
      * 
      * @var array
      * 
      */
     protected $parameters = array();
 
+    /**
+     * 
+     * Constructor.
+     * 
+     * @param string $value The acceptable value, not including any parameters.
+     * 
+     * @param float $quality The quality parameter.
+     * 
+     * @param array $parameters Other parameters additional to the value.
+     * 
+     */
     public function __construct(
         $value,
         $quality,
@@ -54,14 +65,29 @@ abstract class AbstractValue
         $this->value = $value;
         $this->quality = $quality;
         $this->parameters = $parameters;
-        $this->prep();
+        $this->init();
     }
     
-    protected function prep()
+    /**
+     * 
+     * Finishes construction of the value object.
+     * 
+     * @return null
+     * 
+     */
+    protected function init()
     {
-        // do nothing
     }
     
+    /**
+     * 
+     * Match against the parameters of an available value.
+     * 
+     * @param AbstractValue $avail The available value.
+     * 
+     * @return bool True on a match, false if not.
+     * 
+     */
     protected function matchParameters(AbstractValue $avail)
     {
         foreach ($avail->getParameters() as $label => $value) {
@@ -72,13 +98,24 @@ abstract class AbstractValue
         return true;
     }
     
+    /**
+     * 
+     * Is the acceptable value a wildcard?
+     * 
+     * @return bool
+     * 
+     */
     public function isWildcard()
     {
         return $this->value == '*';
     }
     
     /**
+     * 
+     * Returns the acceptable value.
+     * 
      * @return string
+     * 
      */
     public function getValue()
     {
@@ -86,7 +123,11 @@ abstract class AbstractValue
     }
 
     /**
+     * 
+     * Returns the quality level.
+     * 
      * @return float
+     * 
      */
     public function getQuality()
     {
@@ -94,7 +135,11 @@ abstract class AbstractValue
     }
 
     /**
+     * 
+     * Returns the additional parameters.
+     * 
      * @return array
+     * 
      */
     public function getParameters()
     {

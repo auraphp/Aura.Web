@@ -19,11 +19,54 @@ namespace Aura\Web\Request\Accept\Value;
  */
 class Language extends AbstractValue
 {
+    /**
+     * 
+     * The language type.
+     * 
+     * @var string
+     * 
+     */
     protected $type = '*';
-    protected $subtype = false;
+    
+    /**
+     * 
+     * The language subtype, if any.
+     * 
+     * @var string
+     * 
+     */
+    protected $subtype;
 
     /**
+     * 
+     * Finishes construction of the value object.
+     * 
+     * @return null
+     * 
+     */
+    protected function init()
+    {
+        list($this->type, $this->subtype) = array_pad(explode('-', $this->value), 2, false);
+    }
+    
+    /**
+     * 
+     * Returns the language type.
+     * 
      * @return string
+     * 
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * 
+     * Returns the language subtype.
+     * 
+     * @return string
+     * 
      */
     public function getSubtype()
     {
@@ -31,29 +74,10 @@ class Language extends AbstractValue
     }
 
     /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    public function getValue()
-    {
-        $subtype = ($this->subtype) ? '-' .$this->subtype : '';
-        return $this->type . $subtype;
-    }
-
-    protected function prep()
-    {
-        list($this->type, $this->subtype) = array_pad(explode('-', $this->value), 2, false);
-    }
-    
-    /**
      * 
      * Checks if an available language value matches this acceptable value.
      * 
-     * @param Charset $avail An available language value.
+     * @param Language $avail An available language value.
      * 
      * @return True on a match, false if not.
      * 

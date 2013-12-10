@@ -19,6 +19,13 @@ namespace Aura\Web\Request\Accept\Value;
  */
 class ValueFactory
 {
+    /**
+     * 
+     * A map of value types to value classes.
+     * 
+     * @var array
+     * 
+     */
     protected $map = array(
         'charset' => 'Aura\Web\Request\Accept\Value\Charset',
         'encoding' => 'Aura\Web\Request\Accept\Value\Encoding',
@@ -26,9 +33,24 @@ class ValueFactory
         'media' => 'Aura\Web\Request\Accept\Value\Media',
     );
     
-    public function newInstance($type, $value, $quality, $params)
+    /**
+     * 
+     * Returns a new value object instance.
+     * 
+     * @param string $type The value type.
+     * 
+     * @param string $value The acceptable value.
+     * 
+     * @param float $quality The quality parameter.
+     * 
+     * @param array $parameters Additional parameters.
+     * 
+     * @return AbstractValue
+     * 
+     */
+    public function newInstance($type, $value, $quality, array $parameters)
     {
         $class = $this->map[$type];
-        return new $class($value, $quality, $params);
+        return new $class($value, $quality, $parameters);
     }
 }
