@@ -16,13 +16,17 @@ use Aura\Web\Request\Accept\Language;
 use Aura\Web\Request\Accept\Media;
 
 /**
- * Trying real hard to adhere to <http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>.
+ * 
+ * A collection of `Accept*` objects.
+ * 
+ * @package Aura.Web
+ * 
  */
 class Accept
 {
     /**
      * 
-     * The `Accept` header values as an array sorted by quality level.
+     * The `Accept` values object.
      * 
      * @var Media
      * 
@@ -31,7 +35,7 @@ class Accept
     
     /**
      * 
-     * The `Accept-Charset` header values as an array sorted by quality level.
+     * The `Accept-Charset` values object.
      *
      * @var Charset
      * 
@@ -40,7 +44,7 @@ class Accept
     
     /**
      * 
-     * The `Accept-Encoding` header values as an array sorted by quality level.
+     * The `Accept-Encoding` values object.
      *
      * @var Encoding
      * 
@@ -49,7 +53,7 @@ class Accept
     
     /**
      * 
-     * The `Accept-Language` header values as an array sorted by quality level.
+     * The `Accept-Language` values object.
      *
      * @var Language
      * 
@@ -61,8 +65,6 @@ class Accept
      * Constructor.
      * 
      * @param array $server An array of $_SERVER values.
-     * 
-     * @param array $types Additional extension to Content-Type mappings.
      * 
      */
     public function __construct(
@@ -79,11 +81,11 @@ class Accept
     
     /**
      * 
-     * Returns a property object by name.
+     * Returns a values object by name.
      * 
-     * @param string $key The property name.
+     * @param string $key The values object name.
      * 
-     * @return object The property object.
+     * @return object The values object.
      * 
      */
     public function __get($key)

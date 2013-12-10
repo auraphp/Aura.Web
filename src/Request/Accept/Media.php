@@ -101,7 +101,11 @@ class Media extends AbstractValues
     );
     
     /**
+     * 
      * @param array $server A copy of $_SERVER.
+     * 
+     * @param array $types Additional extensions to media type mappings.
+     * 
      */
     public function __construct(
         ValueFactory $value_factory,
