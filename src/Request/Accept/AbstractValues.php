@@ -116,8 +116,10 @@ abstract class AbstractValues implements IteratorAggregate
      * 
      * Adds one or more acceptable values to this collection.
      * 
-     * @param string $acceptable An `Accept*` string value; e.g.,
-     * `text/plain;q=0.5,text/html,text/*;q=0.1`.
+     * @param string|array $acceptable One or more `Accept*` string values;
+     * e.g., the string `'text/plain;q=0.5,text/html,text/*;q=0.1'` and 
+     * `array('text/plain;q=0.5','text/html','text/*;q=0.1')` are
+     * equivalent.
      * 
      * @return null
      * 
@@ -130,26 +132,28 @@ abstract class AbstractValues implements IteratorAggregate
             return;
         }
         
-        $acceptable = $this->parseAcceptable($acceptable);
-        $acceptable = $this->qualitySort(array_merge($this->acceptable, $acceptable));
-        $this->acceptable = $acceptable;
+        foreach ((array) $acceptable as $string) {
+            $this->parse($string);
+        }
+        
+        $this->sort();
     }
 
     /**
      * 
-     * Parses an acceptable value into an array of value objects.
+     * Parses an acceptable string value into the `$acceptable` property.
      * 
-     * @param string $acceptable An `Accept*` string value; e.g.,
+     * @param string $string An `Accept*` string value; e.g.,
      * `text/plain;q=0.5,text/html,text/*;q=0.1`.
      * 
      * @return array
      * 
      */
-    protected function parseAcceptable($acceptable)
+    protected function parse($string)
     {
-        $acceptable = explode(',', $acceptable);
+        $acceptable = explode(',', $string);
 
-        foreach ($acceptable as $key => $value) {
+        foreach ($acceptable as $value) {
             $pairs = explode(';', $value);
             $value = $pairs[0];
             unset($pairs[0]);
@@ -168,20 +172,18 @@ abstract class AbstractValues implements IteratorAggregate
                 unset($parameters['q']);
             }
 
-            $acceptable[$key] = $this->value_factory->newInstance(
+            $this->acceptable[] = $this->value_factory->newInstance(
                 $this->value_type,
                 trim($value),
                 (float) $quality,
                 $parameters
             );
         }
-
-        return $acceptable;
     }
 
     /**
      * 
-     * Sorts the accpetable values according to quality levels.
+     * Sorts the `$acceptable` values according to quality levels.
      * 
      * This is an unusual sort. Normally we'd think a reverse-sort would
      * order the array by q values from 1 to 0, but the problem is that
@@ -194,13 +196,13 @@ abstract class AbstractValues implements IteratorAggregate
      * @return array The array of value objects sorted by quality level.
      * 
      */
-    protected function qualitySort($acceptable)
+    protected function sort()
     {
-        $var    = array();
+        // q-value buckets
         $bucket = array();
 
         // sort into q-value buckets
-        foreach ($acceptable as $value) {
+        foreach ($this->acceptable as $value) {
             $bucket[$value->getQuality()][] = $value;
         }
 
@@ -208,14 +210,13 @@ abstract class AbstractValues implements IteratorAggregate
         // but the values in the buckets stay in the original order.
         krsort($bucket);
 
-        // flatten the buckets into the var
+        // flatten the buckets back into the acceptable array
+        $this->acceptable = array();
         foreach ($bucket as $q => $acceptable) {
             foreach ($acceptable as $value) {
-                $var[] = $value;
+                $this->acceptable[] = $value;
             }
         }
-
-        return $var;
     }
 
     /**
@@ -230,26 +231,6 @@ abstract class AbstractValues implements IteratorAggregate
         return new ArrayIterator($this->acceptable);
     }
 
-    /**
-     * 
-     * Converts an array of available values to an object.
-     * 
-     * @param array $available An array of available values.
-     * 
-     * @return AbstractValues A clone of this object, with the available
-     * values instead of the acceptable ones.
-     * 
-     */
-    protected function convertAvailable(array $available)
-    {
-        $values = clone $this;
-        $values->set();
-        foreach ($available as $avail) {
-            $values->add($avail);
-        }
-        return $values;
-    }
-    
     /**
      * 
      * Negotiates between acceptable and available values.  On success, the
@@ -271,7 +252,9 @@ abstract class AbstractValues implements IteratorAggregate
         }
 
         // convert to object
-        $available = $this->convertAvailable($available);
+        $clone = clone $this;
+        $clone->set($available);
+        $available = $clone;
         
         // if nothing acceptable specified, use first available
         if (! $this->acceptable) {
