@@ -205,42 +205,10 @@ echo $request->method->get(); // DELETE
 ## Accept
 
 The _Accept_ object helps with negotiating acceptable media types, character
-sets, encodings, and languages.
+sets, encodings, and languages.  There is one `$request->accept` sub-object
+for each of them. Each has a `negotiate()` method.
 
-These `$request->accept` methods return the values indicated by the
-request:
-
-- `getCharset()` returns the `Accept-Charset` header value converted
-  to an array arranged by quality level
-
-- `getEncoding()` returns the `Accept-Encoding` header value converted
-  to an array arranged by quality level
-
-- `getLanguage()` returns the `Accept-Language` header value converted
-  to an array arranged by quality level
-
-- `getMedia()` returns the `Accept` header value converted to an array
-  arranged by quality level (this is for media types)
-
-For example:
-
-```php
-<?php
-// assume the request indicates these Accept values (XML is best, then CSV,
-// then anything else)
-$_SERVER['HTTP_ACCEPT'] = 'application/xml;q=1.0,text/csv;q=0.5,*;q=0.1';
-
-// create the request object
-$request = $web_factory->newRequest();
-
-// get the `Accept` header values as an array
-$acceptable_media = $request->accept->getMedia();
-?>
-```
-
-If you pass an array of available values to any of the `get*()` methods, the
-method will negotiate between the acceptable values and the available ones to
-return the highest-quality value that matches both:
+Pass an array of available values to the `negotiate()` method to negotiate between the acceptable values and the available ones. The return will be an object with `$available` and `$acceptable` properties describing highest-quality match.
 
 ```php
 <?php
@@ -260,12 +228,13 @@ $available = array(
 
 // get the best match between what the request finds acceptable and what we
 // have available; the result in this case is 'text/csv'
-$media_type = $request->accept->getMedia($available);
+$media = $request->accept->media->negotiate($available);
+echo $media->available->getValue(); // text/csv
 ?>
 ```
 
 If the requested URL ends in a recognized file extension for a content type,
-the _Accept_ object will use that file extension instead of the explicit
+the _Accept\Media_ object will use that file extension instead of the explicit
 `Accept` header value to determine the acceptable content type for the
 request:
 
@@ -291,11 +260,12 @@ $available = array(
 // get the best match between what the request finds acceptable and what we
 // have available; the result in this case is 'application/json' because of
 // the file extenstion overriding the Accept header values
-$media_type = $request->accept->getMedia($available);
+$media = $request->accept->mediate->negotiate($available);
+echo $media->available->getValue(); // application/json
 ?>
 ```
 
-See the _Accept_ class file for the list of what file extensions map to 
+See the _Accept\Media_ class file for the list of what file extensions map to 
 what content types. To set your own mappings, set up the _WebFactory_ object
 first, then create the _Request_ object:
 
@@ -308,6 +278,36 @@ $web_factory->setTypes(array(
 $request = $web_factory->newRequest();
 ?>
 ```
+
+If the acceptable values indicate additional parameters, you can match on those as well:
+
+```php
+<?php
+// assume the request indicates these Accept values (XML is best, then CSV,
+// then anything else)
+$_SERVER['HTTP_ACCEPT'] = 'text/html;level=1;q=0.5,text/html;level=3';
+
+// create the request object
+$request = $web_factory->newRequest();
+
+// assume our application has `application/json` and `text/csv` available
+// as content types, in order of highest-to-lowest preference for delivery
+$available = array(
+    'text/html;level=1',
+    'text/html;level=2',
+);
+
+// get the best match between what the request finds acceptable and what we
+// have available; the result in this case is 'text/html;level=1'
+$media = $request->accept->media->negotiate($available);
+echo $media->available->getValue(); // text/html
+var_dump($media->available->getParameters()); // array('level' => '1')
+?>
+```
+
+> N.b. Parameters in the acceptable values that are not present in the
+> available values will not be used for matching.
+
 
 ## Params
 
