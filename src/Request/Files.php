@@ -60,9 +60,7 @@ class Files extends Values
             foreach ($srckeys as $key) {
                 if (is_array($src[$key])) {
                     // multiple file field names for each error, name, size, etc.
-                    foreach ((array) $src[$key] as $field => $value) {
-                        $tgt[$field][$key] = $value;
-                    }
+                    $this->prepareArray($value, $tgt, $key);
                 } else {
                     // the key itself is error, name, size, etc., and the
                     // target is already the file field name
@@ -74,6 +72,29 @@ class Files extends Values
             foreach ($src as $key => $val) {
                 $tgt[$key] = array();
                 $this->init($val, $tgt[$key]);
+            }
+        }
+    }
+    
+    /**
+     * Restructure multi dimensional array so that $last will be appended as last key
+     * 
+     * @param array $source
+     * @param array $target
+     */
+    protected function prepareArray(array $source, array &$target, $last)
+    {
+        foreach($source as $key => $value) {
+            if(!isset($target[$key])) {
+                $target[$key] = array();
+            }
+            
+            if(is_array($value)) {
+                $target[$key] = array();
+                $this->prepareArray($value, $target[$key], $last);
+            }
+            else {
+                $target[$key][$last] = $value;
             }
         }
     }
