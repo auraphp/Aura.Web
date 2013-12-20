@@ -5,6 +5,5 @@ php:
   - 5.5
   - hhvm
 before_script:
-  - echo 'date.timezone = "America/Chicago"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - cd tests
 script: phpunit
