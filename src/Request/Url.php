@@ -90,10 +90,15 @@ class Url
                 ? 'https://'
                 : 'http://';
         
-        // pick the host
-        $host   = isset($server['HTTP_HOST'])
-                ? $server['HTTP_HOST']
-                : null;
+        // pick the host; we need to fake it on missing
+        // hosts for parse_url() to work properly
+        if (isset($server['HTTP_HOST'])) {
+            $host = $server['HTTP_HOST'];
+            $fake = false;
+        } else {
+            $host = 'example.com';
+            $fake = true;
+        }
         
         // pick the port
         $port   = isset($server['SERVER_PORT'])
@@ -110,6 +115,11 @@ class Url
         
         // retain the URL parts
         $this->parts = parse_url($this->string);
+        
+        // remove faked host
+        if ($fake) {
+            $this->parts[PHP_URL_HOST] = null;
+        }
     }
     
     /**

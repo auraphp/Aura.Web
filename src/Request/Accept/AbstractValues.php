@@ -128,10 +128,6 @@ abstract class AbstractValues implements IteratorAggregate
      */
     protected function add($acceptable)
     {
-        if (! $acceptable) {
-            return;
-        }
-        
         foreach ((array) $acceptable as $string) {
             $this->parse($string);
         }
