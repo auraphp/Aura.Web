@@ -85,7 +85,7 @@ class Cache
             'proxy-revalidate' => true,
         ));
         $this->setEtag(null);
-        $this->setExpires(1);
+        $this->setExpires('Mon, 01 Jan 0001 00:00:00 GMT');
         $this->setLastModified(null);
         $this->setVary(null);
     }
