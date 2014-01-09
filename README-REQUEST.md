@@ -139,7 +139,7 @@ present. The values here are read-only.
 ```php
 <?php
 // returns the value of 'X-Header' if present, or 'not set' if not
-$header_value = $request->post->get('X-Header', 'not set');
+$header_value = $request->headers->get('X-Header', 'not set');
 ?>
 ```
 
