@@ -73,6 +73,13 @@ class Media extends AbstractValue
         return $this->subtype;
     }
 
+    /**
+     * 
+     * Is the acceptable value a wildcard?
+     * 
+     * @return bool
+     * 
+     */
     public function isWildcard()
     {
         return $this->value == '*/*';

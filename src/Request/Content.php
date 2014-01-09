@@ -33,15 +33,29 @@ class Content
     
     /**
      * 
-     * The content-type.
+     * The value of the Content-Type header.
      * 
      * @var string
      * 
      */
     protected $type;
     
+    /**
+     * 
+     * The value of the Content-Length header.
+     * 
+     * @var int
+     * 
+     */
     protected $length;
     
+    /**
+     * 
+     * The value of the Content-MD5 header.
+     * 
+     * @var int
+     * 
+     */
     protected $md5;
     
     /**
