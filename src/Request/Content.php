@@ -89,9 +89,13 @@ class Content
         array $server,
         array $decoders = array()
     ) {
-        $this->type = isset($server['CONTENT_TYPE'])
-                    ? strtolower($server['CONTENT_TYPE'])
-                    : null;
+        if (isset($server['CONTENT_TYPE'])) {
+            $this->type = strtolower($server['CONTENT_TYPE']);
+        } elseif (isset($server['HTTP_CONTENT_TYPE'])) {
+            $this->type = strtolower($server['HTTP_CONTENT_TYPE']);
+        } else {
+            $this->type = null;
+        }        
         
         $this->length = isset($server['CONTENT_LENGTH'])
                       ? strtolower($server['CONTENT_LENGTH'])

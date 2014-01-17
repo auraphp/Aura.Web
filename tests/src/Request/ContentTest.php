@@ -46,4 +46,37 @@ class ContentTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('88', $content->getLength());
         $this->assertSame('foo', $content->getMd5());
     }
+    
+    /**
+     * 
+     * Fixes issue 23
+     * 
+     * https://github.com/auraphp/Aura.Web/issues/23
+     * 
+     */
+    public function testHttpContentType()
+    {
+        $object = (object) array(
+            'foo' => 'bar',
+            'baz' => 'dib',
+            'zim' => 'gir',
+        );
+        $encode = json_encode($object);
+        PhpStream::$content = $encode;
+        
+        $server = array(
+            'HTTP_CONTENT_TYPE' => 'application/json',
+            'CONTENT_LENGTH' => '88',
+            'CONTENT_MD5' => 'foo'
+        );
+        
+        $content = $this->newContent($server);
+        
+        $actual = $content->get();
+        $this->assertEquals($object, $actual);
+        
+        $this->assertSame('application/json', $content->getType());
+        $this->assertSame('88', $content->getLength());
+        $this->assertSame('foo', $content->getMd5());
+    }
 }
