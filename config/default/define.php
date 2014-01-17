@@ -48,9 +48,7 @@ $di->params['Aura\Web\Request\Client'] = array(
 /**
  * Aura\Web\Request\Content
  */
-$di->params['Aura\Web\Request\Content']['server'] = array(
-    'server' => $_SERVER,
-);
+$di->params['Aura\Web\Request\Content']['server'] = $_SERVER;
 
 /**
  * Aura\Web\Request\Globals
