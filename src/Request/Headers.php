@@ -48,6 +48,17 @@ class Headers
             }
         }
         
+        // these two headers are not prefixed with 'HTTP_'
+        $rfc3875 = array(
+            'CONTENT_TYPE' => 'content-type',
+            'CONTENT_LENGTH' => 'content-length',
+        );
+        foreach ($rfc3875 as $key => $label) {
+            if (isset($server[$key])) {
+                $this->data[$label] = $server[$key];
+            }
+        }
+        
         // further sanitize headers to remove HTTP_X_JSON headers
         unset($this->data['HTTP_X_JSON']);
     }

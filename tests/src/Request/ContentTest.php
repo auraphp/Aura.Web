@@ -34,7 +34,7 @@ class ContentTest extends \PHPUnit_Framework_TestCase
         $server = array(
             'CONTENT_TYPE' => 'application/json',
             'CONTENT_LENGTH' => '88',
-            'CONTENT_MD5' => 'foo'
+            'HTTP_CONTENT_MD5' => 'foo'
         );
         
         $content = $this->newContent($server);

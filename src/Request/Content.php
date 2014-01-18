@@ -97,8 +97,8 @@ class Content
                       ? strtolower($server['CONTENT_LENGTH'])
                       : null;
         
-        $this->md5 = isset($server['CONTENT_MD5'])
-                   ? strtolower($server['CONTENT_MD5'])
+        $this->md5 = isset($server['HTTP_CONTENT_MD5'])
+                   ? strtolower($server['HTTP_CONTENT_MD5'])
                    : null;
         
         $this->decoders = array_merge($this->decoders, $decoders);
