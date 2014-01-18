@@ -89,25 +89,36 @@ class Content
         array $server,
         array $decoders = array()
     ) {
-        if (isset($server['CONTENT_TYPE'])) {
-            $this->type = strtolower($server['CONTENT_TYPE']);
-        } elseif (isset($server['HTTP_CONTENT_TYPE'])) {
-            $this->type = strtolower($server['HTTP_CONTENT_TYPE']);
-        } else {
-            $this->type = null;
-        }        
+        $this->type = $this->getHeaderValue($server, 'CONTENT_TYPE');
         
-        $this->length = isset($server['CONTENT_LENGTH'])
-                      ? strtolower($server['CONTENT_LENGTH'])
-                      : null;
+        $this->length = $this->getHeaderValue($server, 'CONTENT_LENGTH');
         
-        $this->md5 = isset($server['CONTENT_MD5'])
-                   ? strtolower($server['CONTENT_MD5'])
-                   : null;
+        $this->md5 = $this->getHeaderValue($server, 'CONTENT_MD5');
         
         $this->decoders = array_merge($this->decoders, $decoders);
     }
     
+    /**
+     * 
+     * @param array $server An array of $_SERVER values.
+     * 
+     * @param string $key CONTENT_TYPE, CONTENT_LENGTH, CONTENT_MD5
+     * 
+     * @return string null / value if any
+     * 
+     */
+    protected function getHeaderValue(array $server, $key)
+    {
+        if (isset($server[$key])) {
+            $value = strtolower($server[$key]);
+        } elseif (isset($server['HTTP_' . $key])) {
+            $value = strtolower($server['HTTP_' . $key]);
+        } else {
+            $value = null;
+        }
+        return $value;
+    }
+
     /**
      * 
      * Request body after decoding it based on the content type.
