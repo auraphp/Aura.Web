@@ -274,7 +274,7 @@ header($response->status->get(), true, $response->status->getCode());
 
 // send non-cookie headers
 foreach ($response->headers->get() as $label => $value) {
-    header($label, $value);
+    header("{$label}: {$value}");
 }
 
 // send cookies
