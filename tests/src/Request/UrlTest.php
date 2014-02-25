@@ -42,46 +42,46 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 
     public function serverProvider()
     {
-        return [
-            [
+        return array(
+            array(
                 'http://example.com/foo?bar=baz',
-                [
+                array(
                     'HTTP_HOST'   => 'example.com',
                     'REQUEST_URI' => '/foo?bar=baz'
-                ]
-            ],
-            [
+                )
+            ),
+            array(
                 'http://example.com:1180/foo?bar=baz',
-                [
+                array(
                     'HTTP_HOST'   => 'example.com',
                     'SERVER_NAME' => 'example.com',
                     'SERVER_PORT' => '1180',
                     'REQUEST_URI' => '/foo?bar=baz'
-                ]
-            ],
-            [
+                )
+            ),
+            array(
                 'http://example.com:1180/foo?bar=baz',
-                [
+                array(
                     'SERVER_NAME' => 'example.com',
                     'SERVER_PORT' => '1180',
                     'REQUEST_URI' => '/foo?bar=baz'
-                ]
-            ],
-            [
+                )
+            ),
+            array(
                 'http://example.com:1180/foo?bar=baz',
-                [
+                array(
                     'HTTP_HOST'   => 'example.com:1180',
                     'REQUEST_URI' => '/foo?bar=baz'
-                ]
-            ],
-            [
+                )
+            ),
+            array(
                 'http://example.com:1180/foo?bar=baz',
-                [
+                array(
                     'SERVER_NAME' => 'example.com',
                     'SERVER_PORT' => '1180',
                     'REQUEST_URI' => '/foo?bar=baz'
-                ]
-            ]
-        ];
+                )
+            )
+        );
     }
 }
