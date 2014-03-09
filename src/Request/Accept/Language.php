@@ -12,7 +12,7 @@ namespace Aura\Web\Request\Accept;
 
 /**
  * 
- * Represents a collection of `Acccept-Language` header values, sorted in
+ * Represents a collection of `Accept-Language` header values, sorted in
  * quality order.
  * 
  * @package Aura.Web
