@@ -334,14 +334,16 @@ class WebFactory
             $media
         );
     }
-    
-    /**
-     * 
-     * Returns a request params object.
-     * 
-     * @return Request\Params
-     * 
-     */
+
+	/**
+	 *
+	 * Returns a request params object.
+	 *
+	 * @param array $data A parameters array.
+	 *
+	 * @return Request\Params
+	 *
+	 */
     public function newRequestParams(array $data = array())
     {
         return new Request\Params($data);
@@ -419,26 +421,30 @@ class WebFactory
             $redirect
         );
     }
-    
-    /**
-     * 
-     * Returns a response cache object.
-     * 
-     * @return Response\Cache
-     * 
-     */
+
+	/**
+	 *
+	 * Returns a response cache object.
+	 *
+	 * @param Response\Headers $headers A headers object.
+	 *
+	 * @return Response\Cache
+	 *
+	 */
     public function newResponseCache(Response\Headers $headers)
     {
         return new Response\Cache($headers);
     }
-    
-    /**
-     * 
-     * Returns a response content object.
-     * 
-     * @return Response\Content
-     * 
-     */
+
+	/**
+	 *
+	 * Returns a response content object.
+	 *
+	 * @param Response\Headers $headers A headers object.
+	 *
+	 * @return Response\Content
+	 *
+	 */
     public function newResponseContent(Response\Headers $headers)
     {
         return new Response\Content($headers);
@@ -479,14 +485,20 @@ class WebFactory
     {
         return new Response\Status;
     }
-    
-    /**
-     * 
-     * Returns a response redirect object.
-     * 
-     * @return Response\Redirect
-     * 
-     */
+
+	/**
+	 *
+	 * Returns a response redirect object.
+	 *
+	 * @param Response\Status $status A status object.
+	 *
+	 * @param Response\Headers $headers A headers object.
+	 *
+	 * @param Response\Cache $cache A cache object.
+	 *
+	 * @return Response\Redirect
+	 *
+	 */
     public function newResponseRedirect(
         Response\Status $status,
         Response\Headers $headers,

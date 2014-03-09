@@ -12,7 +12,7 @@ namespace Aura\Web\Request\Accept;
 
 /**
  * 
- * Represents a collection of `Acccept-Encoding` header values, sorted in
+ * Represents a collection of `Accept-Encoding` header values, sorted in
  * quality order.
  * 
  * @package Aura.Web

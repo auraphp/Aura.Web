@@ -367,7 +367,7 @@ class Cache
     
     /**
      * 
-     * Converts any regognizable date format to an HTTP date.
+     * Converts any recognizable date format to an HTTP date.
      * 
      * @param mixed $date The incoming date value.
      * 

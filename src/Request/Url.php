@@ -62,7 +62,7 @@ class Url
      *
      * Constructor
      *
-     * @param array An array of server values
+     * @param array $server An array of server values
      *
      */
     public function __construct(array $server)
