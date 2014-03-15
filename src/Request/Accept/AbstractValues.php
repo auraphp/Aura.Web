@@ -16,7 +16,7 @@ use IteratorAggregate;
 
 /**
  * 
- * Represents a collection of `Acccept*` header values, sorted in quality order.
+ * Represents a collection of `Accept*` header values, sorted in quality order.
  * 
  * @package Aura.Web
  * 
@@ -84,7 +84,7 @@ abstract class AbstractValues implements IteratorAggregate
      * 
      * @param int $key The sorted position.
      * 
-     * @return Value/AbstractValue
+     * @return Value\AbstractValue
      * 
      */
     public function get($key = null)
@@ -186,10 +186,6 @@ abstract class AbstractValues implements IteratorAggregate
      * an implicit 1.0 on more than one value means that those values will
      * be reverse from what the header specifies, which seems unexpected
      * when negotiating later.
-     * 
-     * @param array $acceptable An array of value objects.
-     * 
-     * @return array The array of value objects sorted by quality level.
      * 
      */
     protected function sort()

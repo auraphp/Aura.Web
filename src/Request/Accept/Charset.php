@@ -14,7 +14,7 @@ use Aura\Web\Request\Accept\Value\ValueFactory;
 
 /**
  * 
- * Represents a collection of `Acccept-Charset` header values, sorted in
+ * Represents a collection of `Accept-Charset` header values, sorted in
  * quality order.
  * 
  * @package Aura.Web
@@ -70,7 +70,7 @@ class Charset extends AbstractValues
             }
         }
         
-        // charset ISO-8859-1 is acceptable if not explictly mentioned
+        // charset ISO-8859-1 is acceptable if not explicitly mentioned
         $this->add('ISO-8859-1');
     }
 }

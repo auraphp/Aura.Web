@@ -41,6 +41,7 @@ class Values extends ArrayObject
     ) {
         parent::__construct($input, $flags, $iterator_class);
     }
+
     /**
      * 
      * Returns the value of an array key, or an alternative value if not set.

@@ -14,7 +14,7 @@ use Aura\Web\Request\Accept\Value\ValueFactory;
 
 /**
  * 
- * Represents a collection of `Acccept` header values, sorted in quality
+ * Represents a collection of `Accept` header values, sorted in quality
  * order.
  * 
  * @package Aura.Web

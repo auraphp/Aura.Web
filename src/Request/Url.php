@@ -1,51 +1,51 @@
 <?php
 /**
- * 
+ *
  * This file is part of Aura for PHP.
- * 
+ *
  * @package Aura.Web
- * 
+ *
  * @license http://opensource.org/licenses/bsd-license.php BSD
- * 
+ *
  */
 namespace Aura\Web\Request;
 
 use Aura\Web\Exception;
 
 /**
- * 
+ *
  * A Url object from the server values passed
- * 
+ *
  * @package Aura.Web
- * 
+ *
  */
 class Url
 {
     /**
-     * 
+     *
      * @var string Url string
-     * 
+     *
      */
     protected $string;
-    
+
     /**
-     * 
+     *
      * @var array parts of the URL
-     * 
+     *
      */
     protected $parts;
-    
+
     /**
-     * 
+     *
      * @var bool Indicate whether the request is secure or not
-     * 
+     *
      */
     protected $secure;
-    
+
     /**
-     * 
+     *
      * @var array component constants, see http://php.net/parse-url
-     * 
+     *
      */
     protected $keys = array(
         PHP_URL_SCHEME      => 'scheme',
@@ -57,13 +57,13 @@ class Url
         PHP_URL_QUERY       => 'query',
         PHP_URL_FRAGMENT    => 'fragment',
     );
-    
+
     /**
-     * 
+     *
      * Constructor
-     * 
-     * @param array An array of server values
-     * 
+     *
+     * @param array $server An array of server values
+     *
      */
     public function __construct(array $server)
     {
@@ -71,90 +71,102 @@ class Url
         $https = isset($server['HTTPS'])
                ? (strtolower($server['HTTPS']) == 'on')
                : false;
-        
+
         // explicit secure port?
         $port  = isset($server['SERVER_PORT'])
                ? ($server['SERVER_PORT'] == 443)
                : false;
-        
+
         // forwarded from an https scheme?
         $fwd   = isset($server['HTTP_X_FORWARDED_PROTO'])
                ? (strtolower($server['HTTP_X_FORWARDED_PROTO']) == 'https')
                : false;
-               
+
         // is this a secure request?
         $this->secure = ($https || $port || $fwd);
-        
+
         // pick the scheme
         $scheme = $this->secure
                 ? 'https://'
                 : 'http://';
-        
+
         // pick the host; we need to fake it on missing
         // hosts for parse_url() to work properly
         if (isset($server['HTTP_HOST'])) {
             $host = $server['HTTP_HOST'];
             $fake = false;
-        } else {
+        } elseif(isset($server['SERVER_NAME'])) {
+            $host = $server['SERVER_NAME'];
+            $fake = false;
+        } else  {
             $host = 'example.com';
             $fake = true;
         }
-        
+        preg_match('#\:[0-9]+$#', $host, $matches);
+        if ($matches) {
+            $found_port = array_pop($matches);
+            $host = substr($host, 0, -strlen($found_port));
+        }
+
         // pick the port
         $port   = isset($server['SERVER_PORT'])
                 ? ':' . $server['SERVER_PORT']
                 : null;
-        
+
+        if (is_null($port) && !empty($found_port)) {
+            $port = $found_port;
+        }
+
         // pick the uri
         $uri    = isset($server['REQUEST_URI'])
                 ? $server['REQUEST_URI']
                 : null;
-        
+
         // construct the URL string
         $this->string = $scheme . $host . $port . $uri;
-        
+
         // retain the URL parts
         $this->parts = parse_url($this->string);
-        
+
         // remove faked host
         if ($fake) {
             $this->parts[PHP_URL_HOST] = null;
         }
     }
-    
+
     /**
-     * 
-     * Returns the full URL string; 
+     *
+     * Returns the full URL string;
      * or, if a component constant is passed, returns only that part of the URL
-     * 
+     *
      * @param string $component
-     * 
+     *
      * @return string
-     * 
+     *
      */
     public function get($component = null)
     {
         if ($component === null) {
             return $this->string;
         }
-        
+
         if (! isset($this->keys[$component])) {
             throw new Exception\InvalidComponent($component);
         }
-        
+
         $key = $this->keys[$component];
         return isset($this->parts[$key])
              ? $this->parts[$key]
              : null;
     }
-    
+
     /**
-     * 
+     *
      * Indicates if the request is secure, whether via SSL, TLS, or
      * forwarded from a secure protocol
-     * 
+     *
      * @return bool
-     * 
+     *
      */
     public function isSecure()
     {

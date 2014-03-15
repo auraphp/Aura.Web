@@ -164,7 +164,7 @@ class Client
      * 
      * @param array $mobile_agents Additional mobile agent strings.
      * 
-     * @param array $crawler_agents Additiona crawler agent strings.
+     * @param array $crawler_agents Additional crawler agent strings.
      * 
      * @param array $proxies IP addresses of trusted proxies, if any.
      * 

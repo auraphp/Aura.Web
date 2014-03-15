@@ -12,7 +12,7 @@ namespace Aura\Web\Request;
 
 /**
  * 
- * Represents path-info paramters, typically via a router map.
+ * Represents path-info parameters, typically via a router map.
  * 
  * @package Aura.Web
  * 
