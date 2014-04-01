@@ -19,12 +19,16 @@
     },
     "autoload": {
         "psr-4": {
-            "Aura\\Web\\": "src/"
+            "Aura\\Web\\": "src/",
+            "Aura\\Web\\_Config\\": "config/"
         }
     },
     "extra": {
         "aura": {
-            "type": "library"
+            "type": "library",
+            "config": {
+                "common": "Aura\\Web\\_Config\\Common"
+            }
         },
         "branch-alias": {
             "dev-develop-2": "2.0.x-dev"
