@@ -192,37 +192,73 @@ class Client
         array $crawler_agents = array(),
         array $proxies = array()
     ) {
-        // set basic properties
-        $this->mobile_agents  = array_merge($this->mobile_agents, $mobile_agents);
+        $this->mobile_agents = array_merge($this->mobile_agents, $mobile_agents);
         $this->crawler_agents = array_merge($this->crawler_agents, $crawler_agents);
-        $this->proxies        = $proxies;
-        $this->auth_digest    = isset($server['PHP_AUTH_DIGEST'])
-                              ? $server['PHP_AUTH_DIGEST']
-                              : null;
-        $this->auth_pw        = isset($server['PHP_AUTH_PW'])
-                              ? $server['PHP_AUTH_PW']
-                              : null;
-        $this->auth_type      = isset($server['AUTH_TYPE'])
-                              ? $server['AUTH_TYPE']
-                              : null;
-        $this->auth_user      = isset($server['PHP_AUTH_USER'])
-                              ? $server['PHP_AUTH_USER']
-                              : null;
-        $this->referer        = isset($server['HTTP_REFERER'])
-                              ? $server['HTTP_REFERER']
-                              : null;
-        $this->user_agent     = isset($server['HTTP_USER_AGENT'])
-                              ? $server['HTTP_USER_AGENT']
-                              : null;
-        
-        // set forwarded-for
+        $this->proxies = $proxies;
+        $this->setAuthDigest($server);
+        $this->setAuthPw($server);
+        $this->setAuthType($server);
+        $this->setAuthUser($server);
+        $this->setReferer($server);
+        $this->setUserAgent($server);
+        $this->setForwardedFor($server);
+        $this->setIp($server);
+    }
+    
+    protected function setAuthDigest(array $server)
+    {
+        $this->auth_digest = isset($server['PHP_AUTH_DIGEST'])
+                           ? $server['PHP_AUTH_DIGEST']
+                           : null;
+    }
+
+    protected function setAuthPw(array $server)
+    {
+        $this->auth_pw = isset($server['PHP_AUTH_PW'])
+                       ? $server['PHP_AUTH_PW']
+                       : null;
+    }
+
+    protected function setAuthType(array $server)
+    {
+        $this->auth_type = isset($server['AUTH_TYPE'])
+                         ? $server['AUTH_TYPE']
+                         : null;
+    }
+
+    protected function setAuthUser(array $server)
+    {
+        $this->auth_user = isset($server['PHP_AUTH_USER'])
+                         ? $server['PHP_AUTH_USER']
+                         : null;
+    }
+
+    protected function setReferer(array $server)
+    {
+        $this->referer = isset($server['HTTP_REFERER'])
+                       ? $server['HTTP_REFERER']
+                       : null;
+    }
+
+    protected function setUserAgent(array $server)
+    {
+        $this->user_agent = isset($server['HTTP_USER_AGENT'])
+                          ? $server['HTTP_USER_AGENT']
+                          : null;
+    }
+
+    protected function setForwardedFor(array $server)
+    {
         if (isset($server['HTTP_X_FORWARDED_FOR'])) {
             $ips = explode(',', $server['HTTP_X_FORWARDED_FOR']);
             foreach ($ips as $ip) {
                 $this->forwarded_for[] = trim($ip);
             }
         }
-        
+    }
+
+    protected function setIp(array $server)
+    {
         // get the list of forwarded-for IPs, if any, and append the reported
         // remote address (in a proxy situation, it is the last proxy)
         $ips   = $this->forwarded_for;
@@ -250,7 +286,7 @@ class Client
             $this->ip = $ips[0];
         }
     }
-    
+
     /**
      * 
      * Returns the server `PHP_AUTH_DIGEST` value, if any.
