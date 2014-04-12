@@ -19,6 +19,12 @@ namespace Aura\Web\Response;
  */
 class Redirect
 {
+    protected $status;
+    
+    protected $headers;
+    
+    protected $cache;
+
     /**
      * 
      * Constructor.

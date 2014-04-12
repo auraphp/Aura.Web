@@ -147,7 +147,7 @@ class Content
     public function getCharset()
     {
         $parts = explode(';', $this->headers->get('Content-Type'));
-        $type = array_shift($parts);
+        array_shift($parts); // remove $type
         $charset = array_shift($parts);
         $charset = str_replace(' ', '', $charset);
         $charset = str_replace('charset=', '', $charset);
