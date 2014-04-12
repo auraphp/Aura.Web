@@ -158,6 +158,23 @@ class Client
 
     /**
      * 
+     * IP addresses of trusted proxies, if any.
+     * 
+     * @var array
+     * 
+     */
+    protected $proxies;
+
+    protected $auth_digest;
+
+    protected $auth_pw;
+
+    protected $auth_type;
+
+    protected $auth_user;
+    
+    /**
+     * 
      * Constructor.
      * 
      * @param array $server An array of $_SERVER values.

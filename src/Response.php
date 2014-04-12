@@ -17,6 +17,18 @@ namespace Aura\Web;
  * 
  * @package Aura.Web
  * 
+ * @property-read Response\Cache $cache A Cache object.
+ * 
+ * @property-read Response\Content $content A Content object.
+ * 
+ * @property-read Response\Cookies $cookies A Cookies object.
+ * 
+ * @property-read Response\Headers $headers A Headers object.
+ * 
+ * @property-read Response\Redirect $redirect A Redirect object.
+ * 
+ * @property-read Response\Status $status A Status object.
+ * 
  */
 class Response
 {

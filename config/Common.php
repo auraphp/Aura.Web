@@ -96,7 +96,6 @@ class Common extends Config
         /**
          * Aura\Web\Response
          */
-        $headers = $di->lazyNew('Aura\Web\Response\Headers');
         $di->params['Aura\Web\Response'] = array(
             'status'   => $di->lazyGet('web_response_status'),
             'headers'  => $di->lazyGet('web_response_headers'),
