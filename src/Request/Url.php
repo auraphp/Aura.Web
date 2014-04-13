@@ -67,41 +67,87 @@ class Url
      */
     public function __construct(array $server)
     {
-        // explicit https scheme?
-        $https = isset($server['HTTPS'])
-               ? (strtolower($server['HTTPS']) == 'on')
-               : false;
+        $this->secure = $this->getSecure($server);
+        $this->string = $this->getString($server);
+        $this->parts  = $this->getParts($server);
+    }
 
-        // explicit secure port?
-        $port  = isset($server['SERVER_PORT'])
-               ? ($server['SERVER_PORT'] == 443)
-               : false;
+    protected function getSecure($server)
+    {
+        $secure = $this->getHttps($server)
+               || $this->getSecurePort($server)
+               || $this->getSecureForward($server);
+        return (bool) $secure;
+    }
 
-        // forwarded from an https scheme?
-        $fwd   = isset($server['HTTP_X_FORWARDED_PROTO'])
-               ? (strtolower($server['HTTP_X_FORWARDED_PROTO']) == 'https')
-               : false;
+    protected function getString($server)
+    {
+        $scheme = $this->getScheme();
+        list($host, $port) = $this->getHostPort($server);
+        $uri = $this->getRequestUri($server);
+        return $scheme . $host . $port . $uri;
+    }
 
-        // is this a secure request?
-        $this->secure = ($https || $port || $fwd);
+    protected function getParts($server)
+    {
+        $parts = parse_url($this->string);
+        if ($this->hostIsMissing($server)) {
+            $parts[PHP_URL_HOST] = null;
+        }
+        return $parts;
+    }
 
-        // pick the scheme
-        $scheme = $this->secure
-                ? 'https://'
-                : 'http://';
+    protected function hostIsMissing($server)
+    {
+        return ! isset($server['HTTP_HOST'])
+            && ! isset($server['SERVER_NAME']);
+    }
 
+    protected function getHttps($server)
+    {
+        return isset($server['HTTPS'])
+             ? (strtolower($server['HTTPS']) == 'on')
+             : false;
+    }
+
+    protected function getSecurePort($server)
+    {
+        return isset($server['SERVER_PORT'])
+             ? ($server['SERVER_PORT'] == 443)
+             : false;
+    }
+
+    protected function getSecureForward($server)
+    {
+        return isset($server['HTTP_X_FORWARDED_PROTO'])
+             ? (strtolower($server['HTTP_X_FORWARDED_PROTO']) == 'https')
+             : false;
+    }
+
+    protected function getScheme()
+    {
+        return $this->secure
+             ? 'https://'
+             : 'http://';
+    }
+
+    protected function getHostPort($server)
+    {
         // pick the host; we need to fake it on missing
         // hosts for parse_url() to work properly
+        $host = 'example.com';
         if (isset($server['HTTP_HOST'])) {
             $host = $server['HTTP_HOST'];
-            $fake = false;
         } elseif(isset($server['SERVER_NAME'])) {
             $host = $server['SERVER_NAME'];
-            $fake = false;
-        } else  {
-            $host = 'example.com';
-            $fake = true;
         }
+
+        $port = $this->getPort($server, $host);
+        return array($host, $port);
+    }
+
+    protected function getPort($server, &$host)
+    {
         preg_match('#\:[0-9]+$#', $host, $matches);
         if ($matches) {
             $found_port = array_pop($matches);
@@ -117,21 +163,14 @@ class Url
             $port = $found_port;
         }
 
-        // pick the uri
-        $uri    = isset($server['REQUEST_URI'])
-                ? $server['REQUEST_URI']
-                : null;
+        return $port;
+    }
 
-        // construct the URL string
-        $this->string = $scheme . $host . $port . $uri;
-
-        // retain the URL parts
-        $this->parts = parse_url($this->string);
-
-        // remove faked host
-        if ($fake) {
-            $this->parts[PHP_URL_HOST] = null;
-        }
+    protected function getRequestUri($server)
+    {
+        return isset($server['REQUEST_URI'])
+             ? $server['REQUEST_URI']
+             : null;
     }
 
     /**
