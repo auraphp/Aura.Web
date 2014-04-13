@@ -259,6 +259,25 @@ class Client
 
     protected function setIp(array $server)
     {
+        $ips = $this->getIps($server);
+        foreach ($ips as $ip) {
+            // is the IP a trusted proxy?
+            if (! in_array($ip, $this->proxies)) {
+                // no; treat it as the origin IP. technically we don't know
+                // if this is a proxy server, the real client IP, or a spoof.
+                // this is because this is the first point in the chain that
+                // we know we can't trust.
+                $this->ip = $ip;
+                return;
+            }
+        }
+        
+        // still don't have an IP, use the reported remote address
+        $this->ip = $ips[0];
+    }
+
+    protected function getIps($server)
+    {
         // get the list of forwarded-for IPs, if any, and append the reported
         // remote address (in a proxy situation, it is the last proxy)
         $ips   = $this->forwarded_for;
@@ -268,23 +287,7 @@ class Client
         
         // set the origin IP by working through the IPs from right to left
         // (i.e., in reverse, from most to least reliable)
-        $ips = array_reverse($ips);
-        foreach ($ips as $ip) {
-            // is the IP a trusted proxy?
-            if (! in_array($ip, $this->proxies)) {
-                // no; treat it as the origin IP. technically we don't know
-                // if this is a proxy server, the real client IP, or a spoof.
-                // this is because this is the first point in the chain that
-                // we know we can't trust.
-                $this->ip = $ip;
-                break;
-            }
-        }
-        
-        // if we still don't have an IP, use the reported remote address
-        if (! $this->ip) {
-            $this->ip = $ips[0];
-        }
+        return array_reverse($ips);
     }
 
     /**
