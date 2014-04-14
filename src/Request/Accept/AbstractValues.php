@@ -100,7 +100,7 @@ abstract class AbstractValues implements IteratorAggregate
      * Sets the collection to one or more acceptable values, overwriting all
      * previous values.
      * 
-     * @param string $acceptable An `Accept*` string value; e.g.,
+     * @param string|array $acceptable An `Accept*` string value; e.g.,
      * `text/plain;q=0.5,text/html,text/*;q=0.1`.
      * 
      * @return null
@@ -236,7 +236,7 @@ abstract class AbstractValues implements IteratorAggregate
      * `$available` value objects on success, or false on failure.
      * 
      */
-    public function negotiate(array $available = array())
+    public function negotiate(array $available = null)
     {
         // if none available, no possible match
         if (! $available) {
