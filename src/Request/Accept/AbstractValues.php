@@ -126,7 +126,7 @@ abstract class AbstractValues implements IteratorAggregate
      * @todo Allow this to take an array so we can parse-and-sort in one pass.
      * 
      */
-    protected function add($acceptable)
+    protected function add($acceptable = null)
     {
         foreach ((array) $acceptable as $string) {
             $this->parse($string);
