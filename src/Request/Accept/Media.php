@@ -158,7 +158,7 @@ class Media extends AbstractValues
                      ? $server['REQUEST_URI']
                      : null;
         $path = parse_url('http://example.com/' . $request_uri, PHP_URL_PATH);
-        $name = basename($path);
+        $name = basename((string) $path);
         $ext  = strrchr($name, '.');
         if ($ext && isset($this->types[$ext])) {
             $this->set($this->types[$ext]);
