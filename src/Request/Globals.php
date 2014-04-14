@@ -16,6 +16,18 @@ namespace Aura\Web\Request;
  * 
  * @package Aura.Web
  * 
+ * @property-read Values $cookies Object representing $_COOKIES values.
+ * 
+ * @property-read Values $env Object representing $_ENV values.
+ * 
+ * @property-read Files $files Object representing $_FILES values.
+ * 
+ * @property-read Values $post Object representing $_POST values.
+ * 
+ * @property-read Values $query Object representing $_GET values.
+ * 
+ * @property-read Values $server Object representing $_SERVER values.
+ * 
  */
 class Globals
 {
