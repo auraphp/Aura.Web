@@ -20,7 +20,15 @@ use Aura\Web\Request\Accept\Media;
  * A collection of `Accept*` objects.
  * 
  * @package Aura.Web
- * 
+ *
+ * @property-read Media $media The `Accept` values object.
+ *
+ * @property-read Charset $charset The `Accept-Charset` values object.
+ *
+ * @property-read Encoding $encoding The `Accept-Encoding` values object.
+ *
+ * @property-read Language $language The `Accept-Language` values object.
+ *
  */
 class Accept
 {
