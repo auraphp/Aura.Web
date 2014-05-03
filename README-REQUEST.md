@@ -268,7 +268,7 @@ $available = array(
 // get the best match between what the request finds acceptable and what we
 // have available; the result in this case is 'application/json' because of
 // the file extenstion overriding the Accept header values
-$media = $request->accept->mediate->negotiate($available);
+$media = $request->accept->media->negotiate($available);
 echo $media->available->getValue(); // application/json
 ?>
 ```
