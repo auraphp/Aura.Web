@@ -14,13 +14,7 @@ class ResponseSenderTest extends \PHPUnit_Framework_TestCase
         $factory = new WebFactory($globals);
         $this->response = $factory->newResponse();
         $this->response_sender = new FakeResponseSender($this->response);
-    }
-    
-    protected function tearDown()
-    {
-        FakeResponseSender::$headers = null;
-        FakeResponseSender::$cookies = null;
-        FakeResponseSender::$content = null;
+        FakeResponseSender::reset();
     }
 
     public function testStringContent()
