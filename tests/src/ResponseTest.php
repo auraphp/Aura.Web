@@ -1,8 +1,6 @@
 <?php
 namespace Aura\Web;
 
-use Aura\Web\Response\PropertyFactory;
-
 class ResponseTest extends \PHPUnit_Framework_TestCase
 {
     protected $response;
