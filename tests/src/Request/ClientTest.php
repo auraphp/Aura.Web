@@ -80,6 +80,20 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
     
+    public function testGetIp_useRemoteWhenForwarded()
+    {
+        // coming directly from a proxy
+        $server['REMOTE_ADDR'] = '127.0.0.1';
+        
+        $proxies = array(
+            '127.0.0.1',
+            '127.0.0.2'
+        );
+        
+        $client = $this->newClient($server, array(), array(), $proxies);
+        $this->assertSame('127.0.0.1', $client->getIp());
+    }
+
     public function testGetReferer()
     {
         $expect = 'http://example.com';

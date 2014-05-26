@@ -70,8 +70,14 @@ class CacheTest extends \PHPUnit_Framework_TestCase
         $this->assertHeaders(array(
             'Expires' => 'Sat, 08 Aug 1970 00:00:00 GMT',
         ));
+
+        // try setting a bad date
+        $this->cache->setExpires('I am not a date');
+        $this->assertHeaders(array(
+            'Expires' => 'Mon, 01 Jan 0001 00:00:00 GMT',
+        ));
     }
-    
+
     public function testLastModified()
     {
         $this->cache->setLastModified('1979-11-07 +0000');
