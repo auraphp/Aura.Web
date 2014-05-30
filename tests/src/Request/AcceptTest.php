@@ -10,7 +10,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
         $encoding = new Accept\Encoding($value_factory, $server);
         $language = new Accept\Language($value_factory, $server);
         $media = new Accept\Media($value_factory, $server);
-        
+
         return new Accept(
             $charset,
             $encoding,

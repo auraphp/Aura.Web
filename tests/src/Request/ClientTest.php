@@ -11,7 +11,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     ) {
         return new Client($server, $mobile_agents, $crawler_agents, $proxies);
     }
-    
+
     public function testGetAuthDigest()
     {
         $server['PHP_AUTH_DIGEST'] = 'foo';
@@ -20,7 +20,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $expect = 'foo';
         $this->assertSame($expect, $actual);
     }
-    
+
     public function testGetAuthPw()
     {
         $server['PHP_AUTH_PW'] = 'foo';
@@ -29,7 +29,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $expect = 'foo';
         $this->assertSame($expect, $actual);
     }
-    
+
     public function testGetAuthUser()
     {
         $server['PHP_AUTH_USER'] = 'foo';
@@ -38,7 +38,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $expect = 'foo';
         $this->assertSame($expect, $actual);
     }
-    
+
     public function testGetAuthType()
     {
         $server['AUTH_TYPE'] = 'foo';
@@ -47,22 +47,22 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $expect = 'foo';
         $this->assertSame($expect, $actual);
     }
-    
+
     public function testGetForwardedFor()
     {
         // this is the last proxy in the chain
         $server['REMOTE_ADDR'] = '127.0.0.4';
-        
+
         // this is the forwarding chain
         $server['HTTP_X_FORWARDED_FOR'] = '127.0.0.1, 127.0.0.2, 127.0.0.3';
-        
+
         // these are the trusted proxies
         $proxies = array(
             '127.0.0.2',
             '127.0.0.3',
             '127.0.0.4',
         );
-        
+
         // create client and test
         $client = $this->newClient($server, array(), array(), $proxies);
         $expect = array('127.0.0.1', '127.0.0.2', '127.0.0.3');
@@ -70,7 +70,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
         $this->assertSame('127.0.0.1', $client->getIp());
     }
-    
+
     public function testGetIp()
     {
         $expect = '127.0.0.1';
@@ -79,17 +79,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $actual = $client->getIp();
         $this->assertSame($expect, $actual);
     }
-    
+
     public function testGetIp_useRemoteWhenForwarded()
     {
         // coming directly from a proxy
         $server['REMOTE_ADDR'] = '127.0.0.1';
-        
+
         $proxies = array(
             '127.0.0.1',
             '127.0.0.2'
         );
-        
+
         $client = $this->newClient($server, array(), array(), $proxies);
         $this->assertSame('127.0.0.1', $client->getIp());
     }
@@ -102,7 +102,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $actual = $client->getReferer();
         $this->assertSame($expect, $actual);
     }
-    
+
     public function testGetUserAgent()
     {
         $expect = 'Foo/1.0';
@@ -111,21 +111,21 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $actual = $client->getUserAgent();
         $this->assertSame($expect, $actual);
     }
-    
+
     public function testConstructorAgents()
     {
         $mobile_agents = array('foo');
         $crawler_agents = array('bar');
-        
+
         $server['HTTP_USER_AGENT'] = 'foo';
         $client = $this->newClient($server, $mobile_agents, $crawler_agents);
         $this->assertTrue($client->isMobile());
-        
+
         $server['HTTP_USER_AGENT'] = 'bar';
         $client = $this->newClient($server, $mobile_agents, $crawler_agents);
         $this->assertTrue($client->isCrawler());
     }
-    
+
     public function testIsMobile()
     {
         $agents = array(
@@ -155,23 +155,23 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             array('NetFront', 'Mozilla/4.0 (compatible;MSIE 6.0;Windows95;PalmSource) Netfront/3.0;8;320x320'),
             array('Fennec', 'Mozilla/5.0 (X11; U; Linux armv61; en-US; rv:1.9.1b2pre) Gecko/20081015 Fennec/1.0a1'),
         );
-        
+
         foreach ($agents as $agent) {
             $server['HTTP_USER_AGENT'] = $agent[1];
             $client = $this->newClient($server);
             $this->assertTrue($client->isMobile());
         }
-        
+
         // test an unknown agent
         $server['HTTP_USER_AGENT'] = 'NoSuchAgent/1.0';
         $client = $this->newClient($server);
         $this->assertFalse($client->isMobile());
-        
+
         // try to get it again, for code coverage
         $this->assertFalse($client->isMobile());
-        
+
     }
-    
+
     public function testIsCrawler()
     {
         $agents = array(
@@ -205,18 +205,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             array('mp3Spider', 'mp3spider cn-search-devel'),
             array('Wget', 'Wget/1.12 (linux-gnu)'),
         );
-        
+
         foreach ($agents as $agent) {
             $server['HTTP_USER_AGENT'] = $agent[1];
             $client = $this->newClient($server);
             $this->assertTrue($client->isCrawler());
         }
-        
+
         // test an unknown agent
         $server['HTTP_USER_AGENT'] = 'NoSuchAgent/1.0';
         $client = $this->newClient($server);
         $this->assertFalse($client->isCrawler());
-        
+
         // try to get it again, for code coverage
         $this->assertFalse($client->isCrawler());
     }

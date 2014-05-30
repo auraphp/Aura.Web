@@ -1,36 +1,36 @@
 <?php
 /**
- * 
+ *
  * This file is part of Aura for PHP.
- * 
+ *
  * @package Aura.Web
- * 
+ *
  * @license http://opensource.org/licenses/bsd-license.php BSD
- * 
+ *
  */
 namespace Aura\Web\Response;
 
 use Aura\Web\Exception;
 
 /**
- * 
+ *
  * Represents the response status header line.
- * 
+ *
  * @package Aura.Web
- * 
+ *
  */
 class Status
 {
     /**
-     * 
+     *
      * Standard status codes and phrases, per
      * <http://www.iana.org/assignments/http-status-codes/http-status-codes.txt>.
-     * 
+     *
      * @var array
-     * 
+     *
      */
     protected $code_phrase = array(
-        
+
         100 => 'Continue',
         101 => 'Switching Protocols',
         102 => 'Processing',
@@ -45,7 +45,7 @@ class Status
         207 => 'Multi-Status',
         208 => 'Already Reported',
         226 => 'IM Used',
-        
+
         300 => 'Multiple Choices',
         301 => 'Moved Permanently',
         302 => 'Found',
@@ -96,58 +96,58 @@ class Status
         510 => 'Not Extended',
         511 => 'Network Authentication Required',
     );
-    
+
     /**
-     * 
+     *
      * The response status code.
-     * 
+     *
      * @var int
-     * 
+     *
      */
     protected $code = 200;
 
     /**
-     * 
+     *
      * The response status phrase.
-     * 
+     *
      * @var string
-     * 
+     *
      */
     protected $phrase = 'OK';
 
     /**
-     * 
+     *
      * The HTTP protocol version.
-     * 
+     *
      * @var string
-     * 
+     *
      */
     protected $version = 1.1;
 
     /**
-     * 
+     *
      * Returns the status values as a string.
-     * 
+     *
      * @return string
-     * 
+     *
      */
     public function get()
     {
         return "HTTP/{$this->version} {$this->code} {$this->phrase}";
     }
-    
+
     /**
-     * 
+     *
      * Sets the status code, phrase, and version all at once.
-     * 
+     *
      * @param int $code The statuus code.
-     * 
+     *
      * @param string $phrase The status phrase.
-     * 
+     *
      * @param string $version The HTTP protocol version.
-     * 
+     *
      * @return null
-     * 
+     *
      */
     public function set($code, $phrase = null, $version = null)
     {
@@ -159,16 +159,16 @@ class Status
             $this->setVersion($version);
         }
     }
-    
+
     /**
-     * 
+     *
      * Sets the status code; if the code is recognized, also sets the status
      * phrase.
-     * 
+     *
      * @param int $code An HTTP status code, such as 200, 302, 404, etc.
-     * 
+     *
      * @return null
-     * 
+     *
      */
     public function setCode($code)
     {
@@ -185,11 +185,11 @@ class Status
     }
 
     /**
-     * 
+     *
      * Returns the status code.
-     * 
+     *
      * @return int
-     * 
+     *
      */
     public function getCode()
     {
@@ -197,13 +197,13 @@ class Status
     }
 
     /**
-     * 
+     *
      * Sets the status phrase.
-     * 
+     *
      * @param string $phrase The status phrase.
-     * 
+     *
      * @return null
-     * 
+     *
      */
     public function setPhrase($phrase)
     {
@@ -212,11 +212,11 @@ class Status
     }
 
     /**
-     * 
+     *
      * Returns the status phrase.
-     * 
+     *
      * @return string
-     * 
+     *
      */
     public function getPhrase()
     {
@@ -224,13 +224,13 @@ class Status
     }
 
     /**
-     * 
+     *
      * Sets the HTTP protocol version to 1.0 or 1.1.
-     * 
+     *
      * @param string $version The HTTP protocol version to use.
-     * 
+     *
      * @return null
-     * 
+     *
      */
     public function setVersion($version)
     {
@@ -241,11 +241,11 @@ class Status
     }
 
     /**
-     * 
+     *
      * Returns the HTTP protocol version.
-     * 
+     *
      * @return string
-     * 
+     *
      */
     public function getVersion()
     {

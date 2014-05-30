@@ -4,7 +4,7 @@ namespace Aura\Web\Response;
 class CookiesTest extends \PHPUnit_Framework_TestCase
 {
     protected $cookies;
-    
+
     protected function setUp()
     {
         $this->cookies = new Cookies;
@@ -13,7 +13,7 @@ class CookiesTest extends \PHPUnit_Framework_TestCase
     public function testSetAndGet()
     {
         $this->cookies->set('foo', 'bar', '88', '/path', 'example.com');
-        
+
         $expect = array(
           'value' => 'bar',
           'expire' => 88,
@@ -24,7 +24,7 @@ class CookiesTest extends \PHPUnit_Framework_TestCase
         );
 
         $actual = $this->cookies->get('foo');
-        
+
         $this->assertSame($expect, $actual);
     }
 
@@ -32,7 +32,7 @@ class CookiesTest extends \PHPUnit_Framework_TestCase
     {
         $this->cookies->set('foo', 'bar', '88', '/path', 'example.com');
         $this->cookies->set('baz', 'dib', date('Y-m-d H:i:s', '88'), '/path', 'example.com');
-        
+
         $expect = array(
             'foo' => array(
               'value' => 'bar',
@@ -53,7 +53,7 @@ class CookiesTest extends \PHPUnit_Framework_TestCase
         );
 
         $actual = $this->cookies->get();
-        
+
         $this->assertSame($expect, $actual);
     }
 
@@ -61,7 +61,7 @@ class CookiesTest extends \PHPUnit_Framework_TestCase
     {
         // set a cookie name and value
         $this->cookies->set('foo', 'bar');
-        
+
         // get before defaults
         $expect = array(
             'value' => 'bar',
@@ -73,7 +73,7 @@ class CookiesTest extends \PHPUnit_Framework_TestCase
         );
         $actual = $this->cookies->get('foo');
         $this->assertSame($expect, $actual);
-        
+
         // set and get defaults
         $this->cookies->setExpire(88);
         $this->cookies->setPath('/path');

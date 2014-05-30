@@ -6,7 +6,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     protected $response;
 
     protected $headers;
-    
+
     protected function setUp()
     {
         parent::setUp();
@@ -15,7 +15,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->response = $factory->newResponse();
         $this->headers = $this->response->headers;
     }
-    
+
     public function test__get()
     {
         $this->assertInstanceOf('Aura\Web\Response\Status',   $this->response->status);

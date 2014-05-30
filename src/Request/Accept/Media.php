@@ -1,51 +1,51 @@
 <?php
 /**
- * 
+ *
  * This file is part of Aura for PHP.
- * 
+ *
  * @package Aura.Web
- * 
+ *
  * @license http://opensource.org/licenses/bsd-license.php BSD
- * 
+ *
  */
 namespace Aura\Web\Request\Accept;
 
 use Aura\Web\Request\Accept\Value\ValueFactory;
 
 /**
- * 
+ *
  * Represents a collection of `Accept` header values, sorted in quality
  * order.
- * 
+ *
  * @package Aura.Web
- * 
+ *
  */
 class Media extends AbstractValues
 {
     /**
-     * 
+     *
      * The $_SERVER key to use when populating acceptable values.
-     * 
+     *
      * @var string
-     * 
+     *
      */
     protected $server_key = 'HTTP_ACCEPT';
 
     /**
-     * 
+     *
      * The type of value object to create using the ValueFactory.
-     * 
+     *
      * @var string
-     * 
+     *
      */
     protected $value_type = 'media';
-    
+
     /**
-     * 
+     *
      * A map of file .extensions to media types.
      *
      * @var array
-     * 
+     *
      */
     protected $types = array(
         '.aif'      => 'audio/x-aiff',
@@ -130,17 +130,17 @@ class Media extends AbstractValues
         '.xwd'      => 'image/x-xwindowdump',
         '.zip'      => 'application/zip',
     );
-    
+
     /**
-     * 
+     *
      * Constructor.
-     * 
+     *
      * @param ValueFactory $value_factory A factory for value objects.
-     * 
+     *
      * @param array $server A copy of $_SERVER for finding acceptable values.
-     * 
+     *
      * @param array $types Additional extensions to media type mappings.
-     * 
+     *
      */
     public function __construct(
         ValueFactory $value_factory,
@@ -149,10 +149,10 @@ class Media extends AbstractValues
     ) {
         // parent construction
         parent::__construct($value_factory, $server);
-        
+
         // merge the media type mappings
         $this->types = array_merge($this->types, $types);
-        
+
         // override the media type if a file extension exists in the path
         $request_uri = isset($server['REQUEST_URI'])
                      ? $server['REQUEST_URI']

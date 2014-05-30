@@ -8,7 +8,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     protected function newRequest(array $globals = array())
     {
         $factory = new WebFactory($globals);
-        
+
         // these are BS; we should test them individually
         $factory->setMobileAgents(array());
         $factory->setCrawlerAgents(array());
@@ -16,15 +16,15 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $factory->setTypes(array());
         $factory->setMethodField('fieldname');
         $factory->setProxies(array());
-        
+
         // return the factory
         return $factory->newRequest();
     }
-    
+
     public function test__get()
     {
         $request = $this->newRequest();
-        
+
         $this->assertNotNull($request->cookies);
         $this->assertNotNull($request->env);
         $this->assertNotNull($request->files);
@@ -37,19 +37,19 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($request->server);
         $this->assertNotNull($request->url);
     }
-    
+
     public function testIsXhr()
     {
         $request = $this->newRequest();
         $this->assertFalse($request->isXhr());
-        
+
         $request = $this->newRequest(array(
             '_SERVER' => array(
                 'HTTP_X_REQUESTED_WITH' => 'xxx',
             ),
         ));
         $this->assertFalse($request->isXhr());
-        
+
         $request = $this->newRequest(array(
             '_SERVER' => array(
                 'HTTP_X_REQUESTED_WITH' => 'XmlHttpRequest',

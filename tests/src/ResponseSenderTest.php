@@ -25,7 +25,7 @@ class ResponseSenderTest extends \PHPUnit_Framework_TestCase
         $this->response->content->set("Hello World!");
         $this->response_sender->__invoke();
 
-        $expect = array( 
+        $expect = array(
             array(
                 0 => 'HTTP/1.1 299 Doom',
                 1 => true,

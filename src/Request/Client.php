@@ -1,86 +1,86 @@
 <?php
 /**
- * 
+ *
  * This file is part of Aura for PHP.
- * 
+ *
  * @package Aura.Web
- * 
+ *
  * @license http://opensource.org/licenses/bsd-license.php BSD
- * 
+ *
  */
 namespace Aura\Web\Request;
 
 /**
- * 
+ *
  * Information about the client.
- * 
+ *
  * @package Aura.Web
- * 
+ *
  */
 class Client
 {
     /**
-     * 
+     *
      * The list of 'X-Forwarded-For' values.
-     * 
+     *
      * @var array
-     * 
+     *
      */
     protected $forwarded_for = array();
-    
+
     /**
-     * 
+     *
      * Is the 'User-Agent' recognized as a mobile agent?
-     * 
+     *
      * @var bool
-     * 
+     *
      */
     protected $mobile = null;
-    
+
     /**
-     * 
+     *
      * Is the 'User-Agent' recognizes as a crawler robot?
-     * 
+     *
      * @var bool
-     * 
+     *
      */
     protected $crawler;
-    
+
     /**
-     * 
+     *
      * The client IP address.
-     * 
+     *
      * @var string
-     * 
+     *
      */
     protected $ip;
-    
+
     /**
-     * 
+     *
      * The 'Referer' value.
-     * 
+     *
      * @var string
-     * 
+     *
      */
     protected $referer;
-    
+
     /**
-     * 
+     *
      * The 'User-Agent' string.
-     * 
+     *
      * @var string
-     * 
+     *
      */
     protected $user_agent;
-    
+
     /**
-     * 
+     *
      * User-Agent strings used in matching mobile clients.
      *
      * @see isMobile()
-     * 
+     *
      * @var array
-     * 
+     *
      */
     protected $mobile_agents = array(
         'Android',
@@ -110,15 +110,15 @@ class Client
         'webOS', // Palm devices
         'Windows CE',
     );
-    
+
     /**
-     * 
+     *
      * User-Agent strings used in matching crawler robot clients.
      *
      * @see isCrawler()
-     * 
+     *
      * @var array
-     * 
+     *
      */
     protected $crawler_agents = array(
         'Ask',
@@ -157,11 +157,11 @@ class Client
     );
 
     /**
-     * 
+     *
      * IP addresses of trusted proxies, if any.
-     * 
+     *
      * @var array
-     * 
+     *
      */
     protected $proxies;
 
@@ -172,19 +172,19 @@ class Client
     protected $auth_type;
 
     protected $auth_user;
-    
+
     /**
-     * 
+     *
      * Constructor.
-     * 
+     *
      * @param array $server An array of $_SERVER values.
-     * 
+     *
      * @param array $mobile_agents Additional mobile agent strings.
-     * 
+     *
      * @param array $crawler_agents Additional crawler agent strings.
-     * 
+     *
      * @param array $proxies IP addresses of trusted proxies, if any.
-     * 
+     *
      */
     public function __construct(
         array $server,
@@ -204,7 +204,7 @@ class Client
         $this->setForwardedFor($server);
         $this->setIp($server);
     }
-    
+
     protected function setAuthDigest(array $server)
     {
         $this->auth_digest = isset($server['PHP_AUTH_DIGEST'])
@@ -271,7 +271,7 @@ class Client
                 return;
             }
         }
-        
+
         // still don't have an IP, use the reported remote address
         $this->ip = $ips[0];
     }
@@ -284,66 +284,66 @@ class Client
         $ips[] = isset($server['REMOTE_ADDR'])
                ? $server['REMOTE_ADDR']
                : null;
-        
+
         // set the origin IP by working through the IPs from right to left
         // (i.e., in reverse, from most to least reliable)
         return array_reverse($ips);
     }
 
     /**
-     * 
+     *
      * Returns the server `PHP_AUTH_DIGEST` value, if any.
-     * 
+     *
      * @return string
-     * 
+     *
      */
     public function getAuthDigest()
     {
         return $this->auth_digest;
     }
-    
+
     /**
-     * 
+     *
      * Returns the server `PHP_AUTH_PW` value, if any.
-     * 
+     *
      * @return string
-     * 
+     *
      */
     public function getAuthPw()
     {
         return $this->auth_pw;
     }
-    
+
     /**
-     * 
+     *
      * Returns the server `PHP_AUTH_USER` value, if any.
-     * 
+     *
      * @return string
-     * 
+     *
      */
     public function getAuthUser()
     {
         return $this->auth_user;
     }
-    
+
     /**
-     * 
+     *
      * Returns the server `AUTH_TYPE` value, if any.
-     * 
+     *
      * @return string
-     * 
+     *
      */
     public function getAuthType()
     {
         return $this->auth_type;
     }
-    
+
     /**
-     * 
+     *
      * Returns the values of the `X-Forwarded-For` headers as an array.
-     * 
+     *
      * @return array
-     * 
+     *
      */
     public function getForwardedFor()
     {
@@ -351,48 +351,48 @@ class Client
     }
 
     /**
-     * 
+     *
      * Returns the apparent origin IP address; note that this should not be
      * treated as a trusted value in any case.
-     * 
+     *
      * @return string
-     * 
+     *
      */
     public function getIp()
     {
         return $this->ip;
     }
-    
+
     /**
-     * 
+     *
      * Returns the value of the `Referer` header.
-     * 
+     *
      * @return string
-     * 
+     *
      */
     public function getReferer()
     {
         return $this->referer;
     }
-    
+
     /**
-     * 
+     *
      * Returns the value of the `User-Agent` header.
-     * 
+     *
      * @return string
-     * 
+     *
      */
     public function getUserAgent()
     {
         return $this->user_agent;
     }
-    
+
     /**
-     * 
+     *
      * Is the client a crawler?
-     * 
+     *
      * @return bool
-     * 
+     *
      */
     public function isCrawler()
     {
@@ -408,13 +408,13 @@ class Client
         }
         return $this->crawler;
     }
-    
+
     /**
-     * 
+     *
      * Is the client a mobile device?
-     * 
+     *
      * @return bool
-     * 
+     *
      */
     public function isMobile()
     {

@@ -7,13 +7,13 @@ class MethodTest extends \PHPUnit_Framework_TestCase
     {
         return new Method($server, $post);
     }
-    
+
     public function test__call()
     {
         $server['REQUEST_METHOD'] = 'OTHER';
         $method = $this->newMethod($server);
         $this->assertTrue($method->isOther());
-        
+
         $this->setExpectedException('BadMethodCallException');
         $method->badMethodCall();
     }
@@ -22,11 +22,11 @@ class MethodTest extends \PHPUnit_Framework_TestCase
     {
         $method = $this->newMethod();
         $this->assertFalse($method->isGet());
-        
+
         $server['REQUEST_METHOD'] = 'GET';
         $method = $this->newMethod($server);
         $this->assertTrue($method->isGet());
-        
+
         $server['REQUEST_METHOD'] = 'NOT-GET';
         $method = $this->newMethod($server);
         $this->assertFalse($method->isGet());
@@ -36,11 +36,11 @@ class MethodTest extends \PHPUnit_Framework_TestCase
     {
         $method = $this->newMethod();
         $this->assertFalse($method->isPost());
-        
+
         $server['REQUEST_METHOD'] = 'POST';
         $method = $this->newMethod($server);
         $this->assertTrue($method->isPost());
-        
+
         $server['REQUEST_METHOD'] = 'NOT-POST';
         $method = $this->newMethod($server);
         $this->assertFalse($method->isPost());
@@ -50,11 +50,11 @@ class MethodTest extends \PHPUnit_Framework_TestCase
     {
         $method = $this->newMethod();
         $this->assertFalse($method->isPut());
-        
+
         $server['REQUEST_METHOD'] = 'PUT';
         $method = $this->newMethod($server);
         $this->assertTrue($method->isPut());
-        
+
         $server['REQUEST_METHOD'] = 'NOT-PUT';
         $method = $this->newMethod($server);
         $this->assertFalse($method->isPut());
@@ -64,11 +64,11 @@ class MethodTest extends \PHPUnit_Framework_TestCase
     {
         $method = $this->newMethod();
         $this->assertFalse($method->isDelete());
-        
+
         $server['REQUEST_METHOD'] = 'DELETE';
         $method = $this->newMethod($server);
         $this->assertTrue($method->isDelete());
-        
+
         $server['REQUEST_METHOD'] = 'NOT-DELETE';
         $method = $this->newMethod($server);
         $this->assertFalse($method->isDelete());
@@ -78,11 +78,11 @@ class MethodTest extends \PHPUnit_Framework_TestCase
     {
         $method = $this->newMethod();
         $this->assertFalse($method->isHead());
-        
+
         $server['REQUEST_METHOD'] = 'HEAD';
         $method = $this->newMethod($server);
         $this->assertTrue($method->isHead());
-        
+
         $server['REQUEST_METHOD'] = 'NOT-HEAD';
         $method = $this->newMethod($server);
         $this->assertFalse($method->isHead());
@@ -92,11 +92,11 @@ class MethodTest extends \PHPUnit_Framework_TestCase
     {
         $method = $this->newMethod();
         $this->assertFalse($method->isOptions());
-        
+
         $server['REQUEST_METHOD'] = 'OPTIONS';
         $method = $this->newMethod($server);
         $this->assertTrue($method->isOptions());
-        
+
         $server['REQUEST_METHOD'] = 'NOT-OPTIONS';
         $method = $this->newMethod($server);
         $this->assertFalse($method->isOptions());
@@ -106,11 +106,11 @@ class MethodTest extends \PHPUnit_Framework_TestCase
     {
         $method = $this->newMethod();
         $this->assertFalse($method->isPatch());
-        
+
         $server['REQUEST_METHOD'] = 'PATCH';
         $method = $this->newMethod($server);
         $this->assertTrue($method->isPatch());
-        
+
         $server['REQUEST_METHOD'] = 'NOT-PATCH';
         $method = $this->newMethod($server);
         $this->assertFalse($method->isPatch());
@@ -127,7 +127,7 @@ class MethodTest extends \PHPUnit_Framework_TestCase
         $method = $this->newMethod($server, $post);
         $actual = $method->get();
         $this->assertSame('PUT', $actual);
-        
+
         // no header? look for field name
         $server = array(
             'REQUEST_METHOD' => 'POST',
@@ -136,5 +136,5 @@ class MethodTest extends \PHPUnit_Framework_TestCase
         $method = $this->newMethod($server, $post);
         $actual = $method->get();
         $this->assertSame('DELETE', $actual);
-    }    
+    }
 }

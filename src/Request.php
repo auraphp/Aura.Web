@@ -19,38 +19,38 @@ namespace Aura\Web;
  *
  * @property-read Request\Client $client An object representing client/browser
  * values.
- * 
+ *
  * @property-read Request\Content $content An object representing the
  * `php://input` value.
- * 
+ *
  * @property-read Request\Values $cookies An object representing $_COOKIE
  * values.
- * 
+ *
  * @property-read Request\Values $env An object representing $_ENV values.
- * 
+ *
  * @property-read Request\Files $files An object representing $_FILES values.
- * 
+ *
  * @property-read Request\Headers $headers An object representing
  * $_SERVER['HTTP_*'] header values.
- * 
+ *
  * @property-read Request\Method $method An object representing the HTTP method.
- * 
+ *
  * @property-read Request\Accept $accept An object representing negotiable
  * "accept" values.
- * 
+ *
  * @property-read Request\Params $params An object representing arbitrary
  * parameter values  e.g., from a router.
- * 
+ *
  * @property-read Request\Values $post An object representing $_POST values.
- * 
+ *
  * @property-read Request\Values $query An object representing $_GET values.
- * 
+ *
  * @property-read Request\Values $server An object representing $_SERVER values.
- * 
+ *
  * @property-read Request\Url $url An object representing the URL.
- * 
+ *
  * @property-read bool $xhr Is this an XML HTTP request?
- * 
+ *
  */
 class Request
 {
@@ -238,7 +238,7 @@ class Request
      * @param string $key The name of the property object to read.
      *
      * @return mixed The property object.
-     * 
+     *
      */
     public function __get($key)
     {

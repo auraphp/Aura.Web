@@ -1,12 +1,12 @@
 <?php
 /**
- * 
+ *
  * This file is part of Aura for PHP.
- * 
+ *
  * @package Aura.Web
- * 
+ *
  * @license http://opensource.org/licenses/bsd-license.php BSD
- * 
+ *
  */
 namespace Aura\Web\Request;
 
@@ -16,9 +16,9 @@ use Aura\Web\Request\Accept\Language;
 use Aura\Web\Request\Accept\Media;
 
 /**
- * 
+ *
  * A collection of `Accept*` objects.
- * 
+ *
  * @package Aura.Web
  *
  * @property-read Media $media The `Accept` values object.
@@ -33,38 +33,38 @@ use Aura\Web\Request\Accept\Media;
 class Accept
 {
     /**
-     * 
+     *
      * The `Accept` values object.
-     * 
+     *
      * @var Media
-     * 
+     *
      */
     protected $media;
-    
+
     /**
-     * 
+     *
      * The `Accept-Charset` values object.
      *
      * @var Charset
-     * 
+     *
      */
     protected $charset;
-    
+
     /**
-     * 
+     *
      * The `Accept-Encoding` values object.
      *
      * @var Encoding
-     * 
+     *
      */
     protected $encoding;
-    
+
     /**
-     * 
+     *
      * The `Accept-Language` values object.
      *
      * @var Language
-     * 
+     *
      */
     protected $language;
 
@@ -92,15 +92,15 @@ class Accept
         $this->encoding = $encoding;
         $this->language = $language;
     }
-    
+
     /**
-     * 
+     *
      * Returns a values object by name.
-     * 
+     *
      * @param string $key The values object name.
-     * 
+     *
      * @return object The values object.
-     * 
+     *
      */
     public function __get($key)
     {

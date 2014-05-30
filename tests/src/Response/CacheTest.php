@@ -6,27 +6,27 @@ use DateTime;
 class CacheTest extends \PHPUnit_Framework_TestCase
 {
     protected $cache;
-    
+
     protected $headers;
-    
+
     protected function setUp()
     {
         $this->headers = new Headers;
         $this->cache = new Cache($this->headers);
     }
-    
+
     protected function assertHeaders(array $expect)
     {
         $actual = $this->headers->get();
         $this->assertSame($expect, $actual);
     }
-    
+
     public function testReset()
     {
         $this->cache->reset();
         $this->assertHeaders(array());
     }
-    
+
     public function testDisable()
     {
         $this->cache->disable();
@@ -36,7 +36,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
             'Expires' => 'Mon, 01 Jan 0001 00:00:00 GMT',
         ));
     }
-    
+
     public function testSetAge()
     {
         $this->cache->setAge('88');
@@ -44,7 +44,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
             'Age' => '88',
         ));
     }
-    
+
     public function testEtag()
     {
         $this->cache->setEtag('foobar');
@@ -56,14 +56,14 @@ class CacheTest extends \PHPUnit_Framework_TestCase
             'Etag' => 'W/"foobar"',
         ));
     }
-    
+
     public function testSetExpires()
     {
         $this->cache->setExpires('1979-11-07 +0000');
         $this->assertHeaders(array(
             'Expires' => 'Wed, 07 Nov 1979 00:00:00 GMT',
         ));
-        
+
         // try with a DateTime object
         $date = new DateTime('1970-08-08 +0000');
         $this->cache->setExpires($date);
@@ -85,7 +85,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
             'Last-Modified' => 'Wed, 07 Nov 1979 00:00:00 GMT',
         ));
     }
-    
+
     public function testSetMaxAge()
     {
         $this->cache->setMaxAge(88);
@@ -93,7 +93,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
             'Cache-Control' => 'max-age=88'
         ));
     }
-    
+
     public function testSetNoCache()
     {
         $this->cache->setNoCache();
@@ -102,7 +102,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
             'Pragma' => 'no-cache',
         ));
     }
-    
+
     public function testSetNoStore()
     {
         $this->cache->setNoStore();
@@ -110,20 +110,20 @@ class CacheTest extends \PHPUnit_Framework_TestCase
             'Cache-Control' => 'no-store',
         ));
     }
-    
+
     public function testSetPrivateAndPublic()
     {
         $this->cache->setPrivate();
         $this->assertHeaders(array(
             'Cache-Control' => 'private',
         ));
-        
+
         $this->cache->setPublic();
         $this->assertHeaders(array(
             'Cache-Control' => 'public',
         ));
     }
-    
+
     public function testSetSharedMaxAge()
     {
         $this->cache->setSharedMaxAge(88);
@@ -131,7 +131,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
             'Cache-Control' => 'public, s-maxage=88',
         ));
     }
-    
+
     public function testSetVary()
     {
         $this->cache->setVary(array('foo', 'bar'));

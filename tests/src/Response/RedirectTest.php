@@ -4,11 +4,11 @@ namespace Aura\Web\Response;
 class RedirectTest extends \PHPUnit_Framework_TestCase
 {
     protected $cache;
-    
+
     protected $headers;
-    
+
     protected $status;
-    
+
     protected function setUp()
     {
         $this->status   = new Status;
@@ -20,13 +20,13 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
             $this->cache
         );
     }
-    
+
     protected function assertHeaders(array $expect)
     {
         $actual = $this->headers->get();
         $this->assertSame($expect, $actual);
     }
-    
+
     public function testTo()
     {
         $this->redirect->to('http://example.com', '201', 'Created Phrase');
@@ -36,7 +36,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
             'Location' => 'http://example.com',
         ));
     }
-    
+
     public function testAfterPost()
     {
         $this->redirect->afterPost('http://example.com');
@@ -49,7 +49,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
             'Expires' => 'Mon, 01 Jan 0001 00:00:00 GMT',
         ));
     }
-    
+
     public function testCreated()
     {
         $this->redirect->created('http://example.com');
@@ -58,7 +58,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
             'Location' => 'http://example.com',
         ));
     }
-    
+
     public function testMovedPermanently()
     {
         $this->redirect->movedPermanently('http://example.com');
@@ -67,7 +67,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
             'Location' => 'http://example.com',
         ));
     }
-    
+
     public function testFound()
     {
         $this->redirect->found('http://example.com');
@@ -76,7 +76,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
             'Location' => 'http://example.com',
         ));
     }
-    
+
     public function testSeeOther()
     {
         $this->redirect->seeOther('http://example.com');
@@ -88,7 +88,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
             'Expires' => 'Mon, 01 Jan 0001 00:00:00 GMT',
         ));
     }
-    
+
     public function testTemporaryRedirect()
     {
         $this->redirect->temporaryRedirect('http://example.com');
@@ -97,7 +97,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
             'Location' => 'http://example.com',
         ));
     }
-    
+
     public function testPermanentRedirect()
     {
         $this->redirect->permanentRedirect('http://example.com');

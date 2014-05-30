@@ -1,51 +1,51 @@
 <?php
 /**
- * 
+ *
  * This file is part of Aura for PHP.
- * 
+ *
  * @package Aura.Web
- * 
+ *
  * @license http://opensource.org/licenses/bsd-license.php BSD
- * 
+ *
  */
 namespace Aura\Web;
 
 /**
- * 
+ *
  * Logic to send a web response as an HTTP response.
- * 
+ *
  * @package Aura.Web
- * 
+ *
  */
 class ResponseSender
 {
     /**
-     * 
+     *
      * A web response object.
-     * 
+     *
      * @var Request
-     * 
+     *
      */
     protected $response;
-    
+
     /**
-     * 
+     *
      * Constructor.
-     * 
+     *
      * @param Response $response A web response object.
-     * 
+     *
      */
     public function __construct(Response $response)
     {
         $this->response = $response;
     }
-    
+
     /**
-     * 
+     *
      * Sends the response.
-     * 
+     *
      * @return null
-     * 
+     *
      */
     public function __invoke()
     {
@@ -54,13 +54,13 @@ class ResponseSender
         $this->sendCookies();
         $this->sendContent();
     }
-    
+
     /**
-     * 
+     *
      * Sends the HTTP status.
-     * 
+     *
      * @return null
-     * 
+     *
      */
     protected function sendStatus()
     {
@@ -72,11 +72,11 @@ class ResponseSender
     }
 
     /**
-     * 
+     *
      * Sends the HTTP non-cookie headers.
-     * 
+     *
      * @return null
-     * 
+     *
      */
     protected function sendHeaders()
     {
@@ -86,11 +86,11 @@ class ResponseSender
     }
 
     /**
-     * 
+     *
      * Sends the HTTP cookie headers.
-     * 
+     *
      * @return null
-     * 
+     *
      */
     protected function sendCookies()
     {
@@ -108,12 +108,12 @@ class ResponseSender
     }
 
     /**
-     * 
+     *
      * Sends the HTTP body by echoing the response content; if the content is a
      * callable, it is invoked and echoed.
-     * 
+     *
      * @return null
-     * 
+     *
      */
     protected function sendContent()
     {

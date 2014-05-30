@@ -1,30 +1,30 @@
 <?php
 /**
- * 
+ *
  * This file is part of Aura for PHP.
- * 
+ *
  * @package Aura.Web
- * 
+ *
  * @license http://opensource.org/licenses/bsd-license.php BSD
- * 
+ *
  */
 namespace Aura\Web\Request;
 
 /**
- * 
+ *
  * A representation of $_FILES.
- * 
+ *
  * @package Aura.Web
- * 
+ *
  */
 class Files extends Values
 {
     /**
-     * 
+     *
      * Constructor.
-     * 
+     *
      * @param array $input The original $_FILES value.
-     * 
+     *
      */
     public function __construct(array $input = array())
     {
@@ -32,17 +32,17 @@ class Files extends Values
         $this->init($input, $files);
         return parent::__construct($files);
     }
-    
+
     /**
-     * 
+     *
      * Recursively initialize the data structure to be more like $_POST.
-     * 
+     *
      * @param array $src The source array.
-     * 
+     *
      * @param array $tgt Where we will store the restructured data.
-     * 
+     *
      * @return null
-     * 
+     *
      */
     protected function init($src, &$tgt)
     {

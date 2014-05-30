@@ -26,7 +26,7 @@ class FakeResponseSender extends ResponseSender
     public static $headers = array();
     public static $cookies = array();
     public static $content;
-    
+
     public static function reset()
     {
         static::$headers = array();
