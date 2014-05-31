@@ -1,1 +1,5 @@
-- [DOC] Update license, readme, and docblocks. Add PHP 5.5 to Travis build.
+Hygiene release.
+
+- Remove unused use statement (thanks @koriym)
+
+- Point travis status badge to develop branch
