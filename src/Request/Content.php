@@ -101,6 +101,15 @@ class Content
                    ? strtolower($server['HTTP_CONTENT_MD5'])
                    : null;
 
+	    // Catches the content values with "HTTP_" prefix. This addresses a bug 
+	    // in the built in PHP server https://bugs.php.net/bug.php?id=66606
+	    if (empty($this->type) && !empty($_SERVER['HTTP_CONTENT_TYPE'])) {
+		    $this->type = $_SERVER['HTTP_CONTENT_TYPE'];
+	    }
+	    if (empty($this->length) && !empty($_SERVER['HTTP_CONTENT_LENGTH'])) {
+		    $this->type = $_SERVER['HTTP_CONTENT_LENGTH'];
+	    }
+        
         $this->decoders = array_merge($this->decoders, $decoders);
     }
 
