@@ -61,7 +61,7 @@ class Media extends AbstractValues
         '.bmp'      => 'image/bmp',
         '.c'        => 'text/plain',
         '.css'      => 'text/css',
-        '.csv'      => 'text/plain',
+        '.csv'      => 'text/csv',
         '.dtd'      => 'application/xml-dtd',
         '.etx'      => 'text/x-setext',
         '.flr'      => 'x-world/x-vrml',
