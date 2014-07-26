@@ -23,6 +23,25 @@ class Values extends ArrayObject
 {
     /**
      *
+     * Pseudo-true representations.
+     *
+     * @var array
+     *
+     */
+    protected $true = array('1', 'on', 'true', 't', 'yes', 'y');
+
+    /**
+     *
+     * Pseudo-false representations.
+     *
+     * @var array
+     *
+     */
+    protected $false = array('', '0', 'off', 'false', 'f', 'no', 'n');
+
+
+    /**
+     *
      * Constructor; identical to the parent ArrayObject, and copied here so
      * that DI mechanisms can read the constructor param names.
      *
@@ -65,5 +84,41 @@ class Values extends ArrayObject
         }
 
         return $alt;
+    }
+
+    public function getBool($key, $alt = null)
+    {
+        if (! isset($this[$key])) {
+            return $alt;
+        }
+
+        $val = $this[$key];
+        if (in_array($val, $this->true, true)) {
+            return true;
+        }
+
+        if (in_array($val, $this->false, true)) {
+            return false;
+        }
+
+        return $alt;
+    }
+
+    public function getInt($key, $alt = null)
+    {
+        if (! isset($this[$key])) {
+            return $alt;
+        }
+
+        return (int) $this[$key];
+    }
+
+    public function getFloat($key, $alt = null)
+    {
+        if (! isset($this[$key])) {
+            return $alt;
+        }
+
+        return (float) $this[$key];
     }
 }
