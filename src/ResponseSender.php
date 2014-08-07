@@ -124,4 +124,14 @@ class ResponseSender
             echo $content;
         }
     }
+
+    /**
+     *
+     * @return Response
+     *
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
 }
