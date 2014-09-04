@@ -11,9 +11,9 @@ class Common extends Config
         /**
          * Services.
          */
-        $di->set('web_response_headers', $di->lazyNew('Aura\Web\Response\Headers'));
-        $di->set('web_response_status', $di->lazyNew('Aura\Web\Response\Status'));
-        $di->set('web_response_cache', $di->lazyNew('Aura\Web\Response\Cache'));
+        $di->set('aura/web:response_headers', $di->lazyNew('Aura\Web\Response\Headers'));
+        $di->set('aura/web:response_status', $di->lazyNew('Aura\Web\Response\Status'));
+        $di->set('aura/web:response_cache', $di->lazyNew('Aura\Web\Response\Cache'));
 
         /**
          * Aura\Web\Request
@@ -97,11 +97,11 @@ class Common extends Config
          * Aura\Web\Response
          */
         $di->params['Aura\Web\Response'] = array(
-            'status'   => $di->lazyGet('web_response_status'),
-            'headers'  => $di->lazyGet('web_response_headers'),
+            'status'   => $di->lazyGet('aura/web:response_status'),
+            'headers'  => $di->lazyGet('aura/web:response_headers'),
             'cookies'  => $di->lazyNew('Aura\Web\Response\Cookies'),
             'content'  => $di->lazyNew('Aura\Web\Response\Content'),
-            'cache'    => $di->lazyGet('web_response_cache'),
+            'cache'    => $di->lazyGet('aura/web:response_cache'),
             'redirect' => $di->lazyNew('Aura\Web\Response\Redirect'),
         );
 
@@ -116,23 +116,23 @@ class Common extends Config
          * Aura\Web\Response\Content
          */
         $di->params['Aura\Web\Response\Content'] = array(
-            'headers' => $di->lazyGet('web_response_headers'),
+            'headers' => $di->lazyGet('aura/web:response_headers'),
         );
 
         /**
          * Aura\Web\Response\Cache
          */
         $di->params['Aura\Web\Response\Cache'] = array(
-            'headers' => $di->lazyGet('web_response_headers'),
+            'headers' => $di->lazyGet('aura/web:response_headers'),
         );
 
         /**
          * Aura\Web\Response\Redirect
          */
         $di->params['Aura\Web\Response\Redirect'] = array(
-            'status' => $di->lazyGet('web_response_status'),
-            'headers' => $di->lazyGet('web_response_headers'),
-            'cache' => $di->lazyGet('web_response_cache'),
+            'status' => $di->lazyGet('aura/web:response_status'),
+            'headers' => $di->lazyGet('aura/web:response_headers'),
+            'cache' => $di->lazyGet('aura/web:response_cache'),
         );
     }
 }

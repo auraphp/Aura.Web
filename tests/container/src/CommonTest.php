@@ -16,9 +16,9 @@ class CommonTest extends \PHPUnit_Framework_TestCase
 
     public function test()
     {
-        $this->assertGet('web_response_headers', 'Aura\Web\Response\Headers');
-        $this->assertGet('web_response_status', 'Aura\Web\Response\Status');
-        $this->assertGet('web_response_cache', 'Aura\Web\Response\Cache');
+        $this->assertGet('aura/web:response_headers', 'Aura\Web\Response\Headers');
+        $this->assertGet('aura/web:response_status', 'Aura\Web\Response\Status');
+        $this->assertGet('aura/web:response_cache', 'Aura\Web\Response\Cache');
 
         $this->assertNewInstance('Aura\Web\Request');
         $this->assertNewInstance('Aura\Web\Request\Accept');
