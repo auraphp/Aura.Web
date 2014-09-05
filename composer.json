@@ -23,6 +23,12 @@
             "Aura\\Web\\_Config\\": "config/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Aura\\Web\\": "tests/unit/src/",
+            "Aura\\Web\\_Config\\": "tests/container/src/"
+        }
+    },
     "extra": {
         "aura": {
             "type": "library",
