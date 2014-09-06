@@ -89,28 +89,42 @@ class Content
         array $server,
         array $decoders = array()
     ) {
-        $this->type = isset($server['CONTENT_TYPE'])
-                    ? strtolower($server['CONTENT_TYPE'])
-                    : null;
-
-        $this->length = isset($server['CONTENT_LENGTH'])
-                      ? strtolower($server['CONTENT_LENGTH'])
-                      : null;
+        $this->setType($server);
+        $this->setLength($server);
 
         $this->md5 = isset($server['HTTP_CONTENT_MD5'])
                    ? strtolower($server['HTTP_CONTENT_MD5'])
                    : null;
 
-	    // Catches the content values with "HTTP_" prefix. This addresses a bug 
-	    // in the built in PHP server https://bugs.php.net/bug.php?id=66606
-	    if (empty($this->type) && !empty($_SERVER['HTTP_CONTENT_TYPE'])) {
-		    $this->type = $_SERVER['HTTP_CONTENT_TYPE'];
-	    }
-	    if (empty($this->length) && !empty($_SERVER['HTTP_CONTENT_LENGTH'])) {
-		    $this->type = $_SERVER['HTTP_CONTENT_LENGTH'];
-	    }
-        
         $this->decoders = array_merge($this->decoders, $decoders);
+    }
+
+    protected function setType($server)
+    {
+        // Catches the content values with "HTTP_" prefix. This addresses a bug
+        // in the built in PHP server https://bugs.php.net/bug.php?id=66606
+
+        $this->type = isset($server['CONTENT_TYPE'])
+                    ? strtolower($server['CONTENT_TYPE'])
+                    : null;
+
+        if (empty($this->type) && ! empty($server['HTTP_CONTENT_TYPE'])) {
+            $this->type = $server['HTTP_CONTENT_TYPE'];
+        }
+    }
+
+    protected function setLength($server)
+    {
+        // Catches the content values with "HTTP_" prefix. This addresses a bug
+        // in the built in PHP server https://bugs.php.net/bug.php?id=66606
+
+        $this->length = isset($server['CONTENT_LENGTH'])
+                      ? strtolower($server['CONTENT_LENGTH'])
+                      : null;
+
+        if (empty($this->length) && ! empty($server['HTTP_CONTENT_LENGTH'])) {
+            $this->type = $server['HTTP_CONTENT_LENGTH'];
+        }
     }
 
     /**
