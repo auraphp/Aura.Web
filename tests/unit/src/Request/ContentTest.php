@@ -46,4 +46,31 @@ class ContentTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('88', $content->getLength());
         $this->assertSame('foo', $content->getMd5());
     }
+
+    public function testIssue31()
+    {
+        $object = (object) array(
+            'foo' => 'bar',
+            'baz' => 'dib',
+            'zim' => 'gir',
+        );
+        $encode = json_encode($object);
+        PhpStream::$content = $encode;
+
+        $server = array(
+            'HTTP_CONTENT_TYPE' => 'application/json',
+            'HTTP_CONTENT_LENGTH' => '88',
+            'HTTP_CONTENT_MD5' => 'foo'
+        );
+
+        $content = $this->newContent($server);
+
+        $actual = $content->get();
+        $this->assertEquals($object, $actual);
+
+        $this->assertSame('application/json', $content->getType());
+        $this->assertSame('88', $content->getLength());
+        $this->assertSame('foo', $content->getMd5());
+    }
+
 }

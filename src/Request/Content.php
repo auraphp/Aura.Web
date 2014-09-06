@@ -103,13 +103,10 @@ class Content
     {
         // Catches the content values with "HTTP_" prefix. This addresses a bug
         // in the built in PHP server https://bugs.php.net/bug.php?id=66606
-
-        $this->type = isset($server['CONTENT_TYPE'])
-                    ? strtolower($server['CONTENT_TYPE'])
-                    : null;
-
-        if (empty($this->type) && ! empty($server['HTTP_CONTENT_TYPE'])) {
-            $this->type = $server['HTTP_CONTENT_TYPE'];
+        if (isset($server['CONTENT_TYPE'])) {
+            $this->type = strtolower($server['CONTENT_TYPE']);
+        } elseif (isset($server['HTTP_CONTENT_TYPE'])) {
+            $this->type = strtolower($server['HTTP_CONTENT_TYPE']);
         }
     }
 
@@ -117,13 +114,10 @@ class Content
     {
         // Catches the content values with "HTTP_" prefix. This addresses a bug
         // in the built in PHP server https://bugs.php.net/bug.php?id=66606
-
-        $this->length = isset($server['CONTENT_LENGTH'])
-                      ? strtolower($server['CONTENT_LENGTH'])
-                      : null;
-
-        if (empty($this->length) && ! empty($server['HTTP_CONTENT_LENGTH'])) {
-            $this->type = $server['HTTP_CONTENT_LENGTH'];
+        if (isset($server['CONTENT_LENGTH'])) {
+            $this->length = strtolower($server['CONTENT_LENGTH']);
+        } elseif (isset($server['HTTP_CONTENT_LENGTH'])) {
+            $this->length = strtolower($server['HTTP_CONTENT_LENGTH']);
         }
     }
 
