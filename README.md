@@ -58,6 +58,28 @@ $response = $web_factory->newResponse();
 ?>
 ```
 
+Note that if `jit-globals` is turned on, merely passing `$GLOBALS` will not
+work properly. In this case, use `compact()` to pass the needed values. For
+example:
+
+```php
+<?php
+use Aura\Web\WebFactory;
+
+$web_factory = new WebFactory(compact(
+    $_ENV,
+    $_GET,
+    $_POST,
+    $_COOKIE,
+    $_SERVER
+));
+$request = $web_factory->newRequest();
+$response = $web_factory->newResponse();
+?>
+```
+
+### Request and Response Objects
+
 Because each object contains so much functionality, we have split up the
 documentation into a [Request](README-REQUEST.md) page and a
 [Response](README-RESPONSE.md) page.
