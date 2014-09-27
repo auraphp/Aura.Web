@@ -1,37 +1,42 @@
 <?php
 namespace Aura\Web\_Config;
 
-use Aura\Di\ContainerAssertionsTrait;
+use Aura\Di\_Config\AbstractContainerTest;
 
-class CommonTest extends \PHPUnit_Framework_TestCase
+class CommonTest extends AbstractContainerTest
 {
-    use ContainerAssertionsTrait;
-
-    public function setUp()
+    protected function getConfigClasses()
     {
-        $this->setUpContainer(array(
+        return array(
             'Aura\Web\_Config\Common',
-        ));
+        );
     }
 
-    public function test()
+    public function provideGet()
     {
-        $this->assertGet('aura/web:response_headers', 'Aura\Web\Response\Headers');
-        $this->assertGet('aura/web:response_status', 'Aura\Web\Response\Status');
-        $this->assertGet('aura/web:response_cache', 'Aura\Web\Response\Cache');
+        return array(
+            array('aura/web:response_headers', 'Aura\Web\Response\Headers'),
+            array('aura/web:response_status', 'Aura\Web\Response\Status'),
+            array('aura/web:response_cache', 'Aura\Web\Response\Cache'),
+        );
+    }
 
-        $this->assertNewInstance('Aura\Web\Request');
-        $this->assertNewInstance('Aura\Web\Request\Accept');
-        $this->assertNewInstance('Aura\Web\Request\Client');
-        $this->assertNewInstance('Aura\Web\Request\Content');
-        $this->assertNewInstance('Aura\Web\Request\Globals');
-        $this->assertNewInstance('Aura\Web\Request\Headers');
-        $this->assertNewInstance('Aura\Web\Request\Method');
-        $this->assertNewInstance('Aura\Web\Request\Url');
-        $this->assertNewInstance('Aura\Web\Response');
-        $this->assertNewInstance('Aura\Web\Response\Headers');
-        $this->assertNewInstance('Aura\Web\Response\Content');
-        $this->assertNewInstance('Aura\Web\Response\Cache');
-        $this->assertNewInstance('Aura\Web\Response\Redirect');
+    public function provideNewInstance()
+    {
+        return array(
+            array('Aura\Web\Request'),
+            array('Aura\Web\Request\Accept'),
+            array('Aura\Web\Request\Client'),
+            array('Aura\Web\Request\Content'),
+            array('Aura\Web\Request\Globals'),
+            array('Aura\Web\Request\Headers'),
+            array('Aura\Web\Request\Method'),
+            array('Aura\Web\Request\Url'),
+            array('Aura\Web\Response'),
+            array('Aura\Web\Response\Headers'),
+            array('Aura\Web\Response\Content'),
+            array('Aura\Web\Response\Cache'),
+            array('Aura\Web\Response\Redirect'),
+        );
     }
 }
