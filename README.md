@@ -67,11 +67,11 @@ example:
 use Aura\Web\WebFactory;
 
 $web_factory = new WebFactory(compact(
-    $_ENV,
-    $_GET,
-    $_POST,
-    $_COOKIE,
-    $_SERVER
+    '_ENV',
+    '_GET',
+    '_POST',
+    '_COOKIE',
+    '_SERVER'
 ));
 $request = $web_factory->newRequest();
 $response = $web_factory->newResponse();
