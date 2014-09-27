@@ -68,19 +68,19 @@ class Accept
      */
     protected $language;
 
-	/**
-	 *
-	 * Constructor.
-	 *
-	 * @param Accept\Charset $charset A charset object.
-	 *
-	 * @param Accept\Encoding $encoding An encoding object.
-	 *
-	 * @param Accept\Language $language A language object.
-	 *
-	 * @param Accept\Media $media A media object.
-	 *
-	 */
+    /**
+     *
+     * Constructor.
+     *
+     * @param Accept\Charset $charset A charset object.
+     *
+     * @param Accept\Encoding $encoding An encoding object.
+     *
+     * @param Accept\Language $language A language object.
+     *
+     * @param Accept\Media $media A media object.
+     *
+     */
     public function __construct(
         Charset $charset,
         Encoding $encoding,
