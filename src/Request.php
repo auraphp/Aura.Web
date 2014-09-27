@@ -180,27 +180,27 @@ class Request
      */
     protected $xhr = false;
 
-	/**
-	 *
-	 * Constructor.
-	 *
-	 * @param Request\Client  $client  A client object.
-	 *
-	 * @param Request\Content $content A content object.
-	 *
-	 * @param Request\Globals $globals A globals object.
-	 *
-	 * @param Request\Headers $headers A headers object.
-	 *
-	 * @param Request\Method  $method  A method object.
-	 *
-	 * @param Request\Accept  $accept  An accept object.
-	 *
-	 * @param Request\Params  $params  A params object.
-	 *
-	 * @param Request\Url     $url     A url object.
-	 *
-	 */
+    /**
+     *
+     * Constructor.
+     *
+     * @param Request\Client  $client  A client object.
+     *
+     * @param Request\Content $content A content object.
+     *
+     * @param Request\Globals $globals A globals object.
+     *
+     * @param Request\Headers $headers A headers object.
+     *
+     * @param Request\Method  $method  A method object.
+     *
+     * @param Request\Accept  $accept  An accept object.
+     *
+     * @param Request\Params  $params  A params object.
+     *
+     * @param Request\Url     $url     A url object.
+     *
+     */
     public function __construct(
         Request\Client  $client,
         Request\Content $content,
