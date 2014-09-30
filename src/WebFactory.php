@@ -189,7 +189,6 @@ class WebFactory
             $this->newRequestGlobals(),
             $this->newRequestHeaders(),
             $this->newRequestMethod(),
-            $this->newRequestAccept(),
             $this->newRequestParams(),
             $this->newRequestUrl()
         );
@@ -308,30 +307,6 @@ class WebFactory
             $this->get('_SERVER'),
             $this->get('_POST'),
             $this->method_field
-        );
-    }
-
-    /**
-     *
-     * Returns a request accept object.
-     *
-     * @return Request\Accept
-     *
-     */
-    public function newRequestAccept()
-    {
-        $server = $this->get('_SERVER');
-        $value_factory = new Request\Accept\Value\ValueFactory;
-        $charset = new Request\Accept\Charset($value_factory, $server);
-        $encoding = new Request\Accept\Encoding($value_factory, $server);
-        $language = new Request\Accept\Language($value_factory, $server);
-        $media = new Request\Accept\Media($value_factory, $server, $this->types);
-
-        return new Request\Accept(
-            $charset,
-            $encoding,
-            $language,
-            $media
         );
     }
 

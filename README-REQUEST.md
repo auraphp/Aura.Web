@@ -32,7 +32,6 @@ of the PHP superglobals ...
 - `$request->content` for the raw body of the request
 - `$request->headers` for the request headers
 - `$request->method` for the request method
-- `$request->accept` for content negotiation
 - `$request->params` for path-info parameters
 - `$request->url` for the request URL
 
@@ -75,7 +74,7 @@ The `$request->client` object has these methods:
 
 - `isCrawler()` returns true if the `User-Agent` header matches one of a list
   of bot/crawler/robot user agents (otherwise false).
-  
+
 - `isMobile()` returns true if the `User-Agent` header matches one of a list
   of mobile user agents (otherwise false).
 
@@ -201,121 +200,6 @@ $request = $web_factory->newRequest();
 echo $request->method->get(); // DELETE
 ?>
 ```
-
-## Accept
-
-> N.b. Accept headers can be kind of complicated. See the
-> [HTTP Header Field Definitions](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html)
-> for more detailed information regarding quality factors, matching rules,
-> and parameters extensions.
-
-The _Accept_ object helps with negotiating acceptable media, charset,
-encoding, and language values. There is one `$request->accept` sub-object for
-each of them. Each has a `negotiate()` method.
-
-Pass an array of available values to the `negotiate()` method to negotiate
-between the acceptable values and the available ones. The return will be a
-plain old PHP object with `$available` and `$acceptable` properties describing
-highest-quality match.
-
-```php
-<?php
-// assume the request indicates these Accept values (XML is best, then CSV,
-// then anything else)
-$_SERVER['HTTP_ACCEPT'] = 'application/xml;q=1.0,text/csv;q=0.5,*;q=0.1';
-
-// create the request object
-$request = $web_factory->newRequest();
-
-// assume our application has `application/json` and `text/csv` available
-// as media types, in order of highest-to-lowest preference for delivery
-$available = array(
-    'application/json',
-    'text/csv',
-);
-
-// get the best match between what the request finds acceptable and what we
-// have available; the result in this case is 'text/csv'
-$media = $request->accept->media->negotiate($available);
-echo $media->available->getValue(); // text/csv
-?>
-```
-
-If the requested URL ends in a recognized file extension for a media type,
-the _Accept\Media_ object will use that file extension instead of the explicit
-`Accept` header value to determine the acceptable media type for the
-request:
-
-```php
-<?php
-// assume the request indicates these Accept values (XML is best, then CSV,
-// then anything else)
-$_SERVER['HTTP_ACCEPT'] = 'application/xml;q=1.0,text/csv;q=0.5,*;q=0.1';
-
-// assume also that the request URI explicitly notes a .json file extension
-$_SERVER['REQUEST_URI'] = '/path/to/entity.json';
-
-// create the request object
-$request = $web_factory->newRequest();
-
-// assume our application has `application/json` and `text/csv` available
-// as media types, in order of highest-to-lowest preference for delivery
-$available = array(
-    'application/json',
-    'text/csv',
-);
-
-// get the best match between what the request finds acceptable and what we
-// have available; the result in this case is 'application/json' because of
-// the file extenstion overriding the Accept header values
-$media = $request->accept->media->negotiate($available);
-echo $media->available->getValue(); // application/json
-?>
-```
-
-See the _Accept\Media_ class file for the list of what file extensions map to 
-what media types. To set your own mappings, set up the _WebFactory_ object
-first, then create the _Request_ object:
-
-```php
-<?php
-$web_factory->setTypes(array(
-    '.foo' => 'application/x-foo-content-type',
-));
-
-$request = $web_factory->newRequest();
-?>
-```
-
-If the acceptable values indicate additional parameters, you can match on those as well:
-
-```php
-<?php
-// assume the request indicates these Accept values (XML is best, then CSV,
-// then anything else)
-$_SERVER['HTTP_ACCEPT'] = 'text/html;level=1;q=0.5,text/html;level=3';
-
-// create the request object
-$request = $web_factory->newRequest();
-
-// assume our application has `application/json` and `text/csv` available
-// as media types, in order of highest-to-lowest preference for delivery
-$available = array(
-    'text/html;level=1',
-    'text/html;level=2',
-);
-
-// get the best match between what the request finds acceptable and what we
-// have available; the result in this case is 'text/html;level=1'
-$media = $request->accept->media->negotiate($available);
-echo $media->available->getValue(); // text/html
-var_dump($media->available->getParameters()); // array('level' => '1')
-?>
-```
-
-> N.b. Parameters in the acceptable values that are not present in the
-> available values will not be used for matching.
-
 
 ## Params
 

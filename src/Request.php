@@ -119,15 +119,6 @@ class Request
 
     /**
      *
-     * An object representing negotiable "accept" values.
-     *
-     * @var Request\Accept
-     *
-     */
-    protected $accept;
-
-    /**
-     *
      * An object representing arbitrary parameter values; e.g., from a router.
      *
      * @var Request\Params
@@ -194,8 +185,6 @@ class Request
      *
      * @param Request\Method  $method  A method object.
      *
-     * @param Request\Accept  $accept  An accept object.
-     *
      * @param Request\Params  $params  A params object.
      *
      * @param Request\Url     $url     A url object.
@@ -207,7 +196,6 @@ class Request
         Request\Globals $globals,
         Request\Headers $headers,
         Request\Method  $method,
-        Request\Accept  $accept,
         Request\Params  $params,
         Request\Url     $url
     ) {
@@ -218,7 +206,6 @@ class Request
         $this->files   = $globals->files;
         $this->headers = $headers;
         $this->method  = $method;
-        $this->accept  = $accept;
         $this->params  = $params;
         $this->post    = $globals->post;
         $this->query   = $globals->query;

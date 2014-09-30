@@ -25,7 +25,6 @@ class CommonTest extends AbstractContainerTest
     {
         return array(
             array('Aura\Web\Request'),
-            array('Aura\Web\Request\Accept'),
             array('Aura\Web\Request\Client'),
             array('Aura\Web\Request\Content'),
             array('Aura\Web\Request\Globals'),

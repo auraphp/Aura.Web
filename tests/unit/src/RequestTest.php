@@ -31,7 +31,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($request->headers);
         $this->assertNotNull($request->content);
         $this->assertNotNull($request->method);
-        $this->assertNotNull($request->accept);
         $this->assertNotNull($request->post);
         $this->assertNotNull($request->query);
         $this->assertNotNull($request->server);
