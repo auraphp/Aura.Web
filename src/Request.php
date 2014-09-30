@@ -35,9 +35,6 @@ namespace Aura\Web;
  *
  * @property-read Request\Method $method An object representing the HTTP method.
  *
- * @property-read Request\Accept $accept An object representing negotiable
- * "accept" values.
- *
  * @property-read Request\Params $params An object representing arbitrary
  * parameter values  e.g., from a router.
  *

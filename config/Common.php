@@ -24,27 +24,8 @@ class Common extends Config
             'globals' => $di->lazyNew('Aura\Web\Request\Globals'),
             'headers' => $di->lazyNew('Aura\Web\Request\Headers'),
             'method'  => $di->lazyNew('Aura\Web\Request\Method'),
-            'accept'  => $di->lazyNew('Aura\Web\Request\Accept'),
             'params'  => $di->lazyNew('Aura\Web\Request\Params'),
             'url'     => $di->lazyNew('Aura\Web\Request\Url'),
-        );
-
-        /**
-         * Aura\Web\Request\Accept
-         */
-        $di->params['Aura\Web\Request\Accept'] = array(
-            'charset'  => $di->lazyNew('Aura\Web\Request\Accept\Charset'),
-            'encoding' => $di->lazyNew('Aura\Web\Request\Accept\Encoding'),
-            'language' => $di->lazyNew('Aura\Web\Request\Accept\Language'),
-            'media'    => $di->lazyNew('Aura\Web\Request\Accept\Media'),
-        );
-
-        /**
-         * Aura\Web\Request\Accept\AbstractValues
-         */
-        $di->params['Aura\Web\Request\Accept\AbstractValues'] = array(
-            'value_factory' => $di->lazyNew('Aura\Web\Request\Accept\Value\ValueFactory'),
-            'server' => $_SERVER,
         );
 
         /**

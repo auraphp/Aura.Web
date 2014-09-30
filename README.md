@@ -98,7 +98,6 @@ By way of overview, the _Request_ object has these sub-objects ...
   request
 - [$request->headers](README-REQUEST.md#headers) for the request headers
 - [$request->method](README-REQUEST.md#method) for the request method
-- [$request->accept](README-REQUEST.md#accept) for content negotiation
 - [$request->params](README-REQUEST.md#params) for path-info parameters
 - [$request->url](README-REQUEST.md#url) for the request URL
 
