@@ -1,8 +1,8 @@
 # Aura.Web
 
-Provides web _Request_ and _Response_ objects for use by web controllers.
-These are representations of the PHP web environment, not HTTP request and
-response objects proper.
+Provides web _Request_ and _Response_ objects for use by web controllers and
+actions. These are representations of the PHP web environment, not HTTP request
+and response objects proper.
 
 ## Foreword
 

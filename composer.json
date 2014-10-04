@@ -1,7 +1,7 @@
 {
     "name": "aura/web",
     "type": "library",
-    "description": "Provides web Request and Response objects for use by web controllers. These are representations of the PHP web environment, not HTTP request and response objects proper.",
+    "description": "Provides web Request and Response objects for use by web controllers and actions. These are representations of the PHP web environment, not HTTP request and response objects proper.",
     "keywords": [
         "request",
         "response"
