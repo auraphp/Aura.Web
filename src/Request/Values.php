@@ -86,6 +86,18 @@ class Values extends ArrayObject
         return $alt;
     }
 
+    /**
+     *
+     * Returns the value of an array key intended as a boolean.
+     *
+     * @param string $key The array key to return.
+     *
+     * @param string $alt The alternative value if the key is not set, or if it
+     * does not match one of the pseudo-boolean values.
+     *
+     * @return bool The value of the array key, or the alternative value.
+     *
+     */
     public function getBool($key, $alt = null)
     {
         if (! isset($this[$key])) {
@@ -104,6 +116,18 @@ class Values extends ArrayObject
         return $alt;
     }
 
+    /**
+     *
+     * Returns the value of an array key, casting it to an integer.
+     *
+     * @param string $key The array key to return.
+     *
+     * @param string $alt The alternative value if the key is not set.
+     *
+     * @return int The value of the array key cast to an integer, or the
+     * alternative value.
+     *
+     */
     public function getInt($key, $alt = null)
     {
         if (! isset($this[$key])) {
@@ -113,6 +137,18 @@ class Values extends ArrayObject
         return (int) $this[$key];
     }
 
+    /**
+     *
+     * Returns the value of an array key, casting it to a float.
+     *
+     * @param string $key The array key to return.
+     *
+     * @param string $alt The alternative value if the key is not set.
+     *
+     * @return int The value of the array key cast to a float, or the
+     * alternative value.
+     *
+     */
     public function getFloat($key, $alt = null)
     {
         if (! isset($this[$key])) {

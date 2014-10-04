@@ -165,12 +165,40 @@ class Client
      */
     protected $proxies;
 
+    /**
+     *
+     * The $_SERVER['PHP_AUTH_DIGEST'] value.
+     *
+     * @var string
+     *
+     */
     protected $auth_digest;
 
+    /**
+     *
+     * The $_SERVER['PHP_AUTH_PW'] value.
+     *
+     * @var string
+     *
+     */
     protected $auth_pw;
 
+    /**
+     *
+     * The $_SERVER['AUTH_TYPE'] value.
+     *
+     * @var string
+     *
+     */
     protected $auth_type;
 
+    /**
+     *
+     * The $_SERVER['PHP_AUTH_USER'] value.
+     *
+     * @var string
+     *
+     */
     protected $auth_user;
 
     /**
@@ -205,6 +233,15 @@ class Client
         $this->setIp($server);
     }
 
+    /**
+     *
+     * Sets the $auth_digest property.
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return null
+     *
+     */
     protected function setAuthDigest(array $server)
     {
         $this->auth_digest = isset($server['PHP_AUTH_DIGEST'])
@@ -212,6 +249,15 @@ class Client
                            : null;
     }
 
+    /**
+     *
+     * Sets the $auth_pw property.
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return null
+     *
+     */
     protected function setAuthPw(array $server)
     {
         $this->auth_pw = isset($server['PHP_AUTH_PW'])
@@ -219,6 +265,15 @@ class Client
                        : null;
     }
 
+    /**
+     *
+     * Sets the $auth_type property.
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return null
+     *
+     */
     protected function setAuthType(array $server)
     {
         $this->auth_type = isset($server['AUTH_TYPE'])
@@ -226,6 +281,15 @@ class Client
                          : null;
     }
 
+    /**
+     *
+     * Sets the $auth_user property.
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return null
+     *
+     */
     protected function setAuthUser(array $server)
     {
         $this->auth_user = isset($server['PHP_AUTH_USER'])
@@ -233,6 +297,15 @@ class Client
                          : null;
     }
 
+    /**
+     *
+     * Sets the $auth_referer property.
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return null
+     *
+     */
     protected function setReferer(array $server)
     {
         $this->referer = isset($server['HTTP_REFERER'])
@@ -240,6 +313,15 @@ class Client
                        : null;
     }
 
+    /**
+     *
+     * Sets the $user_agent property.
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return null
+     *
+     */
     protected function setUserAgent(array $server)
     {
         $this->user_agent = isset($server['HTTP_USER_AGENT'])
@@ -247,6 +329,15 @@ class Client
                           : null;
     }
 
+    /**
+     *
+     * Sets the $forwarded_for property.
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return null
+     *
+     */
     protected function setForwardedFor(array $server)
     {
         if (isset($server['HTTP_X_FORWARDED_FOR'])) {
@@ -257,6 +348,15 @@ class Client
         }
     }
 
+    /**
+     *
+     * Sets the $ip property.
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return null
+     *
+     */
     protected function setIp(array $server)
     {
         $ips = $this->getIps($server);
@@ -276,6 +376,15 @@ class Client
         $this->ip = $ips[0];
     }
 
+    /**
+     *
+     * Returns the origin IP, honoring the forwarded-for IPs.
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return array
+     *
+     */
     protected function getIps($server)
     {
         // get the list of forwarded-for IPs, if any, and append the reported

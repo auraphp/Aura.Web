@@ -12,17 +12,39 @@ namespace Aura\Web\Response;
 
 /**
  *
- * Convenience methods for redirection.
+ * Convenience methods for redirection. Note that the "201 Created" status
+ * is provided even though it is not in the 3XX family of redirect statuses.
  *
  * @package Aura.Web
  *
  */
 class Redirect
 {
+    /**
+     *
+     * A shared status object.
+     *
+     * @param Status
+     *
+     */
     protected $status;
 
+    /**
+     *
+     * A shared headers object.
+     *
+     * @param Headers
+     *
+     */
     protected $headers;
 
+    /**
+     *
+     * A shared cache object.
+     *
+     * @param Cache
+     *
+     */
     protected $cache;
 
     /**

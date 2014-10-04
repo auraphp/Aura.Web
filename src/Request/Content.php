@@ -99,6 +99,15 @@ class Content
         $this->decoders = array_merge($this->decoders, $decoders);
     }
 
+    /**
+     *
+     * Sets the content type.
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return null
+     *
+     */
     protected function setType($server)
     {
         // Catches the content values with "HTTP_" prefix. This addresses a bug
@@ -110,6 +119,15 @@ class Content
         }
     }
 
+    /**
+     *
+     * Sets the content length.
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return null
+     *
+     */
     protected function setLength($server)
     {
         // Catches the content values with "HTTP_" prefix. This addresses a bug

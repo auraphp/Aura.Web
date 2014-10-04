@@ -67,42 +67,87 @@ class Url
      */
     public function __construct(array $server)
     {
-        $this->secure = $this->getSecure($server);
-        $this->string = $this->getString($server);
-        $this->parts  = $this->getParts($server);
+        $this->setSecure($server);
+        $this->setString($server);
+        $this->setParts($server);
     }
 
-    protected function getSecure($server)
+    /**
+     *
+     * Sets the $secure property.
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return null
+     *
+     */
+    protected function setSecure($server)
     {
         $secure = $this->getHttps($server)
                || $this->getSecurePort($server)
                || $this->getSecureForward($server);
-        return (bool) $secure;
+        $this->secure = (bool) $secure;
     }
 
-    protected function getString($server)
+    /**
+     *
+     * Sets the $string property.
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return null
+     *
+     */
+    protected function setString($server)
     {
         $scheme = $this->getScheme();
         list($host, $port) = $this->getHostPort($server);
         $uri = $this->getRequestUri($server);
-        return $scheme . $host . $port . $uri;
+        $this->string = $scheme . $host . $port . $uri;
     }
 
-    protected function getParts($server)
+    /**
+     *
+     * Sets the $parts property.
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return null
+     *
+     */
+    protected function setParts($server)
     {
         $parts = parse_url($this->string);
         if ($this->hostIsMissing($server)) {
             $parts[PHP_URL_HOST] = null;
         }
-        return $parts;
+        $this->parts = $parts;
     }
 
+    /**
+     *
+     * Is the host missing from $_SERVER?
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return bool
+     *
+     */
     protected function hostIsMissing($server)
     {
         return ! isset($server['HTTP_HOST'])
             && ! isset($server['SERVER_NAME']);
     }
 
+    /**
+     *
+     * Does $_SERVER reveal the use of HTTPS?
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return bool
+     *
+     */
     protected function getHttps($server)
     {
         return isset($server['HTTPS'])
@@ -110,6 +155,15 @@ class Url
              : false;
     }
 
+    /**
+     *
+     * Does $_SERVER reveal the use of a secure port?
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return bool
+     *
+     */
     protected function getSecurePort($server)
     {
         return isset($server['SERVER_PORT'])
@@ -117,6 +171,15 @@ class Url
              : false;
     }
 
+    /**
+     *
+     * Does $_SERVER reveal the use of secure forwarding?
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return bool
+     *
+     */
     protected function getSecureForward($server)
     {
         return isset($server['HTTP_X_FORWARDED_PROTO'])
@@ -124,6 +187,13 @@ class Url
              : false;
     }
 
+    /**
+     *
+     * Get the URL scheme.
+     *
+     * @return string
+     *
+     */
     protected function getScheme()
     {
         return $this->secure
@@ -131,6 +201,15 @@ class Url
              : 'http://';
     }
 
+    /**
+     *
+     * Get the host and port.
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return array
+     *
+     */
     protected function getHostPort($server)
     {
         // pick the host; we need to fake it on missing
@@ -146,6 +225,17 @@ class Url
         return array($host, $port);
     }
 
+    /**
+     *
+     * Get the port.
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @param string $host The host string.
+     *
+     * @return int
+     *
+     */
     protected function getPort($server, &$host)
     {
         preg_match('#\:[0-9]+$#', $host, $matches);
@@ -166,6 +256,15 @@ class Url
         return $port;
     }
 
+    /**
+     *
+     * Get the $_SERVER['REQUEST_URI'] value.
+     *
+     * @param array $server A copy of $_SERVER.
+     *
+     * @return bool
+     *
+     */
     protected function getRequestUri($server)
     {
         return isset($server['REQUEST_URI'])
@@ -175,8 +274,8 @@ class Url
 
     /**
      *
-     * Returns the full URL string;
-     * or, if a component constant is passed, returns only that part of the URL
+     * Returns the full URL string; or, if a component constant is passed,
+     * returns only that part of the URL.
      *
      * @param string $component
      *
