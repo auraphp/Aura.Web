@@ -89,7 +89,7 @@ class Content
         array $server,
         array $decoders = array()
     ) {
-        $this->setType($server);
+        $this->setTypeAndCharset($server);
         $this->setLength($server);
 
         $this->md5 = isset($server['HTTP_CONTENT_MD5'])
@@ -108,14 +108,38 @@ class Content
      * @return null
      *
      */
-    protected function setType($server)
+    protected function setTypeAndCharset($server)
     {
         // Catches the content values with "HTTP_" prefix. This addresses a bug
         // in the built in PHP server https://bugs.php.net/bug.php?id=66606
+        $value = '';
         if (isset($server['CONTENT_TYPE'])) {
-            $this->type = strtolower($server['CONTENT_TYPE']);
+            $value = strtolower($server['CONTENT_TYPE']);
         } elseif (isset($server['HTTP_CONTENT_TYPE'])) {
-            $this->type = strtolower($server['HTTP_CONTENT_TYPE']);
+            $value = strtolower($server['HTTP_CONTENT_TYPE']);
+        }
+
+        list($this->type, $this->charset) = $this->getTypeAndCharsetFromHeader($value);
+    }
+
+    protected function getTypeAndCharsetFromHeader($value)
+    {
+        $parts = explode(';', $value);
+        $type = array_shift($parts);
+        $charset = '';
+        if ($parts) {
+            $charset = $this->getCharsetFromHeader($parts);
+        }
+        return array($type, $charset);
+    }
+
+    protected function getCharsetFromHeader($parts)
+    {
+        foreach ($parts as $part) {
+            $part = str_replace(' ', '', $part);
+            if (substr($part, 0, 8) == 'charset=') {
+                return substr($part, 8);
+            }
         }
     }
 
@@ -184,6 +208,18 @@ class Content
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     *
+     * The charset of the request body.
+     *
+     * @return string
+     *
+     */
+    public function getCharset()
+    {
+        return $this->charset;
     }
 
     /**
