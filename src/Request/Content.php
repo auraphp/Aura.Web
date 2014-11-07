@@ -122,6 +122,16 @@ class Content
         list($this->type, $this->charset) = $this->getTypeAndCharsetFromHeader($value);
     }
 
+    /**
+     *
+     * Gets the content-type and related charset from the Content-Type header.
+     *
+     * @param string $value The Content-Type header value.
+     *
+     * @return array An array where element 0 is the conten type and element 1
+     * is the charset (if any).
+     *
+     */
     protected function getTypeAndCharsetFromHeader($value)
     {
         $parts = explode(';', $value);
@@ -133,6 +143,16 @@ class Content
         return array($type, $charset);
     }
 
+    /**
+     *
+     * Gets the charset value from the Content-Type header.
+     *
+     * @param array $parts The Content-Type header value exploded into its
+     * constituent parts at the semicolons.
+     *
+     * @return string The charset value, if any.
+     *
+     */
     protected function getCharsetFromHeader($parts)
     {
         foreach ($parts as $part) {
