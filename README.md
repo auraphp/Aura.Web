@@ -66,12 +66,12 @@ example:
 <?php
 use Aura\Web\WebFactory;
 
-$web_factory = new WebFactory(compact(
-    '_ENV',
-    '_GET',
-    '_POST',
-    '_COOKIE',
-    '_SERVER'
+$web_factory = new WebFactory(array(
+    '_ENV' => $_ENV,
+    '_GET' => $_GET,
+    '_POST' => $_POST,
+    '_COOKIE' => $_COOKIE,
+    '_SERVER' => $_SERVER
 ));
 $request = $web_factory->newRequest();
 $response = $web_factory->newResponse();
