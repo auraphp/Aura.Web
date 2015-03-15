@@ -3,17 +3,20 @@
  *
  * This file is part of Aura for PHP.
  *
- * @package Aura.Web
- *
  * @license http://opensource.org/licenses/bsd-license.php BSD
  *
  */
 namespace Aura\Web\Response;
 
 /**
- * https://en.wikipedia.org/wiki/List_of_HTTP_headers
+ *
+ * Headers to send with the response.
+ *
+ * @package Aura.Web
  *
  * @todo automatically handle dates
+ *
+ * @see https://en.wikipedia.org/wiki/List_of_HTTP_headers
  *
  */
 class Headers
