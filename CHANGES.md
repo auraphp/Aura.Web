@@ -1,5 +1,1 @@
-- DOC: Update README and docblocks.
-
-- ADD: Request\Content::getCharset() functionality; fixes #45
-
-- CHG: Disable auto-resolve for container tests and make config more explicit
+This is a hygiene release to update support files. In particular, composer.json now adds `tests/` to "autoload-dev" so that Aura\Web\FakeResponse is available for bundle, kernel, and project tests.
