@@ -23,11 +23,6 @@
             "Aura\\Web\\_Config\\": "config/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Aura\\Web\\": "tests/unit/src/"
-        }
-    },
     "extra": {
         "aura": {
             "type": "library",
@@ -37,6 +32,11 @@
         },
         "branch-alias": {
             "dev-develop-2": "2.0.x-dev"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aura\\Web\\": "tests/unit/src/"
         }
     }
 }
