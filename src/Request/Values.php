@@ -71,17 +71,22 @@ class Values extends ArrayObject
      * not set.
      *
      */
-    public function get($key = null, $alt = null)
+    public function get($key, $alt = null)
     {
-        if (! $key) {
-            return $this->getArrayCopy();
-        }
+        return isset($this[$key]) ? $this[$key] : $alt;
+    }
 
-        if (isset($this[$key])) {
-            return $this[$key];
-        }
 
-        return $alt;
+    /**
+     *
+     * Returns all the values as an array.
+     *
+     * @return array 
+     *
+     */
+    public function all()
+    {
+        return $this->getArrayCopy();
     }
 
     /**
