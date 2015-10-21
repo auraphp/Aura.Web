@@ -82,11 +82,11 @@ $response->headers->set('X-Header-Value', 'foo');
 $response->headers->add('X-Header-Value-Many', 'foo');
 $response->headers->add('X-Header-Value-Many', 'bar');
 
-// get the X-Header-Value (returns a string)
+// get the X-Header-Value (returns a string: 'foo')
 $value = $response->headers->get('X-Header-Value');
 
-// get the X-Header-Value-Many (returns an array)
-$value = $response->headers->get('X-Header-Value');
+// get the X-Header-Value-Many (returns an array: ['foo', 'bar'])
+$value = $response->headers->get('X-Header-Value-Many');
 
 // get all headers
 $all_headers = $response->headers->get();
