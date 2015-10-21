@@ -285,7 +285,7 @@ header($response->status->get(), true, $response->status->getCode());
 foreach ($response->headers->get() as $label => $value) {
     if (is_array($value)) {
         foreach ($value as $val) {
-            header("{$label}: {$value}", false);
+            header("{$label}: {$val}", false);
         }
     } else {
         header("{$label}: {$value}");
