@@ -55,11 +55,41 @@ class Headers
 
     /**
      *
+     * Appends a header value in `$headers`.
+     *
+     * @param string $label The header label.
+     *
+     * @param string $value The value for the header; an empty-string/null/
+     * false value will unset the header (although a zero will not).
+     *
+     * @return null
+     *
+     */
+    public function add($label, $value)
+    {
+        $label = $this->sanitizeLabel($label);
+        $value = $this->sanitizeValue($value);
+        if ($value !== '') {
+            if (isset($this->headers[$label])) {
+                $current = $this->headers[$label];
+                if (is_array($current)) {
+                    $this->headers[$label][] = $value;
+                } else {
+                    $this->headers[$label] = [$current, $value];
+                }
+            } else {
+                $this->headers[$label] = $value;
+            }
+        }
+    }
+
+    /**
+     *
      * Returns the value of a single header, or all headers.
      *
      * @param string $label The header name.
      *
-     * @return string The header value.
+     * @return string|string[] The header value(s).
      *
      */
     public function get($label = null)
