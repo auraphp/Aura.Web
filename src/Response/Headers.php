@@ -75,7 +75,7 @@ class Headers
                 if (is_array($current)) {
                     $this->headers[$label][] = $value;
                 } else {
-                    $this->headers[$label] = [$current, $value];
+                    $this->headers[$label] = array($current, $value);
                 }
             } else {
                 $this->headers[$label] = $value;
