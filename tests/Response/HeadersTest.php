@@ -46,7 +46,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         // get all
         $expect = array(
           'Foo-Bar' => 'baz',
-          'Dib' => ['zim', 'zam'],
+          'Dib' => array('zim', 'zam'),
         );
         $actual = $this->headers->get();
         $this->assertSame($expect, $actual);
