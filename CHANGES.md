@@ -1,2 +1,1 @@
-This release modifies the testing structure and updates other support files.
-
+Hygiene release: update license year, and remove branch alias.
