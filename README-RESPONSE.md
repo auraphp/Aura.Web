@@ -69,6 +69,8 @@ The `$response->headers` object has these methods:
 
 - `set()` to set a single header, resetting previous values on that header
 
+- `add()` add to a header, appending another value to the that header
+
 - `get()` to get a single header, or to get all headers
 
 ```php
@@ -76,8 +78,15 @@ The `$response->headers` object has these methods:
 // X-Header-Value: foo
 $response->headers->set('X-Header-Value', 'foo');
 
-// get the X-Header-Value
+// X-Header-Value-Many: foo
+$response->headers->add('X-Header-Value-Many', 'foo');
+$response->headers->add('X-Header-Value-Many', 'bar');
+
+// get the X-Header-Value (returns a string: 'foo')
 $value = $response->headers->get('X-Header-Value');
+
+// get the X-Header-Value-Many (returns an array: ['foo', 'bar'])
+$value = $response->headers->get('X-Header-Value-Many');
 
 // get all headers
 $all_headers = $response->headers->get();
@@ -274,7 +283,13 @@ header($response->status->get(), true, $response->status->getCode());
 
 // send non-cookie headers
 foreach ($response->headers->get() as $label => $value) {
-    header("{$label}: {$value}");
+    if (is_array($value)) {
+        foreach ($value as $val) {
+            header("{$label}: {$val}", false);
+        }
+    } else {
+        header("{$label}: {$value}");
+    }
 }
 
 // send cookies

@@ -31,4 +31,24 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         // no such header
         $this->assertNull($this->headers->get('no-such-header'));
     }
+
+    public function testAddAndGet()
+    {
+        $this->headers->add('foo-bar', 'baz');
+        $this->headers->add('dib', 'zim');
+        $this->headers->add('dib', 'zam');
+
+        // get one
+        $expect = 'baz';
+        $actual = $this->headers->get('foo-bar');
+        $this->assertSame($expect, $actual);
+
+        // get all
+        $expect = array(
+          'Foo-Bar' => 'baz',
+          'Dib' => array('zim', 'zam'),
+        );
+        $actual = $this->headers->get();
+        $this->assertSame($expect, $actual);
+    }
 }
