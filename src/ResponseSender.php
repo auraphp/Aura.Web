@@ -78,8 +78,10 @@ class ResponseSender
      */
     protected function sendHeaders()
     {
-        foreach ($this->response->headers->get() as $label => $value) {
-            header("$label: $value", false);
+        foreach ($this->response->headers->get() as $label => $values) {
+            foreach ((array) $values as $value) {
+                header("$label: $value", false);
+            }
         }
     }
 
