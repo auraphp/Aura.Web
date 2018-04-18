@@ -26,7 +26,11 @@ class Content
      */
     protected $decoders = array(
         'application/json' => 'json_decode',
-        'application/x-www-form-urlencoded' => 'parse_str',
+        'application/x-www-form-urlencoded' => function($body)
+        {
+          parse_str($body, $output);
+          return $output;
+        },
     );
 
     /**
