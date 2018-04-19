@@ -24,14 +24,7 @@ class Content
      * @var array
      *
      */
-    protected $decoders = array(
-        'application/json' => 'json_decode',
-        'application/x-www-form-urlencoded' => function($body)
-        {
-          parse_str($body, $output);
-          return $output;
-        },
-    );
+    protected $decoders;
 
     /**
      *
@@ -98,7 +91,14 @@ class Content
                    ? strtolower($server['HTTP_CONTENT_MD5'])
                    : null;
 
-        $this->decoders = array_merge($this->decoders, $decoders);
+        $this->decoders = array_merge(array(
+          'application/json' => 'json_decode',
+          'application/x-www-form-urlencoded' => function($body)
+            {
+              parse_str($body, $output);
+              return $output;
+            },
+        ), $decoders);
     }
 
     /**
