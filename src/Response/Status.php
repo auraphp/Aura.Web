@@ -72,6 +72,7 @@ class Status
         415 => 'Unsupported Media Type',
         416 => 'Requested Range Not Satisfiable',
         417 => 'Expectation Failed',
+        421 => 'Misdirected Request',
         422 => 'Unprocessable Entity',
         423 => 'Locked',
         424 => 'Failed Dependency',
@@ -120,7 +121,7 @@ class Status
      * @var string
      *
      */
-    protected $version = 1.1;
+    protected $version = '1.1';
 
     /**
      *
@@ -223,7 +224,7 @@ class Status
 
     /**
      *
-     * Sets the HTTP protocol version to 1.0 or 1.1.
+     * Sets the HTTP protocol version to 1.0, 1.1, or 2.
      *
      * @param string $version The HTTP protocol version to use.
      *
@@ -232,7 +233,7 @@ class Status
      */
     public function setVersion($version)
     {
-        if ($version !== '1.0' && $version != '1.1') {
+        if ($version !== '1.0' && $version != '1.1' && $version !== '2') {
             throw new Exception\InvalidVersion($version);
         }
         $this->version = $version;

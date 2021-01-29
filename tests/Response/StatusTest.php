@@ -43,12 +43,29 @@ class StatusTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
 
-    public function testSetAndGetVersion()
+    /**
+     *
+     * Check all the possible HTTP protocol versions.
+     *
+     * @dataProvider provideSupportedVersions
+     *
+     * @param string $version The HTTP protocol version to test.
+     *
+     */
+    public function testSetAndGetVersion($version)
     {
-        $expect = 1.1;
-        $this->status->setVersion($expect);
+        $this->status->setVersion($version);
         $actual = $this->status->getVersion();
-        $this->assertSame($expect, $actual);
+        $this->assertSame($version, $actual);
+    }
+
+    public function provideSupportedVersions()
+    {
+        return array(
+            array('1.1'),
+            array('1.0'),
+            array('2'),
+        );
     }
 
     public function testVersionWrong()
