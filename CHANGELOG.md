@@ -62,3 +62,4 @@ This is a hygiene release to update support files. In particular, composer.json 
 ## 2.0.0-beta1
 
 Initial 2.0 beta release.
+
