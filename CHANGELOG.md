@@ -1,5 +1,13 @@
 # CHANGELOG
 
+# 2.1.1
+
+- Fixed parsing for urlencoded Request content body
+
+- Added support for HTTP/2 as a response version
+
+- Added support for "421 Misdirected Request" response code
+
 ## 2.1.0
 
 Add support for setting, and sending, multiple Response header values.
@@ -11,7 +19,6 @@ Hygiene release: update license year, and remove branch alias.
 ## 2.0.3
 
 This release modifies the testing structure and updates other support files.
-
 
 ## 2.0.2
 
