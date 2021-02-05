@@ -77,11 +77,23 @@ class Values extends ArrayObject
             return $this->getArrayCopy();
         }
 
-        if (isset($this[$key])) {
-            return $this[$key];
+        $values = $this->getArrayCopy();
+        $access_keys = explode('.', $key);
+        while (! empty($access_keys)) {
+            if (array_key_exists($key, $values)) {
+                return $values[$key];
+            }
+
+            $access_key = array_shift($access_keys);
+            if (! is_array($values) || ! array_key_exists($access_key, $values)) {
+                return $alt;
+            }
+
+            $key = implode('.', $access_keys);
+            $values = $values[$access_key];
         }
 
-        return $alt;
+        return $values;
     }
 
     /**
@@ -98,11 +110,7 @@ class Values extends ArrayObject
      */
     public function getBool($key, $alt = null)
     {
-        if (! isset($this[$key])) {
-            return $alt;
-        }
-
-        $val = $this[$key];
+        $val = $this->get($key);
         if (in_array($val, $this->true, true)) {
             return true;
         }
@@ -128,11 +136,12 @@ class Values extends ArrayObject
      */
     public function getInt($key, $alt = null)
     {
-        if (! isset($this[$key])) {
+        $val = $this->get($key);
+        if ($val === null || ! is_scalar($val)) {
             return $alt;
         }
 
-        return (int) $this[$key];
+        return (int) $val;
     }
 
     /**
@@ -149,10 +158,11 @@ class Values extends ArrayObject
      */
     public function getFloat($key, $alt = null)
     {
-        if (! isset($this[$key])) {
+        $val = $this->get($key);
+        if ($val === null || ! is_scalar($val)) {
             return $alt;
         }
 
-        return (float) $this[$key];
+        return (float) $val;
     }
 }
