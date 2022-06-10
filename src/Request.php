@@ -207,7 +207,7 @@ class Request
         $this->server  = $globals->server;
         $this->url     = $url;
 
-        $with = strtolower($this->server->get('HTTP_X_REQUESTED_WITH'));
+        $with = strtolower($this->server->get('HTTP_X_REQUESTED_WITH', ''));
         if ($with == 'xmlhttprequest') {
             $this->xhr = true;
         }
