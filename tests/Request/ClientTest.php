@@ -1,7 +1,9 @@
 <?php
 namespace Aura\Web\Request;
 
-class ClientTest extends \PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+class ClientTest extends TestCase
 {
     protected function newClient(
         $server = array(),

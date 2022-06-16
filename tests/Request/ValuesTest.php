@@ -1,7 +1,9 @@
 <?php
 namespace Aura\Web\Request;
 
-class ValuesTest extends \PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+class ValuesTest extends TestCase
 {
     public function testGet()
     {

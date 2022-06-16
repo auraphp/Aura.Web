@@ -2,14 +2,15 @@
 namespace Aura\Web\Response;
 
 use DateTime;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
-class CacheTest extends \PHPUnit_Framework_TestCase
+class CacheTest extends TestCase
 {
     protected $cache;
 
     protected $headers;
 
-    protected function setUp()
+    protected function set_up()
     {
         $this->headers = new Headers;
         $this->cache = new Cache($this->headers);

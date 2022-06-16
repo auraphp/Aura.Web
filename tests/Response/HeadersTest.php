@@ -1,11 +1,13 @@
 <?php
 namespace Aura\Web\Response;
 
-class HeadersTest extends \PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+class HeadersTest extends TestCase
 {
     protected $headers;
 
-    protected function setUp()
+    protected function set_up()
     {
         $this->headers = new Headers;
     }

@@ -1,15 +1,17 @@
 <?php
 namespace Aura\Web;
 
-class ResponseSenderTest extends \PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+class ResponseSenderTest extends TestCase
 {
     protected $response;
 
     protected $response_sender;
 
-    protected function setUp()
+    protected function set_up()
     {
-        parent::setUp();
+        parent::set_up();
         $globals = array();
         $factory = new WebFactory($globals);
         $this->response = $factory->newResponse();

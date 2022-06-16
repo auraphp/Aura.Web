@@ -1,11 +1,13 @@
 <?php
 namespace Aura\Web\Response;
 
-class CookiesTest extends \PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+class CookiesTest extends TestCase
 {
     protected $cookies;
 
-    protected function setUp()
+    protected function set_up()
     {
         $this->cookies = new Cookies;
     }

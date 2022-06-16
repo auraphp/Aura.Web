@@ -1,7 +1,9 @@
 <?php
 namespace Aura\Web\Response;
 
-class RedirectTest extends \PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+class RedirectTest extends TestCase
 {
     protected $cache;
 
@@ -9,7 +11,7 @@ class RedirectTest extends \PHPUnit_Framework_TestCase
 
     protected $status;
 
-    protected function setUp()
+    protected function set_up()
     {
         $this->status   = new Status;
         $this->headers  = new Headers;

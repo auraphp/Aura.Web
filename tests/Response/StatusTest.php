@@ -1,11 +1,13 @@
 <?php
 namespace Aura\Web\Response;
 
-class StatusTest extends \PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+class StatusTest extends TestCase
 {
     protected $status;
 
-    protected function setUp()
+    protected function set_up()
     {
         $this->status = new Status;
     }
@@ -31,7 +33,7 @@ class StatusTest extends \PHPUnit_Framework_TestCase
 
     public function testSetCodeWrong()
     {
-        $this->setExpectedException('Aura\Web\Exception\InvalidStatusCode');
+        $this->expectException('Aura\Web\Exception\InvalidStatusCode');
         $this->status->setCode('88');
     }
 
@@ -70,7 +72,7 @@ class StatusTest extends \PHPUnit_Framework_TestCase
 
     public function testVersionWrong()
     {
-        $this->setExpectedException('Aura\Web\Exception\InvalidVersion');
+        $this->expectException('Aura\Web\Exception\InvalidVersion');
         $this->status->setVersion('88');
     }
 }
