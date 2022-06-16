@@ -1,7 +1,9 @@
 <?php
 namespace Aura\Web\Request;
 
-class UrlTest extends \PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+class UrlTest extends TestCase
 {
     protected function newUrl($server = array())
     {
@@ -22,7 +24,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $actual = $url->get(PHP_URL_PATH);
         $this->assertSame($expect, $actual);
 
-        $this->setExpectedException('Aura\Web\Exception');
+        $this->expectException('Aura\Web\Exception');
         $url->get('no such component');
     }
 

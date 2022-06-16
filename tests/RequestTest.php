@@ -2,8 +2,9 @@
 namespace Aura\Web;
 
 use Aura\Web\Request\PropertyFactory;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
-class RequestTest extends \PHPUnit_Framework_TestCase
+class RequestTest extends TestCase
 {
     protected function newRequest(array $globals = array())
     {

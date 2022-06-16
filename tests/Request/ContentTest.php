@@ -2,16 +2,17 @@
 namespace Aura\Web\Request;
 
 use Aura\Web\PhpStream;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
-class ContentTest extends \PHPUnit_Framework_TestCase
+class ContentTest extends TestCase
 {
-    public function setUp()
+    public function set_up()
     {
         stream_wrapper_unregister('php');
         stream_wrapper_register('php', 'Aura\Web\PhpStream');
     }
 
-    public function tearDown()
+    public function tear_down()
     {
         stream_wrapper_restore('php');
     }

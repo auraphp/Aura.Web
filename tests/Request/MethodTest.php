@@ -1,7 +1,9 @@
 <?php
 namespace Aura\Web\Request;
 
-class MethodTest extends \PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+class MethodTest extends TestCase
 {
     protected function newMethod($server = array(), $post = array())
     {
@@ -14,7 +16,7 @@ class MethodTest extends \PHPUnit_Framework_TestCase
         $method = $this->newMethod($server);
         $this->assertTrue($method->isOther());
 
-        $this->setExpectedException('BadMethodCallException');
+        $this->expectException('BadMethodCallException');
         $method->badMethodCall();
     }
 
