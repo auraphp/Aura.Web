@@ -1,5 +1,11 @@
 # CHANGELOG
 
+# 2.1.2
+
+- Fixed : Passing null to parameter type string is deprecated for strtolower by @zkwbbr in https://github.com/auraphp/Aura.Web/pull/60
+
+- Continous Itegration moved from Travis to Github actions. Tests are running from PHP 5.4 - 8.1.
+
 # 2.1.1
 
 - Fixed parsing for urlencoded Request content body
