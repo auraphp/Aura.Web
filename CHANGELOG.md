@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 2.2.0
+
+- Added allowing dot notation to gain access to arrays in Values objects by @proggeler in https://github.com/auraphp/Aura.Web/pull/59
+
 # 2.1.2
 
 - Fixed : Passing null to parameter type string is deprecated for strtolower by @zkwbbr in https://github.com/auraphp/Aura.Web/pull/60
