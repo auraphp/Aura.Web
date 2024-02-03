@@ -69,9 +69,11 @@ class Files extends Values
             }
         } else {
             // not a target, create sub-elements and init them too
-            foreach ($src as $key => $val) {
-                $tgt[$key] = array();
-                $this->init($val, $tgt[$key]);
+            if (is_array($src)) {
+                foreach ($src as $key => $val) {
+                    $tgt[$key] = array();
+                    $this->init($val, $tgt[$key]);
+                }
             }
         }
     }
