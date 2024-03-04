@@ -1,5 +1,11 @@
 # CHANGELOG
 
+# 2.2.1
+
+- Fixed making sure only arrays are passed in foreach() by @zkwbbr in https://github.com/auraphp/Aura.Web/pull/65
+
+- Added missing charset property to Aura\Web\Request\Content class by @harikt.
+
 # 2.2.0
 
 - Added allowing dot notation to gain access to arrays in Values objects by @proggeler in https://github.com/auraphp/Aura.Web/pull/59
@@ -72,4 +78,3 @@ This is a hygiene release to update support files. In particular, composer.json 
 ## 2.0.0-beta1
 
 Initial 2.0 beta release.
-
